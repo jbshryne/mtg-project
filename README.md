@@ -23,3 +23,12 @@ My website will be called "MTG Conclave", utilizing the [Magic: the Gathering AP
 * CSS
 * JavaScript
 * jQuery
+
+## Wireframes
+
+### Home Screen:
+![Home Screen](assets/Home.png)
+### Results:
+![Results](assets/Results.png)
+### Card Dtails:
+![Details](assets/Details.png)
