@@ -12,6 +12,67 @@
     <script src="script.js" defer></script>
   </head>
   <body>
-    
+    <header>
+      <h1>MTG CONCLAVE</h1>
+      <h2>Card Searcher</h2>
+      <form>
+        <label>Card Name:<input type="text" name="name" /></label>
+        <label
+          >Types:
+          <input
+            type="text"
+            name="type"
+            placeholder="Including super- and/or subtypes"
+        /></label>
+        <fieldset>
+          <legend>Color Identity:</legend>
+          <label>
+            <input type="checkbox" name="color" value="white" />
+            White
+          </label>
+          <label>
+            <input type="checkbox" name="color" value="blue" />
+            Blue
+          </label>
+          <label>
+            <input type="checkbox" name="color" value="black" />
+            Black
+          </label>
+          <label>
+            <input type="checkbox" name="color" value="red" />
+            Red
+          </label>
+          <label>
+            <input type="checkbox" name="color" value="green" />
+            Green
+          </label>
+        </fieldset>
+        <fieldset>
+          <legend>Rarity:</legend>
+          <label>
+            <input type="checkbox" name="rarity" value="common" />
+            Common
+          </label>
+          <label>
+            <input type="checkbox" name="rarity" value="uncommon" />
+            Uncommon
+          </label>
+          <label>
+            <input type="checkbox" name="rarity" value="rare" />
+            Rare
+          </label>
+          <label>
+            <input type="checkbox" name="rarity" value="mythic" />
+            Mythic Rare
+          </label>
+        </fieldset>
+        <label
+          >Set or Block:<input
+            name="set"
+            placeholder="Type in or choose from list"
+        /></label>
+        <div><button>ALL CARDS</button><button>RANDOMIZER</button></div>
+      </form>
+    </header>
   </body>
 </html>
