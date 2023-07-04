@@ -1,7 +1,4 @@
-const $form = $("form");
-const $nameInput = $("#nameInput");
-const $typeInput = $("#typeInput");
-const $allCardsBtn = $("allCardsBtn");
+// CONSTANTS & VARIABLES
 
 const allSuperTypes = [
   "basic",
@@ -32,20 +29,28 @@ const allTypes = [
   "vanguard",
 ];
 
-console.log($allCardsBtn);
+// DOM ELEMENTS
+
+const $form = $("form");
+const $nameInput = $("#nameInput");
+const $typeInput = $("#typeInput");
+const $allCardsBtn = $("allCardsBtn");
+// const $colorInputs = $(".color");
+
+// console.log($colorInputs);
+
+// FUNCTIONS
 
 const searchFnc = (e) => {
   e.preventDefault();
   const resultArray = [];
+  const queryArray = [];
+  const typeArrays = { supertypes: [], types: [], subtypes: [] };
+  const colorArray = [];
 
   const nameInputText = $nameInput.val().toLowerCase().split(" ").join(",");
-  const nameApiAppend = nameInputText ? "name=" + nameInputText : "";
 
-  const typeArrays = { supertypes: [], types: [], subtypes: [] };
-  const typeCallsArray = [];
   const typeInputArray = $typeInput.val().toLowerCase().split(" ");
-
-  // console.log(typeInputArray);
 
   typeInputArray.forEach((type) => {
     if (allSuperTypes.includes(type)) {
@@ -57,24 +62,37 @@ const searchFnc = (e) => {
     }
   });
 
-  if (typeArrays.supertypes.length !== 0) {
-    typeCallsArray.push("supertypes=" + typeArrays.supertypes.join(","));
+  if (nameInputText) {
+    queryArray.push("name=" + nameInputText);
   }
 
-  if (typeArrays.types.length !== 0) {
-    typeCallsArray.push("types=" + typeArrays.types.join(","));
+  if (typeArrays.supertypes.length > 0) {
+    queryArray.push("supertypes=" + typeArrays.supertypes.join(","));
   }
 
-  if (typeArrays.subtypes.length !== 0) {
-    typeCallsArray.push("subtypes=" + typeArrays.subtypes.join(","));
+  if (typeArrays.types.length > 0) {
+    queryArray.push("types=" + typeArrays.types.join(","));
   }
 
-  const typeApiCall = typeCallsArray.join("&")
+  if (typeArrays.subtypes.length > 0) {
+    queryArray.push("subtypes=" + typeArrays.subtypes.join(","));
+  }
 
-  // const colorId = $('#colorIdField input[type="checkbox"]');
+  const $checkedColors = $(".color:checked");
+
+  $checkedColors.each(function () {
+    const value = $(this).val();
+    colorArray.push(value);
+  });
+
+  if (colorArray.length > 0) {
+    queryArray.push("colorIdentity=" + colorArray.join(","));
+  }
+
+  const queryString = queryArray.join("&");
 
   $.getJSON(
-    `https://api.magicthegathering.io/v1/cards?${typeApiCall}`,
+    `https://api.magicthegathering.io/v1/cards?${queryString}`,
     function (data, textStatus, jqxhr) {
       // console.log(data.cards);
       const resultNames = [];
