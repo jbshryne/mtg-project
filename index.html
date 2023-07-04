@@ -9,14 +9,17 @@
       integrity="sha256-JlqSTELeR4TLqP0OG9dxM7yDPqX1ox/HfgiSLBj8+kM="
       crossorigin="anonymous"
     ></script>
+    <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.min.js"></script>
+    <link rel="stylesheet" href="style.css" />
     <script src="script.js" defer></script>
   </head>
   <body>
     <header>
-      <h1>MTG CONCLAVE</h1>
-      <h2>Card Searcher</h2>
+      <h1>MTG CONCLAVE Card Searcher</h1>
       <form>
-        <label>Card Name:<input type="text" name="name" id="nameInput"/></label>
+        <label
+          >Card Name: <input type="text" name="name" id="nameInput"
+        /></label>
         <label
           >Types:
           <input
@@ -25,6 +28,7 @@
             id="typeInput"
             placeholder="Including super- and/or subtypes"
         /></label>
+        <br /><br />
         <fieldset id="colorIdField">
           <legend>Color Identity:</legend>
           <label>
@@ -48,35 +52,41 @@
             Green
           </label>
         </fieldset>
+        <br />
         <fieldset>
           <legend>Rarity:</legend>
           <label>
-            <input type="checkbox" class="rarity" value="common" />
+            <input type="checkbox" class="rarity" value="Common" />
             Common
           </label>
           <label>
-            <input type="checkbox" class="rarity" value="uncommon" />
+            <input type="checkbox" class="rarity" value="Uncommon" />
             Uncommon
           </label>
           <label>
-            <input type="checkbox" class="rarity" value="rare" />
+            <input type="checkbox" class="rarity" value="Rare" />
             Rare
           </label>
           <label>
-            <input type="checkbox" class="rarity" value="mythic" />
+            <input type="checkbox" class="rarity" value="Mythic" />
             Mythic Rare
           </label>
         </fieldset>
+        <br />
         <label
-          >Set or Block:<input
-            name="set"
+          >Set Name:
+          <input
+            type="text"
+            id="setInput"
+            class="ui-autocomplete"
             placeholder="Type in or choose from list"
         /></label>
         <div>
-          <button type="submit" id="allCardsBtn">ALL CARDS</button
-          ><button id="randomBtn">RANDOMIZER</button>
+          <button type="submit" id="allCardsBtn">ALL CARDS</button>
+          <!-- <button id="randomBtn">RANDOMIZER</button> -->
         </div>
       </form>
+      <div id="results"></div>
     </header>
   </body>
 </html>
