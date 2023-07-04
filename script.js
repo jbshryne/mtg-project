@@ -1,13 +1,23 @@
-const $allCardsBtn = $("allCardsBtn");
 const $form = $("form");
+const $nameInput = $("#nameInput")
+const $typeInput = $("#typeInput")
+const $allCardsBtn = $("allCardsBtn");
+
 
 console.log($allCardsBtn);
+
+
 
 const searchFnc = (e) => {
   e.preventDefault();
 
+
+  const nameInputText = $nameInput.val().toLowerCase().split(" ").join(",");
+
+  console.log(nameInputText)
+
   $.getJSON(
-    "https://api.magicthegathering.io/v1/cards",
+    `https://api.magicthegathering.io/v1/cards?${nameInputText ? "name=" + nameInputText : ""}`,
     function (data, textStatus, jqxhr) {
       console.log(data);
 
