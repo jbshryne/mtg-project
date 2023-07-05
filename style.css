@@ -7,11 +7,6 @@ input[type="text"] {
   min-width: 200px;
 }
 
-/* label {
-  /* padding: 200px 20px; */
-  /* margin: 200px 20px */
-/* } */ 
-
 #resultBox {
   display: flex;
   flex-wrap: wrap;
@@ -27,8 +22,6 @@ input[type="text"] {
   margin: 20px;
   outline: black solid 1px;
   border-radius: 12px;
-  background-image: url("assets/sample/black-lotus.jpeg");
   background-size: contain;
-  /* background-position: center; */
 }
 

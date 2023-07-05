@@ -113,7 +113,7 @@ function searchFnc(e) {
     `https://api.magicthegathering.io/v1/cards?${queryString}`,
     function (data, textStatus, jqxhr) {
 
-      // Changing to show single result per card
+      // Filtering down single result per card
 
       const resultNames = [];
 
@@ -125,6 +125,12 @@ function searchFnc(e) {
           console.log(card)
         }
       });
+
+      resultArray.forEach(card => {
+        const $spoilerEl = $("<div class='cardSpoiler'></div>")
+        $spoilerEl.css("background-image", "url(" + card.imageUrl + ")")
+        $("#resultBox").append($spoilerEl)
+      })
 
       // Pagination
 
