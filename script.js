@@ -36,6 +36,8 @@ $("form").on("submit", searchFnc);
 function searchFnc(e) {
   e.preventDefault();
 
+  console.log("Searching Database...")
+
   // Define arrays
   const resultArray = [];
   const queryArray = [];
@@ -110,6 +112,7 @@ function searchFnc(e) {
   $.getJSON(
     `https://api.magicthegathering.io/v1/cards?${queryString}`,
     function (data, textStatus, jqxhr) {
+
       // Changing to show single result per card
 
       const resultNames = [];
@@ -118,7 +121,8 @@ function searchFnc(e) {
         if (!resultNames.includes(card.name)) {
           resultArray.push(card);
           resultNames.push(card.name);
-          console.log(`${card.name} // COST: ${card.manaCost} // TYPE: ${card.type}`)
+          // console.log(`${card.name} // COST: ${card.manaCost} // TYPE: ${card.type}`)
+          console.log(card)
         }
       });
 

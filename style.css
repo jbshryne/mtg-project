@@ -7,7 +7,28 @@ input[type="text"] {
   min-width: 200px;
 }
 
-label {
+/* label {
   /* padding: 200px 20px; */
   /* margin: 200px 20px */
+/* } */ 
+
+#resultBox {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-evenly;
+  margin: 0% auto;
+  width: 90vw;
+  /* outline: black solid 2px; */
 }
+
+.cardSpoiler {
+  height: 420px;
+  width: 300px;
+  margin: 20px;
+  outline: black solid 1px;
+  border-radius: 12px;
+  background-image: url("assets/sample/black-lotus.jpeg");
+  background-size: contain;
+  /* background-position: center; */
+}
+
