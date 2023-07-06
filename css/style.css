@@ -17,6 +17,10 @@ input[type="text"] {
 }
 
 .cardSpoiler {
+  display: flex;
+  text-align: center;
+  justify-content: center;
+  align-items: center;
   height: 420px;
   width: 300px;
   margin: 20px;

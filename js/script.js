@@ -31,12 +31,15 @@ const allTypes = [
 
 // SEARCH LOGIC
 
-$("form").on("submit", searchFnc);
+$("#allCardsBtn").on("click", searchFnc);
+const $resultBox = $("#resultBox");
 
 function searchFnc(e) {
   e.preventDefault();
+  $resultBox.empty();
 
-  console.log("Searching Database...")
+  console.log("Searching Database...");
+  console.log($("form"));
 
   // Define arrays
   const resultArray = [];
@@ -44,6 +47,13 @@ function searchFnc(e) {
   const typeArrays = { supertypes: [], types: [], subtypes: [] };
   const colorArray = [];
   const rarityArray = [];
+
+  function getDetails() {
+    const card = resultArray.find(card => card.id === this.id)
+    sessionStorage.setItem("detailsPage", JSON.stringify(card));
+    window.location.href = "details.html"
+  }
+  
 
   // Convert user input for API call
 
@@ -102,7 +112,7 @@ function searchFnc(e) {
     queryArray.push("rarity=" + rarityArray.join("|"));
   }
   if (setInputText) {
-    queryArray.push("setName=" + setInputText)
+    queryArray.push("setName=" + setInputText);
   }
 
   const queryString = queryArray.join("&");
@@ -112,7 +122,6 @@ function searchFnc(e) {
   $.getJSON(
     `https://api.magicthegathering.io/v1/cards?${queryString}`,
     function (data, textStatus, jqxhr) {
-
       // Filtering down single result per card
 
       const resultNames = [];
@@ -122,15 +131,22 @@ function searchFnc(e) {
           resultArray.push(card);
           resultNames.push(card.name);
           // console.log(`${card.name} // COST: ${card.manaCost} // TYPE: ${card.type}`)
-          console.log(card)
+          console.log(card);
         }
       });
 
-      resultArray.forEach(card => {
-        const $spoilerEl = $("<div class='cardSpoiler'></div>")
-        $spoilerEl.css("background-image", "url(" + card.imageUrl + ")")
-        $("#resultBox").append($spoilerEl)
-      })
+      // Populating result box w/ card images
+
+      resultArray.forEach((card) => {
+        const $spoilerEl = $(`<div class="cardSpoiler" id="${card.id}"></div>`);
+        if (card.imageUrl) {
+          $spoilerEl.css("background-image", "url(" + card.imageUrl + ")");
+        } else {
+          $spoilerEl.html(`${card.name}<br><br>IMAGE NOT AVAILABLE`);
+        }
+        $spoilerEl.on("click", getDetails)
+        $resultBox.append($spoilerEl);
+      });
 
       // Pagination
 
