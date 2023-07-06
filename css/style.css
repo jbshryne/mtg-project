@@ -29,3 +29,19 @@ input[type="text"] {
   background-size: contain;
 }
 
+body {
+  background-color: tan;
+}
+
+#detailPage {
+  text-align: center;
+}
+
+#detailImg {
+  height: 560px;
+  width: 400px;
+  outline: black solid 1px;
+  background-size: contain;
+  border-radius: 20px;
+  margin: 0% auto
+}

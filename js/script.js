@@ -1,3 +1,13 @@
+function getDetails() {
+  console.log(resultArray);
+  console.log(this);
+  const card = resultArray.find((card) => card.id === this.id);
+  console.log("Clicked " + card.name);
+  sessionStorage.setItem("detailsPage", JSON.stringify(card));
+  // debugger;
+  window.location.href = "details.html";
+}
+
 // CONSTANTS & VARIABLES
 
 const allSuperTypes = [
@@ -29,31 +39,37 @@ const allTypes = [
   "vanguard",
 ];
 
+const storedArray = JSON.parse(sessionStorage.getItem("resultArray"));
+console.log(storedArray);
+
+let resultArray;
+storedArray ? (resultArray = [...storedArray]) : (resultArray = []);
+
+const $resultBox = $("#resultBox").html(sessionStorage.getItem("resultBox"));
+sessionStorage.setItem("resultBox", $resultBox.html());
+
+console.log(resultArray);
+// sessionStorage.setItem("resultArray", JSON.stringify(resultArray));
+
 // SEARCH LOGIC
 
 $("#allCardsBtn").on("click", searchFnc);
-const $resultBox = $("#resultBox");
+$(".cardSpoiler").off("click").on("click", getDetails);
 
 function searchFnc(e) {
   e.preventDefault();
+
+  resultArray = [];
   $resultBox.empty();
 
   console.log("Searching Database...");
   console.log($("form"));
 
   // Define arrays
-  const resultArray = [];
   const queryArray = [];
   const typeArrays = { supertypes: [], types: [], subtypes: [] };
   const colorArray = [];
   const rarityArray = [];
-
-  function getDetails() {
-    const card = resultArray.find(card => card.id === this.id)
-    sessionStorage.setItem("detailsPage", JSON.stringify(card));
-    window.location.href = "details.html"
-  }
-  
 
   // Convert user input for API call
 
@@ -122,12 +138,13 @@ function searchFnc(e) {
   $.getJSON(
     `https://api.magicthegathering.io/v1/cards?${queryString}`,
     function (data, textStatus, jqxhr) {
+      console.log("response successful");
       // Filtering down single result per card
 
       const resultNames = [];
 
       data.cards.forEach((card) => {
-        if (!resultNames.includes(card.name)) {
+        if (!resultNames.includes(card.name) && card.imageUrl) {
           resultArray.push(card);
           resultNames.push(card.name);
           // console.log(`${card.name} // COST: ${card.manaCost} // TYPE: ${card.type}`)
@@ -144,9 +161,12 @@ function searchFnc(e) {
         } else {
           $spoilerEl.html(`${card.name}<br><br>IMAGE NOT AVAILABLE`);
         }
-        $spoilerEl.on("click", getDetails)
+        $spoilerEl.off("click").on("click", getDetails);
         $resultBox.append($spoilerEl);
       });
+
+      sessionStorage.setItem("resultArray", JSON.stringify(resultArray));
+      sessionStorage.setItem("resultBox", $resultBox.html());
 
       // Pagination
 
