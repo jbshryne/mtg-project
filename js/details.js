@@ -1,9 +1,24 @@
 console.log("The Deets");
 
-const printingsArray = JSON.parse(sessionStorage.getItem("printingsArray"))
+const card = JSON.parse(sessionStorage.getItem("cardDetails"))
 
-$("title").text(printingsArray[0].name + " - MTG Conclave")
-$("h1").text(printingsArray[0].name)
-$("#detailImg").css("backgroundImage", "url(" + printingsArray[0].imageUrl + ")")
+$("title").text(card.name + " - MTG Conclave")
+$("h1").text(card.name)
+const $cardFaceEl = $(".detailsImg")
 
-console.log($("#detailImg"))
+if (card.image_uris) {
+    $cardFaceEl.css("background-image", "url(" + card.image_uris.large + ")");
+  } else if (card.card_faces) {
+    $cardFaceEl.css(
+      "background-image",
+      "url(" + card.card_faces[0].image_uris.large + ")"
+    );
+    $backFaceEl = $("<div class='detailsImg'></div>")
+    $backFaceEl.css("background-image",
+    "url(" + card.card_faces[1].image_uris.large + ")");
+    $(".displayBox").append($backFaceEl)
+  } else {
+    $cardFaceEl.html(`${card.name}<br><br>IMAGE NOT AVAILABLE`);
+  }
+
+// $cardFaceEl.css("backgroundImage", "url(" + card.image_uris.large + ")")

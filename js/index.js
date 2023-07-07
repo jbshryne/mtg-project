@@ -111,7 +111,9 @@ function searchFnc(e) {
     function (data, textStatus, jqxhr) {
       console.log("response successful");
 
-      console.log(data);
+      console.log(data.data);
+
+      // data.data.forEach(card => console.log(card.name))
 
       // const resultNames = [];
 
@@ -147,14 +149,14 @@ function searchFnc(e) {
 
       // // console.log(responseHeaders);
 
-      // sessionStorage.setItem("resultArray", JSON.stringify(resultArray));
+      sessionStorage.setItem("resultArray", JSON.stringify(data.data));
       // sessionStorage.setItem(
       //   "responseHeaders",
       //   JSON.stringify(responseHeaders)
       // );
       // debugger;
 
-      // window.location.href = "results.html";
+      window.location.href = "results.html";
     }
   ).fail(function (jqxhr, textStatus, error) {
     console.error("Error:", error);
