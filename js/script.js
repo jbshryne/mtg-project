@@ -28,43 +28,17 @@ const allTypes = [
   "tribal",
   "vanguard",
 ];
-
-// const storedArray = JSON.parse(sessionStorage.getItem("resultArray"));
-// console.log(storedArray);
-
-// let resultArray;
-// storedArray ? (resultArray = [...storedArray]) : (resultArray = []);
-
-// const $resultBox = $("#resultBox").html(sessionStorage.getItem("resultBox"));
-// sessionStorage.setItem("resultBox", $resultBox.html());
-
-// console.log(resultArray);
-
 // SEARCH LOGIC
 
-// function getDetails() {
-//   console.log(resultArray);
-//   console.log(this);
-//   const card = resultArray.find((card) => card.id === this.id);
-//   console.log("Clicked " + card.name);
-//   sessionStorage.setItem("detailsPage", JSON.stringify(card));
-//   // debugger;
-//   window.location.href = "details.html";
-// }
-
 $("#allCardsBtn").on("click", searchFnc);
-// $(".cardSpoiler").off("click").on("click", getDetails);
 
 function searchFnc(e) {
   e.preventDefault();
 
   const resultArray = [];
-  // $resultBox.empty();
 
   console.log("Searching Database...");
-  console.log($("form"));
 
-  // Define arrays
   const queryArray = [];
   const typeArrays = { supertypes: [], types: [], subtypes: [] };
   const colorArray = [];
@@ -143,38 +117,44 @@ function searchFnc(e) {
       const resultNames = [];
 
       data.cards.forEach((card) => {
-        if (!resultNames.includes(card.name) && card.imageUrl) {
-          resultArray.push(card);
+        if (!resultNames.includes(card.name)) {
+          const printingsArray = []
+          printingsArray.push(card);
+          resultArray.push(printingsArray)
+
           resultNames.push(card.name);
-          // console.log(`${card.name} // COST: ${card.manaCost} // TYPE: ${card.type}`)
-          console.log(card);
+          // console.log(card);
+        } else {
+          const idx = resultNames.findIndex(name => name === card.name);
+          resultArray[idx].push(card)
         }
       });
 
-        window.location.href = "results.html";
+      console.log(resultArray);
 
+      // Passing on Page & Total Count info
 
-      // Populating result box w/ card images
+      const pageSize = jqxhr.getResponseHeader("Page-Size");
+      const count = jqxhr.getResponseHeader("Count");
+      const totalCount = jqxhr.getResponseHeader("Total-Count");
 
-      // resultArray.forEach((card) => {
-      //   const $spoilerEl = $(`<div class="cardSpoiler" id="${card.id}"></div>`);
-      //   if (card.imageUrl) {
-      //     $spoilerEl.css("background-image", "url(" + card.imageUrl + ")");
-      //   } else {
-      //     $spoilerEl.html(`${card.name}<br><br>IMAGE NOT AVAILABLE`);
-      //   }
-      //   $spoilerEl.off("click").on("click", getDetails);
-      //   $resultBox.append($spoilerEl);
-      // });
+      const responseHeaders = {
+        pageSize,
+        count,
+        totalCount,
+      };
+
+      // console.log(responseHeaders);
 
       sessionStorage.setItem("resultArray", JSON.stringify(resultArray));
+      sessionStorage.setItem(
+        "responseHeaders",
+        JSON.stringify(responseHeaders)
+      );
+      // debugger;
+
+      window.location.href = "results.html";
       // sessionStorage.setItem("resultBox", $resultBox.html());
-
-      // Pagination
-
-      // const pageSize = jqxhr.getResponseHeader('Page-Size');
-      // const count = jqxhr.getResponseHeader('Count');
-      // const totalCount = jqxhr.getResponseHeader('Total-Count');
     }
   ).fail(function (jqxhr, textStatus, error) {
     console.error("Error:", error);

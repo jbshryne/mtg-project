@@ -1,11 +1,9 @@
 console.log("The Deets");
 
-const card = JSON.parse(sessionStorage.getItem("detailsPage"))
+const printingsArray = JSON.parse(sessionStorage.getItem("printingsArray"))
 
-console.log(card)
-
-$("title").text(card.name + " - MTG Conclave")
-$("h1").text(card.name)
-$("#detailImg").css("backgroundImage", "url(" + card.imageUrl + ")")
+$("title").text(printingsArray[0].name + " - MTG Conclave")
+$("h1").text(printingsArray[0].name)
+$("#detailImg").css("backgroundImage", "url(" + printingsArray[0].imageUrl + ")")
 
 console.log($("#detailImg"))
