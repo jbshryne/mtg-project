@@ -11,7 +11,7 @@
     ></script>
     <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.min.js"></script>
     <link rel="stylesheet" href="css/style.css" />
-    <script src="js/script.js" defer></script>
+    <script src="js/index.js" defer></script>
   </head>
   <body>
     <header>
@@ -81,11 +81,21 @@
             class="ui-autocomplete"
             placeholder="Type in or choose from list"
         /></label>
+        <label>Sort by:
+          <select id="sortDropdown">
+            <option value="name">Name</option>
+            <option value="rarity">Rarity</option>
+            <option value="type">Type</option>
+            <option value="cmc">Mana Value</option>
+            <option value="power">Power</option>
+            <option value="toughness">Toughness</option>
+          </select>
+        </label>
         <div>
           <button type="submit" id="allCardsBtn">ALL CARDS</button>
-          <button id="randomBtn">RANDOMIZER</button>
         </div>
       </form>
+      <button id="randomBtn">RANDOMIZER</button>
     </header>
   </body>
 </html>

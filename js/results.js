@@ -1,14 +1,14 @@
 console.log("results");
 
 const storedArray = JSON.parse(sessionStorage.getItem("resultArray"));
-console.log(storedArray);
+// console.log(storedArray);
 
 let resultArray;
 storedArray ? (resultArray = [...storedArray]) : (resultArray = []);
 
 const $resultBox = $("#resultBox");
 
-console.log(resultArray);
+// console.log(resultArray);
 
 function getDetails() {
   console.log(resultArray);
