@@ -1,15 +1,32 @@
-
 body {
   background-color: rgb(157, 132, 100);
+  font-size: 130%;
+}
+
+input {
+  background-color: rgb(224, 215, 203);
+}
+
+select {
+  font-size: 90%;
 }
 
 button {
   margin: 15px 5px;
   padding: 5px;
+  font-size: 90%;
+  font-weight: bolder;
+  border-radius: 5px;
+  padding: 6px;
+}
+
+label {
+  font-weight: bold;
 }
 
 input[type="text"] {
-  min-width: 200px;
+  min-width: 250px;
+  font-size: 80%;
 }
 
 .displayBox {
@@ -26,9 +43,9 @@ input[type="text"] {
   text-align: center;
   justify-content: center;
   align-items: center;
-  height: 420px;
-  width: 300px;
-  margin: 20px;
+  height: 455px;
+  width: 325px;
+  margin: 15px;
   outline: black solid 1px;
   border-radius: 12px;
   background-size: contain;
@@ -39,10 +56,10 @@ input[type="text"] {
 }
 
 .detailImg {
-  height: 560px;
-  width: 400px;
+  height: 630px;
+  width: 450px;
   outline: black solid 1px;
   background-size: contain;
   border-radius: 20px;
-   margin: 0% auto
+  margin: 0% auto;
 }
