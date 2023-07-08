@@ -1,33 +1,15 @@
 // CONSTANTS & VARIABLES
 
-const allSuperTypes = [
-  "basic",
-  "elite",
-  "legendary",
-  "ongoing",
-  "snow",
-  "token",
-  "world",
-];
+// Dynamically get list of all MtG Sets
+const allSets = [];
 
-const allTypes = [
-  "artifact",
-  "battle",
-  "conspiracy",
-  "creature",
-  "emblem",
-  "enchantment",
-  "hero",
-  "instant",
-  "land",
-  "phenomenon",
-  "plane",
-  "planeswalker",
-  "scheme",
-  "sorcery",
-  "tribal",
-  "vanguard",
-];
+$.getJSON("https://api.scryfall.com/sets", function (data) {
+  allSets.push(...data.data);
+});
+
+// $('#setInput').autocomplete({
+//   source: allSets
+// });
 
 // function scryfallTest() {
 //   $.getJSON(`https://api.scryfall.com/catalog/card-names`, function (data) {
@@ -35,25 +17,48 @@ const allTypes = [
 //   });
 // }
 
-$("#allCardsBtn").on("click", searchFnc);
-// $("#randomBtn").on("click", scryfallTest);
+// HELPER FUNCTIONS
+
+$("#allCardsBtn").on("click", searchHandler);
+$("#randomBtn").on("click", searchHandler);
+
+// function typeLineSort(array) {
+//   array.sort(function (a, b) {
+//     const typeA = a.type_line.toLowerCase(); // Convert to uppercase for case-insensitive comparison
+//     const typeB = b.type_line.toLowerCase();
+//     if (typeA < typeB) {
+//       return -1; // a should be sorted before b
+//     }
+//     if (typeA > typeB) {
+//       return 1; // a should be sorted after b
+//     }
+//     return 0; // a and b are equal in terms of sorting
+//   });
+// }
 
 // SEARCH LOGIC
 
-function searchFnc(e) {
+function searchHandler(e) {
   e.preventDefault();
+  let searchType;
+  const clickedBtnId = $(e.target).attr("id");
+  console.log(clickedBtnId);
 
-  // const resultArray = [];
+  searchFnc(clickedBtnId);
+}
+
+function searchFnc(clickedBtn) {
+  const colorArray = [];
+  const rarityArray = [];
+  let apiCallUrl = "";
 
   console.log("Searching Database...");
 
-  const queryArray = [];
-  const colorArray = [];
-  const rarityArray = [];
-
   // Convert user input for API call
 
-  const nameInputString = $("#nameInput").val().split(" ").join("+");
+  const nameInputArray = $("#nameInput").val().split(" ");
+
+  console.log(nameInputArray);
 
   let typeInputString;
   if ($("#typeInput").val()) {
@@ -76,20 +81,26 @@ function searchFnc(e) {
     rarityArray.push(value);
   });
 
-  console.log(rarityArray);
-
   let rarityString;
   if (rarityArray.length > 0) {
     const formattedRarityArray = rarityArray.map((rarity) => `r:${rarity}`);
     rarityString = `(${formattedRarityArray.join(" or ")})`;
   }
 
-  // const setInputText = $("#setInput").val();
+  let setInputString;
+  if ($("#setInput").val()) {
+    const setInputArray = $("#setInput").val().split(" ");
+    const formattedSetArray = setInputArray.map((setWord) => `s:${setWord}`);
+    setInputString = `(${formattedSetArray.join(" or ")})`;
+  }
 
   // Construsting the API Call
 
-  if (nameInputString) {
-    queryArray.push(nameInputString);
+  let queryArray = [];
+
+  if (nameInputArray.length > 0) {
+    console.log(nameInputArray);
+    queryArray.push(...nameInputArray);
   }
   if (typeInputString) {
     queryArray.push(typeInputString);
@@ -100,80 +111,110 @@ function searchFnc(e) {
   if (rarityString) {
     queryArray.push(rarityString);
   }
-  // if (setInputText) {
-  //   queryArray.push("setName=" + setInputText);
-  // }
+  if (setInputString) {
+    queryArray.push(setInputString);
+  }
 
   // console.log($("#sortDropdown").val());
 
-  // queryArray.push("orderBy=" + $("#sortDropdown").val())
-
   const encodedArray = queryArray.map((query) => encodeURIComponent(query));
-
   const queryString = encodedArray.join("+");
+  console.log(queryString);
 
+  const sortOrder = $("#sortDropdown").val();
+  let orderString;
+  sortOrder === "type" ? (orderString = "color") : (orderString = sortOrder);
+
+  if (clickedBtn === "allCardsBtn") {
+    apiCallUrl = `https://api.scryfall.com/cards/search?order=${orderString}&q=${queryString}+game%3Apaper`;
+  }
+  if (clickedBtn === "randomBtn") {
+    apiCallUrl = `https://api.scryfall.com/cards/random?q=${queryString}`
+  }
   // Making the call
 
-  $.getJSON(
-    `https://api.scryfall.com/cards/search?q=${queryString}`,
-    function (data, textStatus, jqxhr) {
-      console.log("response successful");
+  //////// MOVE TO RESULTS PAGE
+  // function handleMorePages(pageCount, apiCall) {
+  //   var completedRequests = 0; // Counter to track completed requests
 
-      console.log(data.data);
+  //   // Start sending requests
+  //   for (let i = 2; i <= pageCount; i++) {
+  //     // Create a closure to preserve the value of i
+  //     setTimeout(function () {
+  //       // Make the API request here
+  //       $.getJSON(apiCall + "&page=" + i, function (data) {
+  //         console.log(
+  //           `page ${i} of ${pageCount} -- top entry: ${data.data[0].name}`
+  //         );
+  //         allResultsArray.push(...data.data);
 
-      // data.data.forEach(card => console.log(card.name))
+  //         completedRequests++; // Increment the counter for completed requests
 
-      // const resultNames = [];
+  //         // Check if all requests have completed
+  //         if (completedRequests === pageCount - 1) {
+  //           // Perform sorting and session storage operations
+  //           if (sortOrder === "type") {
+  //             typeLineSort(resultsArray);
+  //             typeLineSort(allResultsArray);
+  //           }
+  //           sessionStorage.setItem("resultsArray", JSON.stringify(resultsArray));
+  //           console.log("allResultsArray is set");
+  //           sessionStorage.setItem(
+  //             "allResultsArray",
+  //             JSON.stringify(allResultsArray)
+  //           );
 
-      // data.cards.forEach((card) => {
-      //   if (!resultNames.includes(card.name)) {
-      //     const printingsArray = [];
-      //     printingsArray.push(card);
-      //     resultArray.push(printingsArray);
+  //           // Redirect to "results.html" after a delay
+  //           setTimeout(function () {
+  //             window.location.href = "results.html";
+  //           }, 500);
+  //         }
+  //       });
+  //     }, i * 100); // Delay duration increases for each request
+  //   }
+  // }
 
-      //     resultNames.push(card.name);
-      //     // console.log(card);
-      //   } else {
-      //     const idx = resultNames.findIndex((name) => name === card.name);
-      //     resultArray[idx].push(card);
-      //   }
-      // });
+  $.getJSON(apiCallUrl, function (data, textStatus, jqxhr) {
+    console.log("response successful");
+    sessionStorage.setItem("queryResponse", JSON.stringify(data));
+    
+    console.log(data);
+    if (clickedBtn === "allCardsBtn") {
 
-      // console.log(resultArray);
+    if (data.data.length === 1) {
+      const cardDetails = resultsArray[0];
+      console.log(cardDetails);
 
-      // // Passing on Page & Total Count info
-
-      // const pageSize = jqxhr.getResponseHeader("Page-Size");
-      // const count = jqxhr.getResponseHeader("Count");
-      // const totalCount = jqxhr.getResponseHeader("Total-Count");
-
-      // console.log(jqxhr.getAllResponseHeaders());
-
-      // const responseHeaders = {
-      //   pageSize,
-      //   count,
-      //   totalCount,
-      // };
-
-      // // console.log(responseHeaders);
-
-      sessionStorage.setItem("resultArray", JSON.stringify(data.data));
-      // sessionStorage.setItem(
-      //   "responseHeaders",
-      //   JSON.stringify(responseHeaders)
-      // );
-      
-      if (data.data.length === 1) {
-        const cardDetails = data.data[0]
-        console.log(cardDetails);
-        sessionStorage.setItem("cardDetails", JSON.stringify(data.data[0]))
-        debugger;
-        window.location.href = "details.html";
-      } else {
-        window.location.href = "results.html";
-      }
+      sessionStorage.setItem("cardDetails", JSON.stringify(resultsArray[0]));
+      debugger;
+      window.location.href = "details.html";
+    } else {
+      debugger;
+      window.location.href = "results.html";
     }
-  ).fail(function (jqxhr, textStatus, error) {
+    }
+    if (clickedBtn === "randomBtn") {
+      sessionStorage.setItem("cardDetails", JSON.stringify(data));
+      window.location.href = "details.html";
+    }
+    // console.log(data.next_page);
+    
+    // // PAGINATION
+    // const numberOfPages = Math.ceil(data.total_cards / 175);
+    // console.log(numberOfPages);
+    
+    // sessionStorage.setItem("resultsArray", JSON.stringify(resultsArray));
+    
+    // // console.log(allResultsArray.length); ???
+    
+    // if (data.has_more) {
+      //   allResultsArray.push(...resultsArray);
+      //   console.log("allResultsArray is populated with resultsArray")
+      //   handleMorePages(numberOfPages, apiCallUrl);
+      // }
+      
+
+  }).fail(function (jqxhr, textStatus, error) {
     console.error("Error:", error);
   });
 }

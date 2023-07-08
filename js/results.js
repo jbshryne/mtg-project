@@ -1,19 +1,21 @@
 console.log("results");
 
-const storedArray = JSON.parse(sessionStorage.getItem("resultArray"));
-// console.log(storedArray);
+const response = JSON.parse(sessionStorage.getItem("queryResponse"));
 
-let resultArray;
-storedArray ? (resultArray = [...storedArray]) : (resultArray = []);
+const storedArray = response.data;
+console.log(storedArray);
+
+let resultsArray;
+storedArray ? (resultsArray = [...storedArray]) : (resultsArray = []);
 
 const $displayBox = $(".displayBox");
 
-console.log(resultArray);
+console.log(resultsArray);
 
 function getDetails() {
-  console.log(resultArray);
+  console.log(resultsArray);
   console.log(this.name);
-  const cardDetails = resultArray.find((card) => card.id === this.id);
+  const cardDetails = resultsArray.find((card) => card.id === this.id);
   sessionStorage.setItem("cardDetails", JSON.stringify(cardDetails));
   //   debugger;
   window.location.href = "details.html";
@@ -23,7 +25,7 @@ $(".cardSpoiler").off("click").on("click", getDetails);
 
 // Populating result box w/ card images
 
-// resultArray.forEach((card) => {
+// resultsArray.forEach((card) => {
 //   const $spoilerEl = $(`<div class="cardSpoiler" id="${card.id}"></div>`);
 //   if (card.imageUrl) {
 //     $spoilerEl.css("background-image", "url(" + card.imageUrl + ")");
@@ -34,8 +36,8 @@ $(".cardSpoiler").off("click").on("click", getDetails);
 //   $displayBox.append($spoilerEl);
 // });
 
-for (let i = 0; i < resultArray.length; i++) {
-  let card = resultArray[i];
+for (let i = 0; i < resultsArray.length; i++) {
+  let card = resultsArray[i];
   // console.log(card);
   const $spoilerEl = $(`<div class="cardSpoiler" id="${card.id}"></div>`);
   if (card.image_uris) {
