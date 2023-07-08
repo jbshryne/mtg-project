@@ -1,10 +1,16 @@
 // CONSTANTS & VARIABLES
 
-// Dynamically get list of all MtG Sets
-const allSets = [];
+// Dynamically generate list of all MtG Sets
 
 $.getJSON("https://api.scryfall.com/sets", function (data) {
-  allSets.push(...data.data);
+  const setList = data.data.forEach((set) => {
+    const $setOption = $(
+      `<option value="${set.code}">${
+        set.name
+      } (${set.code.toUpperCase()})</option>`
+    );
+    $("#setDropdown").append($setOption);
+  });
 });
 
 // $('#setInput').autocomplete({
@@ -92,13 +98,21 @@ function searchFnc(clickedBtn) {
 
   // set code
 
-  const setInputVal = $("#setInput").val();
+  // const setInputVal = $("#setInput").val();
+  // const setInputArray = []
+  // let setInputString;
+  // if (setInputVal) {
+  //   setInputArray = setInputVal.split(" ");
+  //   const formattedSetArray = setInputArray.map((setWord) => `s:${setWord}`);
+  //   console.log(formattedSetArray);
+  //   setInputString = `(${formattedSetArray.join(" or ")})`;
+  //   queryArray.push(setInputString);
+  // }
+
+  const setCodeVal = $("#setDropdown").val();
   let setInputString;
-  if (setInputVal) {
-    const setInputArray = setInputVal.split(" ");
-    const formattedSetArray = setInputArray.map((setWord) => `s:${setWord}`);
-    console.log(formattedSetArray);
-    setInputString = `(${formattedSetArray.join(" or ")})`;
+  if (setCodeVal) {
+    setInputString = `s:${setCodeVal}`;
     queryArray.push(setInputString);
   }
 
@@ -107,19 +121,19 @@ function searchFnc(clickedBtn) {
   let orderString;
   sortOrder === "type" ? (orderString = "color") : (orderString = sortOrder);
 
-  // PASSING INFO TO SESSION STORAGE
+  // passing query info to session storage
   const searchParams = {
     nameWords: nameInputArray,
     types: typeInputArray,
     colors: colorArray,
     rarities: rarityArray,
-    setCodes: [setInputString],
+    setCode: setCodeVal,
     sortOrder,
+    apiCallUrl,
   };
 
   sessionStorage.setItem("searchParams", JSON.stringify(searchParams));
-  sessionStorage.setItem("apiCallUrl", apiCallUrl);
-  
+
   // MAKING THE CALL
 
   const encodedArray = queryArray.map((query) => encodeURIComponent(query));

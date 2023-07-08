@@ -4,7 +4,10 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>MTG Conclave</title>
-    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css">
+    <link
+      rel="stylesheet"
+      href="//code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css"
+    />
     <script
       src="https://code.jquery.com/jquery-3.7.0.js"
       integrity="sha256-JlqSTELeR4TLqP0OG9dxM7yDPqX1ox/HfgiSLBj8+kM="
@@ -17,87 +20,85 @@
   <body>
     <header>
       <h1>MTG CONCLAVE Card Searcher</h1>
-      <form>
-        <label
-          >Card Name: <input type="text" name="name" id="nameInput"
-        /></label>
-        <label
-          >Types:
-          <input
-            type="text"
-            name="type"
-            id="typeInput"
-            placeholder="Including super- and/or subtypes"
-        /></label>
-        <br /><br />
-        <fieldset id="colorIdField">
-          <legend>Color Identity:</legend>
-          <label>
-            <input type="checkbox" class="color" value="w" />
-            White
-          </label>
-          <label>
-            <input type="checkbox" class="color" value="u" />
-            Blue
-          </label>
-          <label>
-            <input type="checkbox" class="color" value="b" />
-            Black
-          </label>
-          <label>
-            <input type="checkbox" class="color" value="r" />
-            Red
-          </label>
-          <label>
-            <input type="checkbox" class="color" value="g" />
-            Green
-          </label>
-        </fieldset>
-        <br />
-        <fieldset>
-          <legend>Rarity:</legend>
-          <label>
-            <input type="checkbox" class="rarity" value="c" />
-            Common
-          </label>
-          <label>
-            <input type="checkbox" class="rarity" value="u" />
-            Uncommon
-          </label>
-          <label>
-            <input type="checkbox" class="rarity" value="r" />
-            Rare
-          </label>
-          <label>
-            <input type="checkbox" class="rarity" value="m" />
-            Mythic Rare
-          </label>
-        </fieldset>
-        <br />
-        <label
-          >Set Code:
-          <input
-            type="text"
-            id="setInput"
-        /></label>
-        <label>Sort by:
-          <select id="sortDropdown">
-            <option value="name">Name</option>
-            <option value="set">Set & Collector #</option>
-            <option value="released">Release Date</option>
-            <option value="rarity">Rarity</option>
-            <option value="color">Color</option>
-            <option value="type">Type</option>
-            <option value="cmc">Mana Value</option>
-            <option value="power">Power</option>
-            <option value="toughness">Toughness</option>
-          </select>
-        </label>
-        <div>
-          <button type="submit" id="allCardsBtn">ALL CARDS</button>
-        </div>
-      </form>
-      <button id="randomBtn">RANDOMIZER</button>
     </header>
+
+    <form>
+      <label>Card Name: <input type="text" name="name" id="nameInput" /></label>
+      <label
+        >Types:
+        <input
+          type="text"
+          name="type"
+          id="typeInput"
+          placeholder="Including super- and/or subtypes"
+      /></label>
+      <br /><br />
+      <fieldset id="colorIdField">
+        <legend>Color:</legend>
+        <label>
+          <input type="checkbox" class="color" value="w" />
+          White
+        </label>
+        <label>
+          <input type="checkbox" class="color" value="u" />
+          Blue
+        </label>
+        <label>
+          <input type="checkbox" class="color" value="b" />
+          Black
+        </label>
+        <label>
+          <input type="checkbox" class="color" value="r" />
+          Red
+        </label>
+        <label>
+          <input type="checkbox" class="color" value="g" />
+          Green
+        </label>
+      </fieldset>
+      <br />
+      <fieldset>
+        <legend>Rarity:</legend>
+        <label>
+          <input type="checkbox" class="rarity" value="c" />
+          Common
+        </label>
+        <label>
+          <input type="checkbox" class="rarity" value="u" />
+          Uncommon
+        </label>
+        <label>
+          <input type="checkbox" class="rarity" value="r" />
+          Rare
+        </label>
+        <label>
+          <input type="checkbox" class="rarity" value="m" />
+          Mythic Rare
+        </label>
+      </fieldset>
+      <br />
+      <label
+        >Sets:
+        <select id="setDropdown"></select>
+      </label>
+      <label
+        >Sort by:
+        <select id="sortDropdown">
+          <option value="name">Name</option>
+          <option value="set">Set & Collector #</option>
+          <option value="released">Release Date</option>
+          <option value="rarity">Rarity</option>
+          <option value="color">Color</option>
+          <option value="type">Type</option>
+          <option value="cmc">Mana Value</option>
+          <option value="power">Power</option>
+          <option value="toughness">Toughness</option>
+        </select>
+      </label>
+      <div>
+        <button type="submit" id="allCardsBtn">ALL CARDS</button>
+      </div>
+    </form>
+    <button id="randomBtn">RANDOMIZER</button>
   </body>
 </html>
