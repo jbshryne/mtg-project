@@ -43,13 +43,13 @@ $("#allCardsBtn").on("click", searchFnc);
 function searchFnc(e) {
   e.preventDefault();
 
-  const resultArray = [];
+  // const resultArray = [];
 
   console.log("Searching Database...");
 
   const queryArray = [];
   const colorArray = [];
-  // const rarityArray = [];
+  const rarityArray = [];
 
   // Convert user input for API call
 
@@ -71,10 +71,18 @@ function searchFnc(e) {
 
   const $checkedRarities = $(".rarity:checked");
 
-  // $checkedRarities.each(function () {
-  //   const value = $(this).val();
-  //   rarityArray.push(value);
-  // });
+  $checkedRarities.each(function () {
+    const value = $(this).val();
+    rarityArray.push(value);
+  });
+
+  console.log(rarityArray);
+
+  let rarityString;
+  if (rarityArray.length > 0) {
+    const formattedRarityArray = rarityArray.map((rarity) => `r:${rarity}`);
+    rarityString = `(${formattedRarityArray.join(" or ")})`;
+  }
 
   // const setInputText = $("#setInput").val();
 
@@ -89,9 +97,9 @@ function searchFnc(e) {
   if (colorArray.length > 0) {
     queryArray.push("id:" + colorArray.join(""));
   }
-  // if (rarityArray.length > 0) {
-  //   queryArray.push("rarity=" + rarityArray.join("|"));
-  // }
+  if (rarityString) {
+    queryArray.push(rarityString);
+  }
   // if (setInputText) {
   //   queryArray.push("setName=" + setInputText);
   // }
@@ -100,7 +108,7 @@ function searchFnc(e) {
 
   // queryArray.push("orderBy=" + $("#sortDropdown").val())
 
-  const encodedArray = queryArray.map(query => encodeURIComponent(query))
+  const encodedArray = queryArray.map((query) => encodeURIComponent(query));
 
   const queryString = encodedArray.join("+");
 
@@ -154,9 +162,16 @@ function searchFnc(e) {
       //   "responseHeaders",
       //   JSON.stringify(responseHeaders)
       // );
-      // debugger;
-
-      window.location.href = "results.html";
+      
+      if (data.data.length === 1) {
+        const cardDetails = data.data[0]
+        console.log(cardDetails);
+        sessionStorage.setItem("cardDetails", JSON.stringify(data.data[0]))
+        debugger;
+        window.location.href = "details.html";
+      } else {
+        window.location.href = "results.html";
+      }
     }
   ).fail(function (jqxhr, textStatus, error) {
     console.error("Error:", error);

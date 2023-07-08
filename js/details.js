@@ -4,7 +4,7 @@ const card = JSON.parse(sessionStorage.getItem("cardDetails"))
 
 $("title").text(card.name + " - MTG Conclave")
 $("h1").text(card.name)
-const $cardFaceEl = $(".detailsImg")
+const $cardFaceEl = $(".detailImg")
 
 if (card.image_uris) {
     $cardFaceEl.css("background-image", "url(" + card.image_uris.large + ")");
@@ -13,7 +13,7 @@ if (card.image_uris) {
       "background-image",
       "url(" + card.card_faces[0].image_uris.large + ")"
     );
-    $backFaceEl = $("<div class='detailsImg'></div>")
+    $backFaceEl = $("<div class='detailImg'></div>")
     $backFaceEl.css("background-image",
     "url(" + card.card_faces[1].image_uris.large + ")");
     $(".displayBox").append($backFaceEl)

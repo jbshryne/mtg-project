@@ -13,8 +13,8 @@ console.log(resultArray);
 function getDetails() {
   console.log(resultArray);
   console.log(this.name);
-  const printingsArray = resultArray.find((array) => array.id === this.id);
-  sessionStorage.setItem("cardDetails", JSON.stringify(printingsArray));
+  const cardDetails = resultArray.find((card) => card.id === this.id);
+  sessionStorage.setItem("cardDetails", JSON.stringify(cardDetails));
   //   debugger;
   window.location.href = "details.html";
 }
@@ -36,11 +36,12 @@ $(".cardSpoiler").off("click").on("click", getDetails);
 
 for (let i = 0; i < resultArray.length; i++) {
   let card = resultArray[i];
+  // console.log(card);
   const $spoilerEl = $(`<div class="cardSpoiler" id="${card.id}"></div>`);
   if (card.image_uris) {
     $spoilerEl.css("background-image", "url(" + card.image_uris.normal + ")");
   } else if (card.card_faces) {
-    console.log(card.card_faces[0]);
+    // console.log(card.card_faces[0]);
     $spoilerEl.css(
       "background-image",
       "url(" + card.card_faces[0].image_uris.normal + ")"
@@ -51,3 +52,5 @@ for (let i = 0; i < resultArray.length; i++) {
   $spoilerEl.off("click").on("click", getDetails);
   $displayBox.append($spoilerEl);
 }
+
+console.log($displayBox)
