@@ -139,6 +139,7 @@ function searchFnc(clickedBtn) {
     console.log("response successful");
     sessionStorage.setItem("queryResponse", JSON.stringify(data));
 
+    const resultsArray = data.data
     console.log(data);
     if (clickedBtn === "allCardsBtn") {
       if (resultsArray.length === 1) {
