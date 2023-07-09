@@ -1,27 +1,25 @@
+const searchParams = JSON.parse(sessionStorage.getItem("searchParams"));
+
 // CONSTANTS & VARIABLES
 
-// Dynamically generate list of all MtG Sets
+// Dynamically generate dropdown list of sets
+
+const $setList = $("#setDropdown");
 
 $.getJSON("https://api.scryfall.com/sets", function (data) {
-  const setList = data.data.forEach((set) => {
+  data.data.forEach((set) => {
     const $setOption = $(
-      `<option value="${set.code}">${
+      `<option class="setOption" value="${set.code}">${
         set.name
       } (${set.code.toUpperCase()})</option>`
     );
-    $("#setDropdown").append($setOption);
+    if (searchParams.setCode) {
+      const $selectedSet = $(`.setOption[value=${searchParams.setCode}]`);
+      $selectedSet.attr("selected", "selected");
+    }
+    $setList.append($setOption);
   });
 });
-
-// $('#setInput').autocomplete({
-//   source: allSets
-// });
-
-// function scryfallTest() {
-//   $.getJSON(`https://api.scryfall.com/catalog/card-names`, function (data) {
-//     console.log(data);
-//   });
-// }
 
 // WIRING UP BUTTONS
 
@@ -30,6 +28,7 @@ $("#randomBtn").on("click", searchHandler);
 
 // SEARCH LOGIC
 
+// wrapper function to grab & pass clicked button
 function searchHandler(e) {
   e.preventDefault();
   const clickedBtnId = $(e.target).attr("id");
@@ -98,17 +97,6 @@ function searchFnc(clickedBtn) {
 
   // set code
 
-  // const setInputVal = $("#setInput").val();
-  // const setInputArray = []
-  // let setInputString;
-  // if (setInputVal) {
-  //   setInputArray = setInputVal.split(" ");
-  //   const formattedSetArray = setInputArray.map((setWord) => `s:${setWord}`);
-  //   console.log(formattedSetArray);
-  //   setInputString = `(${formattedSetArray.join(" or ")})`;
-  //   queryArray.push(setInputString);
-  // }
-
   const setCodeVal = $("#setDropdown").val();
   let setInputString;
   if (setCodeVal) {
@@ -153,12 +141,12 @@ function searchFnc(clickedBtn) {
 
     console.log(data);
     if (clickedBtn === "allCardsBtn") {
-      if (data.data.length === 1) {
+      if (resultsArray.length === 1) {
         const cardDetails = resultsArray[0];
         console.log(cardDetails);
 
         sessionStorage.setItem("cardDetails", JSON.stringify(resultsArray[0]));
-        debugger;
+        // debugger;
         window.location.href = "details.html";
       } else {
         // debugger;
