@@ -13,7 +13,7 @@ $.getJSON("https://api.scryfall.com/sets", function (data) {
         set.name
       } (${set.code.toUpperCase()})</option>`
     );
-    if (searchParams.setCode) {
+    if (searchParams && searchParams.setCode) {
       const $selectedSet = $(`.setOption[value=${searchParams.setCode}]`);
       $selectedSet.attr("selected", "selected");
     }
