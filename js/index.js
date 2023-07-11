@@ -1,10 +1,7 @@
 $(function () {
-  const searchParams = JSON.parse(sessionStorage.getItem("searchParams"));
-
-  //// CONSTANTS & VARIABLES
-
   ////// Dynamically generate dropdown list of sets
 
+  const searchParams = JSON.parse(sessionStorage.getItem("searchParams"));
   const $setList = $("#setDropdown");
 
   $.getJSON("https://api.scryfall.com/sets", function (listObj) {
@@ -22,23 +19,23 @@ $(function () {
     });
   });
 
-  //// WIRING UP BUTTONS
+  //// WORKING WITH OTHER DOM ELEMENTS
 
   $("#allCardsBtn").on("click", searchHandler);
   $("#randomBtn").on("click", searchHandler);
-  const $errorMessage = $(".errorMessage")
+
+  const $errorMessage = $(".errorMessage");
   window.onbeforeunload = function () {
-    $errorMessage.empty()
+    $errorMessage.empty();
   };
 
   //// SEARCH LOGIC
 
-  ////// wrapper function to grab & pass clicked button
+  ////// Wrapper function to keep track of which button was clicked
   function searchHandler(e) {
     e.preventDefault();
-    const clickedBtnId = $(e.target).attr("id");
-    console.log(clickedBtnId);
 
+    const clickedBtnId = $(e.target).attr("id");
     searchFnc(clickedBtnId);
   }
 
@@ -101,7 +98,7 @@ $(function () {
       queryArray.push(rarityString);
     }
 
-    ////// set codex
+    ////// set code
     const setCodeVal = $("#setDropdown").val();
     let setInputString;
     if (setCodeVal) {
@@ -109,14 +106,13 @@ $(function () {
       queryArray.push(setInputString);
     }
 
-    ////// order of search result list
+    ////// sort order of search result list
     const sortOrder = $("#sortDropdown").val();
     let orderString;
     sortOrder === "type" ? (orderString = "name") : (orderString = sortOrder);
 
     const encodedArray = queryArray.map((query) => encodeURIComponent(query));
     const queryString = encodedArray.join("+");
-    console.log(queryString);
 
     if (clickedBtn === "allCardsBtn") {
       apiCallUrl = `https://api.scryfall.com/cards/search?order=${orderString}&q=${queryString}+game%3Apaper`;
@@ -125,7 +121,7 @@ $(function () {
       apiCallUrl = `https://api.scryfall.com/cards/random?q=${queryString}`;
     }
 
-    ////// passing query info to session storage
+    ////// Passing query info to sessionStorage
     const searchParams = {
       nameWords: nameInputArray,
       types: typeInputArray,
@@ -144,6 +140,7 @@ $(function () {
       console.log("response successful");
       // debugger;
 
+      ////// Capping search at 1000 results
       if (dataObj.total_cards > 1000) {
         $errorMessage.text(
           "Those results are over 1000 cards! Please narrow your search parameters."
@@ -152,13 +149,14 @@ $(function () {
       } else {
         sessionStorage.setItem("queryResponse", JSON.stringify(dataObj));
 
+        ////// Passing results to sessionStorage
         const resultsArray = dataObj.data;
         console.log(dataObj);
+
+        ////// Redirecting to proper page based on
+        ////// button clicked and number of results
         if (clickedBtn === "allCardsBtn") {
           if (resultsArray.length === 1) {
-            const cardDetails = resultsArray[0];
-            console.log(cardDetails);
-
             sessionStorage.setItem(
               "cardDetails",
               JSON.stringify(resultsArray[0])
@@ -178,9 +176,9 @@ $(function () {
     }).fail(function (jqxhr, textStatus, error) {
       console.error("Error:", jqxhr);
       if (JSON.parse(jqxhr.responseText).code === "not_found")
-      $errorMessage.text(
-        "Sorry, we couldn't find any cards that match those parameters"
-      );
+        $errorMessage.text(
+          "Sorry, we couldn't find any cards that match those parameters"
+        );
     });
   }
 });

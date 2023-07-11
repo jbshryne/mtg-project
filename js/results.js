@@ -1,6 +1,4 @@
 $(function () {
-  // console.log("results");
-
   //// CONSTANTS AND VARIABLES
 
   const searchParams = JSON.parse(sessionStorage.getItem("searchParams"));
@@ -27,70 +25,63 @@ $(function () {
       const itemA = a[sortParam].toLowerCase();
       const itemB = b[sortParam].toLowerCase();
       if (itemA < itemB) {
-        return -1; // a before b
+        return -1; //// a goes before b
       }
       if (itemA > itemB) {
-        return 1; // a after b
-      }
-      return 0; // a and b are equal
+        return 1; //// a goes after b
+      } else return 0; //// a === b
     });
   }
 
-  ////// Makes cards redirect to their details page
+  ////// Click event for cards to redirect to their details page
   function getDetails() {
-    console.log(pageArray);
-    console.log(this.name);
     const cardDetails = pageArray.find((card) => card.id === this.id);
     sessionStorage.setItem("cardDetails", JSON.stringify(cardDetails));
     // debugger;
     window.location.href = "details.html";
   }
 
-  // PAGINATION & DISPLAYING
+  //// PAGINATION & DISPLAYING
 
+  ////// If this is a newly entered search...
   if (!allPages) {
     const allPagesObj = {};
+    let completedRequests = 0;
 
-    let completedRequests = 0; // Counter to track completed requests
-    // Start sending requests
     for (let i = 1; i <= numberOfPages; i++) {
       //// Spacing requests out, as per rules of Scryfall API
       setTimeout(function () {
-        // Making API request
         $.getJSON(searchParams.apiCallUrl + "&page=" + i, function (listObj) {
-          console.log(
-            `page ${i} of ${numberOfPages} -- top entry: ${listObj.data[0].name}`
-          );
           allResultsArray.push(...listObj.data);
 
           completedRequests++;
 
-          // Check if all requests have completed
+          //// Check if all requests have been completed
           if (completedRequests === numberOfPages) {
-            // Perform cutom sorting option and session storage operations
+            //// Handle custom sorting option
             if (sortOrder === "type") {
               sortFnc(allResultsArray, "type_line");
-              console.log(allResultsArray);
             }
+            //// Handle pagination & sessionStorage saving
             for (let j = 1; j <= numberOfPages; j++) {
               allPagesObj[`page${j}`] = allResultsArray.slice(
                 (j - 1) * cardsPerPage,
                 j * cardsPerPage
               );
-              console.log(allPagesObj[`page${j}`]);
             }
 
-            // populateList(pageArray);
-
-            console.log(allPagesObj);
             sessionStorage.setItem("allPages", JSON.stringify(allPagesObj));
 
+            //// Reload page to begin list population
             location.reload();
           }
         });
       }, i * 100); // Delay duration increases for each request
     }
+    ////// If results data has been properly handled
+    ////// and can be pulled from sessionStorage...
   } else {
+    //// Creating buttons
     const $buttonDiv = $('<div class="buttonDiv"></div>');
     const $prevPageBtn = $(
       '<button class="navBtn prevPage">Previous Page</button>'
@@ -98,23 +89,21 @@ $(function () {
     const $nextPageBtn = $(
       '<button class="navBtn nextPage">Next Page</button>'
     );
-
+    //// Only rendering if applicable
     if (allPages[`page${targetPage - 1}`]) {
       $buttonDiv.append($prevPageBtn);
     }
 
     if (allPages[`page${targetPage + 1}`]) {
-      console.log("there's another page");
       $buttonDiv.append($nextPageBtn);
     }
 
-    pageArray.push(...allPages[`page${targetPage}`]);
-
     ////// Populating result box w/ card images
+    pageArray.push(...allPages[`page${targetPage}`]);
     console.log("Populating list...");
+
     for (let i = 0; i < pageArray.length; i++) {
       let card = pageArray[i];
-      // console.log(card);
       const $spoilerEl = $(`<div class="cardSpoiler" id="${card.id}"></div>`);
 
       if (card.image_uris) {
@@ -122,8 +111,8 @@ $(function () {
           "background-image",
           "url(" + card.image_uris.normal + ")"
         );
+        //// Double-faced cards currently show front side by default
       } else if (card.card_faces) {
-        // console.log(card.card_faces[0]);
         $spoilerEl.css(
           "background-image",
           "url(" + card.card_faces[0].image_uris.normal + ")"
@@ -136,11 +125,8 @@ $(function () {
       $displayBox.append($spoilerEl);
     }
 
-    // if (targetPage == 1 && !response.has_more) {
-    //   $displayingResults.text(
-    //     `Displaying 1-${response.total_cards} of ${response.total_cards} results`
-    //   );
-    // } else {
+    //// Displaying which results are being shown
+    //// (i.e. 1 - 175) and total pages of cards
     $displayingResults.html(
       `Displaying <b>${
         targetPage * cardsPerPage - (cardsPerPage - 1)
@@ -150,6 +136,7 @@ $(function () {
     );
     // }
 
+    //// Rendering buttons & implementing functionality
     $buttonDiv.appendTo($("header"));
     $buttonDiv.clone().appendTo($("footer"));
 
@@ -172,7 +159,5 @@ $(function () {
         };
         location.reload();
       });
-
-    $(".cardSpoiler").off("click").on("click", getDetails);
   }
 });
