@@ -1,32 +1,71 @@
 body {
-  background-color: rgb(157, 132, 100);
-  font-size: 130%;
+  background-color: rgb(72, 61, 47);
+  font-size: 150%;
+  color: rgb(229, 222, 212);
+  min-height: 100vh;
+}
+
+header,
+footer, .errorMessage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+a {
+  color: inherit
+}
+
+h1,
+h2,
+label,
+legend,
+p {
+  font-family: "IM Fell Double Pica", serif;
+}
+
+label {
+  margin: 2px 10px;
+}
+
+img, .errorMessage {
+  /* font-family: "Poiret One", cursive; */
+  color:salmon
+  /* font-weight: bold; */
 }
 
 input {
-  background-color: rgb(224, 215, 203);
+  background-color: rgb(223, 209, 190);
 }
 
 select {
   font-size: 90%;
+  background-color: rgb(213, 210, 205);
+}
+
+.buttonDiv {
+  display: flex;
+  justify-content: center;
+  padding: 10px;
 }
 
 button {
-  margin: 15px 5px;
-  padding: 5px;
-  font-size: 90%;
+  font-family: "Uncial Antiqua", cursive;
+  margin: 30px 15px;
+  font-size: 110%;
   font-weight: bolder;
-  border-radius: 5px;
-  padding: 6px;
+  border-radius: 8px;
+  padding: 8px;
+  background-color: rgb(199, 180, 133);
 }
 
 label {
-  font-weight: bold;
+  /* font-weight: bold; */
 }
 
 input[type="text"] {
-  min-width: 250px;
-  font-size: 80%;
+  min-width: 400px;
+  font-size: 90%;
 }
 
 .displayBox {
@@ -45,7 +84,7 @@ input[type="text"] {
   align-items: center;
   height: 455px;
   width: 325px;
-  margin: 15px;
+  margin: 10px;
   outline: black solid 1px;
   border-radius: 12px;
   background-size: contain;
@@ -62,4 +101,14 @@ input[type="text"] {
   background-size: contain;
   border-radius: 20px;
   margin: 0% auto;
+}
+
+.statLine {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+.copyright {
+  margin-top: auto;
+  margin-left: auto;
 }

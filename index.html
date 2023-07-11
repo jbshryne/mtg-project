@@ -4,6 +4,12 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>MTG Conclave</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=IM+Fell+Double+Pica&family=Poiret+One&family=Uncial+Antiqua&display=swap"
+      rel="stylesheet"
+    />
     <link
       rel="stylesheet"
       href="//code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css"
@@ -19,11 +25,18 @@
   </head>
   <body>
     <header>
-      <h1>MTG CONCLAVE Card Searcher</h1>
+      <h1>MTG CONCLAVE - Card Searcher</h1>
     </header>
 
     <form>
-      <label>Card Name: <input type="text" name="name" id="nameInput" /></label>
+      <label
+        >Card Name:
+        <input
+          type="text"
+          name="name"
+          id="nameInput"
+          placeholder="Words can be full or partial"
+      /></label>
       <label
         >Types:
         <input
@@ -81,7 +94,7 @@
         >Sets:
         <select id="setDropdown">
           <option class="setOption" value="">[Select]</option>
-          <object class="setOption" value="" selected>Test</object>
+          <object class="setOption" value="">Test</object>
         </select>
       </label>
       <label
@@ -98,10 +111,17 @@
           <option value="toughness">Toughness</option>
         </select>
       </label>
-      <div>
-        <button type="submit" id="allCardsBtn">ALL CARDS</button>
-        <button id="randomBtn">RANDOMIZER</button>
+      <div class="buttonDiv">
+        <button type="submit" id="allCardsBtn">All Cards</button>
+        <button id="randomBtn">Randomizer!</button>
       </div>
     </form>
+    <p class="errorMessage"></p>
+    <footer>
+      <p class="copyright">
+        &copy; 2023 Jon Brennan / Powered by
+        <a href="https://scryfall.com/">Scryfall</a>
+      </p>
+    </footer>
   </body>
 </html>
