@@ -20,6 +20,7 @@ My website will be called "MTG Conclave", utilizing the [Scryfall](https://scryf
 - CSS
 - JavaScript
 - jQuery
+- Scryfall API
 
 ## **Approach Taken** *(Project Week)*
 
