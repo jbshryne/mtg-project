@@ -8,8 +8,8 @@ $(function () {
   const $cardFaceEl = $(".detailImg");
 
   ////// *** Starting to set up details text below card ***
-  // const $displayBox = $(".displayBox");
-  // const $statBox = $(".statBox");
+  const $imgBox = $(".imgBox");
+  const $statBox = $(".statBox");
 
   //// Checking if we are on a card details inspection or randomizer call
   let currentPage;
@@ -38,6 +38,22 @@ $(function () {
   } else {
     $cardFaceEl.html(`${card.name}<br><br>IMAGE NOT AVAILABLE`);
   }
+
+  // if (card.type_line.search("Basic Land")) {
+
+  // }
+
+  $statBox.html(
+    `<a href="${card.scryfall_uri}">View this card on Scryfall</a><br>`
+  );
+
+  ////// *** Starting to set up details text below card ***
+
+  // const $statLabelBox = $('<div class="statLabelBox"></div>');
+  // const $statValueBox = $('<div class="statValueBox"></div>');
+
+  // const $manaCostLabel = $('<div class="statLabel"></div>').text("Mana Cost");
+  // const $manaCostValue = $('<div class="statValue"></div>').text(card.mana_cost);
 
   //// Creating buttons, and dynamically wiring
   //// "next" button depending on where we are
@@ -75,12 +91,4 @@ $(function () {
 
   $buttonDiv.append($prevPageBtn, $nextPageBtn);
   $buttonDiv.appendTo($("footer"));
-
-  ////// *** Starting to set up details text below card ***
-
-  // const $statLabelBox = $('<div class="statLabelBox"></div>');
-  // const $statValueBox = $('<div class="statValueBox"></div>');
-
-  // const $manaCostLabel = $('<div class="statLabel"></div>').text("Mana Cost");
-  // const $manaCostValue = $('<div class="statValue"></div>').text(card.mana_cost);
 });

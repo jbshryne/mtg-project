@@ -1,23 +1,33 @@
-$(function () {
+// $(function () {
   ////// Dynamically generate dropdown list of sets
 
   const searchParams = JSON.parse(sessionStorage.getItem("searchParams"));
   const $setList = $("#setDropdown");
 
-  $.getJSON("https://api.scryfall.com/sets", function (listObj) {
-    listObj.data.forEach((set) => {
-      const $setOption = $(
-        `<option class="setOption" value="${set.code}">${
-          set.name
-        } (${set.code.toUpperCase()})</option>`
-      );
-      if (searchParams && searchParams.setCode) {
-        const $selectedSet = $(`.setOption[value=${searchParams.setCode}]`);
-        $selectedSet.attr("selected", "selected");
-      }
-      $setList.append($setOption);
-    });
-  });
+  if (!sessionStorage.getItem("setListHtml")) {
+    console.log(sessionStorage.getItem("setListHtml"));
+    $.getJSON("https://api.scryfall.com/sets", function (listObj) {
+      console.log("api call");
+      listObj.data.forEach((set) => {
+        const $setOption = $(
+          `<option class="setOption" value="${set.code}">${
+            set.name
+          } (${set.code.toUpperCase()})</option>`
+        );
+        if (searchParams && searchParams.setCode) {
+          const $selectedSet = $(`.setOption[value=${searchParams.setCode}]`);
+          $selectedSet.attr("selected", "selected");
+        }
+        $setList.append($setOption);
+      });
+    }).then(function () {
+      sessionStorage.setItem("setListHtml", $setList.html())
+    });  
+    
+  } else {
+    $setList.html(sessionStorage.getItem("setListHtml"))
+  }
+
 
   //// WORKING WITH OTHER DOM ELEMENTS
 
@@ -40,7 +50,12 @@ $(function () {
   }
 
   function searchFnc(clickedBtn) {
-    sessionStorage.clear();
+    // sessionStorage.clear();
+    sessionStorage.removeItem("searchParams");
+    sessionStorage.removeItem("queryResponse");
+    sessionStorage.removeItem("allPages");
+    sessionStorage.setItem("targetPage", 1)
+    
     let apiCallUrl = "";
     let queryArray = [];
 
@@ -109,7 +124,7 @@ $(function () {
     ////// sort order of search result list
     const sortOrder = $("#sortDropdown").val();
     let orderString;
-    sortOrder === "type" ? (orderString = "name") : (orderString = sortOrder);
+    sortOrder === "type" ? (orderString = "color") : (orderString = sortOrder);
 
     const encodedArray = queryArray.map((query) => encodeURIComponent(query));
     const queryString = encodedArray.join("+");
@@ -181,4 +196,4 @@ $(function () {
         );
     });
   }
-});
+// });
