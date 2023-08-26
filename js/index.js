@@ -1,33 +1,56 @@
-// $(function () {
+$(function () {
   ////// Dynamically generate dropdown list of sets
 
-  const searchParams = JSON.parse(sessionStorage.getItem("searchParams"));
-  const $setList = $("#setDropdown");
+  let searchableSets = JSON.parse(localStorage.getItem("searchableSets"));
 
-  if (!sessionStorage.getItem("setListHtml")) {
-    console.log(sessionStorage.getItem("setListHtml"));
-    $.getJSON("https://api.scryfall.com/sets", function (listObj) {
-      console.log("api call");
-      listObj.data.forEach((set) => {
-        const $setOption = $(
-          `<option class="setOption" value="${set.code}">${
-            set.name
-          } (${set.code.toUpperCase()})</option>`
-        );
-        if (searchParams && searchParams.setCode) {
-          const $selectedSet = $(`.setOption[value=${searchParams.setCode}]`);
-          $selectedSet.attr("selected", "selected");
-        }
-        $setList.append($setOption);
+  if (!searchableSets) {
+    $.getJSON("https://api.scryfall.com/sets", function (setsResponse) {
+      const sets = setsResponse.data;
+
+      searchableSets = {};
+      sets.forEach((set) => {
+        searchableSets[set.name] = {
+          code: set.code,
+          uri: set.uri,
+        };
       });
-    }).then(function () {
-      sessionStorage.setItem("setListHtml", $setList.html())
-    });  
-    
-  } else {
-    $setList.html(sessionStorage.getItem("setListHtml"))
+
+      // Store searchableSets in localStorage
+      localStorage.setItem("searchableSets", JSON.stringify(searchableSets));
+    });
   }
 
+  // Register input event listener for set input
+  const $setInput = $("#setInput");
+  const $setSuggestions = $("#setSuggestions");
+  const $selectedSetList = $("#selectedSetList");
+
+  $setInput.on("input", function () {
+    const inputText = $setInput.val().toLowerCase();
+    $setSuggestions.empty();
+
+    if (inputText.length >= 2) {
+      Object.keys(searchableSets).forEach((setName) => {
+        if (setName.toLowerCase().includes(inputText)) {
+          const set = searchableSets[setName];
+          const $suggestion = $(
+            `<div class="setSuggestion">${set.code.toUpperCase()} - ${setName}</div>`
+          );
+
+          $suggestion.on("click", function () {
+            $selectedSetList.append(
+              `<li data-setcode="${
+                set.code
+              }" class="selectedSet">${setName} (${set.code.toUpperCase()})</li>`
+            );
+            $setSuggestions.empty();
+          });
+
+          $setSuggestions.append($suggestion);
+        }
+      });
+    }
+  });
 
   //// WORKING WITH OTHER DOM ELEMENTS
 
@@ -38,6 +61,24 @@
   window.onbeforeunload = function () {
     $errorMessage.empty();
   };
+
+  function constructSetCodesQueryString() {
+    const selectedSetElements = $(".selectedSet"); // Assuming you've used this class for selected <li> elements
+    const setCodes = selectedSetElements
+      .map((index, element) => {
+        console.log(element.dataset.setcode);
+        return $(element).data("setcode").toLowerCase();
+      })
+      .get();
+
+    // Constructing the set codes query string
+    const setCodesQueryString = setCodes
+      .map((code) => `s:${code}`)
+      .join(" OR ");
+
+
+    return setCodesQueryString;
+  }
 
   //// SEARCH LOGIC
 
@@ -50,12 +91,11 @@
   }
 
   function searchFnc(clickedBtn) {
-    // sessionStorage.clear();
-    sessionStorage.removeItem("searchParams");
-    sessionStorage.removeItem("queryResponse");
-    sessionStorage.removeItem("allPages");
-    sessionStorage.setItem("targetPage", 1)
-    
+    localStorage.removeItem("searchParams");
+    localStorage.removeItem("queryResponse");
+    localStorage.removeItem("allPages");
+    localStorage.setItem("targetPage", 1);
+
     let apiCallUrl = "";
     let queryArray = [];
 
@@ -114,14 +154,27 @@
     }
 
     ////// set code
-    const setCodeVal = $("#setDropdown").val();
-    let setInputString;
-    if (setCodeVal) {
-      setInputString = `s:${setCodeVal}`;
-      queryArray.push(setInputString);
+    // const setCodeVal = $("#setDropdown").val();
+    // let setInputString;
+    // if (setCodeVal) {
+    //   setInputString = `s:${setCodeVal}`;
+    //   queryArray.push(setInputString);
+    // }
+
+    ////// set name
+
+    const setCodesQueryString = constructSetCodesQueryString();
+
+    if (setCodesQueryString) {
+      const stringWithParentheses = `(${setCodesQueryString})`
+      console.log(stringWithParentheses);
+      queryArray.push(stringWithParentheses);
     }
 
+    ////// set input
+
     ////// sort order of search result list
+
     const sortOrder = $("#sortDropdown").val();
     let orderString;
     sortOrder === "type" ? (orderString = "color") : (orderString = sortOrder);
@@ -136,18 +189,18 @@
       apiCallUrl = `https://api.scryfall.com/cards/random?q=${queryString}`;
     }
 
-    ////// Passing query info to sessionStorage
+    ////// Passing query info to localStorage
     const searchParams = {
       nameWords: nameInputArray,
       types: typeInputArray,
       colors: colorArray,
       rarities: rarityArray,
-      setCode: setCodeVal,
+      setName: $setInput.val(),
       sortOrder,
       apiCallUrl,
     };
 
-    sessionStorage.setItem("searchParams", JSON.stringify(searchParams));
+    localStorage.setItem("searchParams", JSON.stringify(searchParams));
 
     //// MAKING THE CALL
 
@@ -162,9 +215,9 @@
         );
         return;
       } else {
-        sessionStorage.setItem("queryResponse", JSON.stringify(dataObj));
+        localStorage.setItem("queryResponse", JSON.stringify(dataObj));
 
-        ////// Passing results to sessionStorage
+        ////// Passing results to localStorage
         const resultsArray = dataObj.data;
         console.log(dataObj);
 
@@ -172,19 +225,19 @@
         ////// button clicked and number of results
         if (clickedBtn === "allCardsBtn") {
           if (resultsArray.length === 1) {
-            sessionStorage.setItem(
+            localStorage.setItem(
               "cardDetails",
               JSON.stringify(resultsArray[0])
             );
-            // debugger;
+            debugger;
             window.location.href = "details.html";
           } else {
-            // debugger;
+            debugger;
             window.location.href = "results.html";
           }
         }
         if (clickedBtn === "randomBtn") {
-          sessionStorage.setItem("cardDetails", JSON.stringify(dataObj));
+          localStorage.setItem("cardDetails", JSON.stringify(dataObj));
           window.location.href = "random.html";
         }
       }
@@ -196,4 +249,4 @@
         );
     });
   }
-// });
+});

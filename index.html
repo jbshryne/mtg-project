@@ -21,7 +21,7 @@
     ></script>
     <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
     <link rel="stylesheet" href="css/style.css" />
-    <script src="js/index.js" defer></script>
+    <script src="js/index.js" defer ></script>
   </head>
   <body>
     <header>
@@ -70,7 +70,7 @@
         </label>
       </fieldset>
       <br />
-      <fieldset>
+      <fieldset id="rarityField>">
         <legend>Rarity:</legend>
         <label>
           <input type="checkbox" class="rarity" value="c" />
@@ -90,12 +90,11 @@
         </label>
       </fieldset>
       <br />
-      <label
-        >Sets:
-        <select id="setDropdown">
-          <option class="setOption" value="">[Select]</option>
-          <object class="setOption" value="">Test</object>
-        </select>
+      <label id="setInputLabel"
+        >Sets: 
+        <input type="text" id="setInput" placeholder="Full Name or Set Code">
+        <div id="setSuggestions"></div>
+        <ul id="selectedSetList"></ul>
       </label>
       <label
         >Sort results by:

@@ -3,92 +3,159 @@ $(function () {
 
   //// CONSTANTS & VARIABLES
 
-  const searchParams = JSON.parse(sessionStorage.getItem("searchParams"));
-  const card = JSON.parse(sessionStorage.getItem("cardDetails"));
-  const $cardFaceEl = $(".detailImg");
+  const searchParams = JSON.parse(localStorage.getItem("searchParams"));
+  const card = JSON.parse(localStorage.getItem("cardDetails"));
+  if (!card) window.location.href = "index.html";
+  const cardGroup = JSON.parse(localStorage.getItem("cardGroup"));
+  const cardGroupArray = [];
 
   ////// *** Starting to set up details text below card ***
+  const $cardFaceEl = $(".detailImg");
   const $imgBox = $(".imgBox");
   const $statBox = $(".statBox");
 
-  //// Checking if we are on a card details inspection or randomizer call
+  //// Checking if we are on a card details inspection, randomizer call, or group page
   let currentPage;
   if (window.location.href.search("details") !== -1) currentPage = "details";
   if (window.location.href.search("random") !== -1) currentPage = "random";
+  if (window.location.href.search("group") !== -1) currentPage = "group";
 
   $("title").text(card.name + " - MTG Conclave");
-  $("#cardName").text(card.name);
-
-  //// Displaying card image
-  if (card.image_uris) {
-    $cardFaceEl.css("background-image", "url(" + card.image_uris.large + ")");
-
-    //// Double-faced cards get side-by-side images of each face
-  } else if (card.card_faces) {
-    $cardFaceEl.css(
-      "background-image",
-      "url(" + card.card_faces[0].image_uris.large + ")"
-    );
-    $backFaceEl = $("<div class='detailImg'></div>");
-    $backFaceEl.css(
-      "background-image",
-      "url(" + card.card_faces[1].image_uris.large + ")"
-    );
-    $(".displayBox").append($backFaceEl);
-  } else {
-    $cardFaceEl.html(`${card.name}<br><br>IMAGE NOT AVAILABLE`);
-  }
-
-  // if (card.type_line.search("Basic Land")) {
-
-  // }
-
-  $statBox.html(
-    `<a href="${card.scryfall_uri}">View this card on Scryfall</a><br>`
-  );
-
-  ////// *** Starting to set up details text below card ***
-
-  // const $statLabelBox = $('<div class="statLabelBox"></div>');
-  // const $statValueBox = $('<div class="statValueBox"></div>');
-
-  // const $manaCostLabel = $('<div class="statLabel"></div>').text("Mana Cost");
-  // const $manaCostValue = $('<div class="statValue"></div>').text(card.mana_cost);
-
-  //// Creating buttons, and dynamically wiring
-  //// "next" button depending on where we are
 
   const $buttonDiv = $('<div class="buttonDiv"></div>');
-
   const $prevPageBtn = $('<button class="navBtn prevPage">Go Back</button>').on(
     "click",
     () => history.back()
   );
 
-  const $nextPageBtn = $('<button class="navBtn nextPage"></button>');
+  if (currentPage === "details" || currentPage === "random") {
+    $("#cardName").text(card.name);
+    const $nextPageBtn = $('<button class="navBtn nextPage"></button>');
 
-  //// if on "details", get a button to return to search page
-  if (currentPage === "details") {
-    $nextPageBtn
-      .text("New Search")
-      .on("click", () => (window.location.href = "index.html"));
-  }
-  //// if on "random", get a button to get another
-  //// random pull using the user's entered parameters
-  if (currentPage === "random") {
-    $nextPageBtn.text("Re-Randomize!").on("click", () => {
-      $.getJSON(searchParams.apiCallUrl, function (dataObj) {
-        console.log("response successful");
-        // debugger;
+    if (card.image_uris) {
+      $cardFaceEl.css("background-image", "url(" + card.image_uris.large + ")");
 
-        sessionStorage.setItem("cardDetails", JSON.stringify(dataObj));
-        location.reload();
-      }).fail(function (jqxhr, textStatus, error) {
-        console.error("Error:", error);
+      //// Double-faced cards get side-by-side images of each face
+    } else if (card.card_faces) {
+      $cardFaceEl.css(
+        "background-image",
+        "url(" + card.card_faces[0].image_uris.large + ")"
+      );
+      $backFaceEl = $("<div class='detailImg'></div>");
+      $backFaceEl.css(
+        "background-image",
+        "url(" + card.card_faces[1].image_uris.large + ")"
+      );
+      $(".displayBox").append($backFaceEl);
+    } else {
+      $cardFaceEl.html(`${card.name}<br><br>IMAGE NOT AVAILABLE`);
+    }
+
+    $statBox.html(
+      `<a href="${card.scryfall_uri}">View this card on Scryfall</a><br>`
+    );
+
+    if (
+      (card.type_line.search("Basic") !== -1 &&
+        card.type_line.search("Land") !== -1) ||
+      (card.all_parts && card.type_line.search("Token") === -1)
+    ) {
+      // let cardsAdded = 0;
+      if (card.all_parts) {
+        for (let i = 0; i < card.all_parts.length; i++) {
+          setTimeout(function () {
+            $.getJSON(card.all_parts[i].uri, function (cardObj) {
+              cardGroupArray.push(cardObj);
+            });
+            // cardsAdded++;
+            // if (cardsAdded === card.all_parts.length) {
+            //   console.log(cardGroupArray);
+            //   localStorage.setItem(
+            //     "cardGroup",
+            //     JSON.stringify(cardGroupArray)
+            //   );
+            // }
+          }, i * 50);
+
+          // cardGroupArray.push(card.all_parts[i].name)
+        }
+      }
+      if (card.type_line.search("Basic") !== -1) {
+        console.log("basic land");
+        $.getJSON(
+          `https://api.scryfall.com/cards/search?order=set&q=${card.name}+set%3A${card.set}+game%3Apaper&unique=art`,
+          function (listObj) {
+            listObj.data.forEach((card) => cardGroupArray.push(card));
+          }
+        );
+      }
+
+      $(".detailImg")
+        .off("click")
+        .on("click", function () {
+          localStorage.setItem("cardGroup", JSON.stringify(cardGroupArray));
+          window.location.href = "group.html";
+        })
+        .css("cursor", "pointer");
+    }
+
+    //// Displaying card image
+
+    ////// *** Starting to set up details text below card ***
+
+    // const $statLabelBox = $('<div class="statLabelBox"></div>');
+    // const $statValueBox = $('<div class="statValueBox"></div>');
+
+    // const $manaCostLabel = $('<div class="statLabel"></div>').text("Mana Cost");
+    // const $manaCostValue = $('<div class="statValue"></div>').text(card.mana_cost);
+
+    //// Creating buttons, and dynamically wiring
+    //// "next" button depending on where we are
+
+    //// if on "details", get a button to return to search page
+    if (currentPage === "details") {
+      $nextPageBtn
+        .text("New Search")
+        .on("click", () => (window.location.href = "index.html"));
+    }
+    //// if on "random", get a button to get another
+    //// random pull using the user's entered parameters
+    if (currentPage === "random") {
+      $nextPageBtn.text("Re-Randomize!").on("click", () => {
+        $.getJSON(searchParams.apiCallUrl, function (dataObj) {
+          console.log("response successful");
+          // debugger;
+
+          localStorage.setItem("cardDetails", JSON.stringify(dataObj));
+          location.reload();
+        }).fail(function (jqxhr, textStatus, error) {
+          console.error("Error:", error);
+        });
       });
-    });
+    }
+    $buttonDiv.append($prevPageBtn, $nextPageBtn);
+    $buttonDiv.appendTo($("footer"));
   }
 
-  $buttonDiv.append($prevPageBtn, $nextPageBtn);
-  $buttonDiv.appendTo($("footer"));
+  if (currentPage === "group") {
+    if (card.type_line.search("Basic") !== -1) {
+      let pluralForm;
+      card.name === "Plains"
+        ? (pluralForm = "Plains")
+        : (pluralForm = card.name + "s");
+      $("#cardName").text(pluralForm + " from " + card.set_name);
+    } else {
+      $("#cardName").text(card.name + " & related objects");
+    }
+    cardGroup.forEach((card) => {
+      const $relatedCard = $("<div class='detailImg'></div>");
+      $relatedCard.css(
+        "background-image",
+        "url(" + card.image_uris.large + ")"
+      );
+      $imgBox.append($relatedCard);
+    });
+    $buttonDiv.append($prevPageBtn);
+    $buttonDiv.appendTo($("footer"));
+  }
 });

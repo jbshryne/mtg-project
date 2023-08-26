@@ -1,13 +1,12 @@
 $(function () {
   //// CONSTANTS AND VARIABLES
 
-  const searchParams = JSON.parse(sessionStorage.getItem("searchParams"));
-  const response = JSON.parse(sessionStorage.getItem("queryResponse"));
-  const allPages = JSON.parse(sessionStorage.getItem("allPages"));
+  const searchParams = JSON.parse(localStorage.getItem("searchParams"));
+  const response = JSON.parse(localStorage.getItem("queryResponse"));
+  const allPages = JSON.parse(localStorage.getItem("allPages"));
+  const targetPage = JSON.parse(localStorage.getItem("targetPage"));
   // let currentPage = window.location.href;
-
-  const targetPage = JSON.parse(sessionStorage.getItem("targetPage"));
-  if (!targetPage) sessionStorage.setItem("targetPage", 1);
+  if (!response) window.location.href = "index.html";
 
   const $displayBox = $(".displayBox");
   const $displayingResults = $("#displayingResults");
@@ -157,10 +156,25 @@ $(function () {
 
   ////// Click event for cards to redirect to their details page
   function getDetails() {
-    const cardDetails = pageArray.find((card) => card.id === this.id);
-    sessionStorage.setItem("cardDetails", JSON.stringify(cardDetails));
+    const card = pageArray.find((card) => card.id === this.id);
+    localStorage.setItem("cardDetails", JSON.stringify(card));
     // debugger;
-    window.location.href = "details.html";
+
+    if (card.type_line.search("Basic") !== -1) {
+      const cardGroupArray = [];
+      console.log("basic land");
+      $.getJSON(
+        `https://api.scryfall.com/cards/search?order=set&q=${card.name}+set%3A${card.set}+game%3Apaper&unique=art`,
+        function (listObj) {
+          listObj.data.forEach((card) => cardGroupArray.push(card));
+        }
+      ).then(function () {
+        localStorage.setItem("cardGroup", JSON.stringify(cardGroupArray));
+        window.location.href = "group.html";
+      });
+    } else {
+      window.location.href = "details.html";
+    }
   }
 
   //// PAGINATION & DISPLAYING
@@ -199,7 +213,7 @@ $(function () {
                 "color_identity"
               );
             }
-            //// Handle pagination & sessionStorage saving
+            //// Handle pagination & localStorage saving
             for (let j = 1; j <= numberOfPages; j++) {
               allPagesObj[`page${j}`] = allResultsArray.slice(
                 (j - 1) * cardsPerPage,
@@ -207,7 +221,7 @@ $(function () {
               );
             }
 
-            sessionStorage.setItem("allPages", JSON.stringify(allPagesObj));
+            localStorage.setItem("allPages", JSON.stringify(allPagesObj));
 
             //// Reloading to populate page with images
 
@@ -218,7 +232,7 @@ $(function () {
       }, i * 100); // Delay duration increases for each request
     }
     ////// If results data has been properly handled
-    ////// and can be pulled from sessionStorage...
+    ////// and can be pulled from localStorage...
   } else {
     //// Creating buttons
     const $buttonDiv = $('<div class="buttonDiv"></div>');
@@ -282,7 +296,7 @@ $(function () {
     $(".prevPage")
       .off("click")
       .on("click", () => {
-        sessionStorage.setItem("targetPage", targetPage - 1);
+        localStorage.setItem("targetPage", targetPage - 1);
         window.onbeforeunload = function () {
           window.scrollTo(0, 0);
         };
@@ -294,7 +308,7 @@ $(function () {
     $(".nextPage")
       .off("click")
       .on("click", () => {
-        sessionStorage.setItem("targetPage", targetPage + 1);
+        localStorage.setItem("targetPage", targetPage + 1);
         window.onbeforeunload = function () {
           window.scrollTo(0, 0);
         };
@@ -310,7 +324,6 @@ $(function () {
 
 //    Convert Set List to Predictive Type Input (same w/ Card Types?)
 //    Modify inputs to add additional fields for "Or" queries
-
 
 //  Nitpicky search stuff:
 
