@@ -60,6 +60,15 @@ $(function () {
     common: 4,
   };
 
+  const basicLandValues = {
+    Plains: 1,
+    Island: 2,
+    Swamp: 3,
+    Mountain: 4,
+    Forest: 5,
+    Wastes: 6,
+  };
+
   //// FUNCTIONS
 
   function joinIfArray(attr) {
@@ -138,20 +147,51 @@ $(function () {
     }
 
     const creatureArray = array.filter(
-      (card) => card.type_line.search("Creature") !== -1
+      (card) =>
+        card.type_line.search("Creature") !== -1 &&
+        card.type_line.search("Land") === -1
     );
+
     const nonCreatureArray = array.filter(
-      (card) => card.type_line.search("Creature") === -1
+      (card) =>
+        card.type_line.search("Creature") === -1 &&
+        card.type_line.search("Land") === -1
+    );
+
+    const landArray = array.filter(
+      (card) =>
+        card.type_line.search("Land") !== -1 &&
+        card.type_line.search("Basic") === -1
+    );
+
+    const basicLandArray = array.filter(
+      (card) =>
+        card.type_line.search("Land") !== -1 &&
+        card.type_line.search("Basic") !== -1
     );
 
     mainSorter(creatureArray);
     mainSorter(nonCreatureArray);
+    mainSorter(landArray);
+    sortBasicLands(basicLandArray);
 
     // console.log(creatureArray);
 
     // debugger;
 
-    return creatureArray.concat(nonCreatureArray);
+    return creatureArray
+      .concat(nonCreatureArray)
+      .concat(landArray)
+      .concat(basicLandArray);
+  }
+
+  function sortBasicLands(array) {
+    array.sort(function (a, b) {
+      const aValue = basicLandValues[a.name] || 0;
+      const bValue = basicLandValues[b.name] || 0;
+
+      return aValue - bValue;
+    });
   }
 
   ////// Click event for cards to redirect to their details page
@@ -257,7 +297,7 @@ $(function () {
 
     for (let i = 0; i < pageArray.length; i++) {
       let card = pageArray[i];
-      const $spoilerEl = $(`<div class="cardSpoiler" id="${card.id}"></div>`);
+      const $spoilerEl = $(`<img class="cardSpoiler" id="${card.id}"></img>`);
 
       if (card.image_uris) {
         $spoilerEl.css(
@@ -327,5 +367,4 @@ $(function () {
 
 //  Nitpicky search stuff:
 
-//    * Make "Blue + Vampire" not return Elusive Mentor?
 //    * Make relevant card face show in search results (i.e. Insidious Mist for "SOI + Elemental")

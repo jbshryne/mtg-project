@@ -41,7 +41,7 @@ $(function () {
         "background-image",
         "url(" + card.card_faces[0].image_uris.large + ")"
       );
-      $backFaceEl = $("<div class='detailImg'></div>");
+      $backFaceEl = $("<img class='detailImg'></img>");
       $backFaceEl.css(
         "background-image",
         "url(" + card.card_faces[1].image_uris.large + ")"
