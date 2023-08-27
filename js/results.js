@@ -10,6 +10,7 @@ $(function () {
 
   const $displayBox = $(".displayBox");
   const $displayingResults = $("#displayingResults");
+  const $imgContainer = $("<div class='imgContainer'></div>")
 
   let allResultsArray = [];
   const pageArray = [];
@@ -300,22 +301,16 @@ $(function () {
       const $spoilerEl = $(`<img class="cardSpoiler" id="${card.id}"></img>`);
 
       if (card.image_uris) {
-        $spoilerEl.css(
-          "background-image",
-          "url(" + card.image_uris.normal + ")"
-        );
+        $spoilerEl.attr("src", card.image_uris.normal);
         //// Double-faced cards currently show front side by default
       } else if (card.card_faces) {
-        $spoilerEl.css(
-          "background-image",
-          "url(" + card.card_faces[0].image_uris.normal + ")"
-        );
+        $spoilerEl.attr("src", card.card_faces[0].image_uris.normal);
       } else {
-        $spoilerEl.html(`${card.name}<br><br>IMAGE NOT AVAILABLE`);
+        $spoilerEl.attr("alt", `${card.name}, IMzAGE NOT AVAILABLE`);
       }
 
       $spoilerEl.off("click").on("click", getDetails);
-      $displayBox.append($spoilerEl);
+      $displayBox.append($imgContainer).append($spoilerEl);
     }
 
     //// Displaying which results are being shown

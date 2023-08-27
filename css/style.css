@@ -79,13 +79,18 @@ input[type="text"] {
   /* outline: black solid 2px; */
 }
 
+.spoilerContainer {
+  width: auto;
+}
+
 .cardSpoiler {
   display: flex;
   text-align: center;
   justify-content: center;
   align-items: center;
-  height: 455px;
+  height: auto;
   width: 325px;
+  max-width: 80%;
   margin: 10px;
   outline: black solid 1px;
   border-radius: 12px;
@@ -96,11 +101,15 @@ input[type="text"] {
   text-align: center;
 }
 
+.imgContainer {
+  width: auto;
+}
+
 .detailImg {
-  height: 630px;
+  height: auto;
   width: 450px;
+  max-width: 95%;
   outline: black solid 1px;
-  background-size: contain;
   border-radius: 20px;
   margin: 0% auto;
 }

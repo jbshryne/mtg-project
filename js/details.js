@@ -13,6 +13,7 @@ $(function () {
   const $cardFaceEl = $(".detailImg");
   const $imgBox = $(".imgBox");
   const $statBox = $(".statBox");
+  const $imgContainer = $("<div class='imgContainer'></div>");
 
   //// Checking if we are on a card details inspection, randomizer call, or group page
   let currentPage;
@@ -33,22 +34,16 @@ $(function () {
     const $nextPageBtn = $('<button class="navBtn nextPage"></button>');
 
     if (card.image_uris) {
-      $cardFaceEl.css("background-image", "url(" + card.image_uris.large + ")");
+      $cardFaceEl.attr("src", card.image_uris.large);
 
       //// Double-faced cards get side-by-side images of each face
     } else if (card.card_faces) {
-      $cardFaceEl.css(
-        "background-image",
-        "url(" + card.card_faces[0].image_uris.large + ")"
-      );
+      $cardFaceEl.attr("src", card.card_faces[0].image_uris.large);
       $backFaceEl = $("<img class='detailImg'></img>");
-      $backFaceEl.css(
-        "background-image",
-        "url(" + card.card_faces[1].image_uris.large + ")"
-      );
-      $(".displayBox").append($backFaceEl);
+      $backFaceEl.attr("src", card.card_faces[1].image_uris.large);
+      $(".displayBox").append($imgContainer).append($backFaceEl);
     } else {
-      $cardFaceEl.html(`${card.name}<br><br>IMAGE NOT AVAILABLE`);
+      $cardFaceEl.attr("alt", `${card.name}<br><br>IMAGE NOT AVAILABLE`);
     }
 
     $statBox.html(
@@ -149,11 +144,8 @@ $(function () {
     }
     cardGroup.forEach((card) => {
       const $relatedCard = $("<img class='detailImg'></img>");
-      $relatedCard.css(
-        "background-image",
-        "url(" + card.image_uris.large + ")"
-      );
-      $imgBox.append($relatedCard);
+      $relatedCard.attr("src", card.image_uris.large);
+      $imgBox.append($imgContainer).append($relatedCard);
     });
     $buttonDiv.append($prevPageBtn);
     $buttonDiv.appendTo($("footer"));
