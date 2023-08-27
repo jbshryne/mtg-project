@@ -148,7 +148,7 @@ $(function () {
       $("#cardName").text(card.name + " & related objects");
     }
     cardGroup.forEach((card) => {
-      const $relatedCard = $("<div class='detailImg'></div>");
+      const $relatedCard = $("<img class='detailImg'></img>");
       $relatedCard.css(
         "background-image",
         "url(" + card.image_uris.large + ")"
