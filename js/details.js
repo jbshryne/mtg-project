@@ -1,5 +1,5 @@
 $(function () {
-  console.log(window.location.href);
+  // console.log(window.location.href);
 
   //// CONSTANTS & VARIABLES
 
@@ -9,10 +9,15 @@ $(function () {
   const cardGroup = JSON.parse(localStorage.getItem("cardGroup"));
   const cardGroupArray = [];
 
+  console.log(card)
+
   ////// *** Starting to set up details text below card ***
   const $cardFaceEl = $(".detailImg");
   const $imgBox = $(".imgBox");
   const $statBox = $(".statBox");
+  const $linkBox = $(".linkBox");
+
+  console.log($statBox)
   const $imgContainer = $("<div class='imgContainer'></div>");
 
   //// Checking if we are on a card details inspection, randomizer call, or group page
@@ -46,7 +51,7 @@ $(function () {
       $cardFaceEl.attr("alt", `${card.name}<br><br>IMAGE NOT AVAILABLE`);
     }
 
-    $statBox.html(
+    $linkBox.append(
       `<a href="${card.scryfall_uri}">View this card on Scryfall</a><br>`
     );
 
@@ -78,7 +83,7 @@ $(function () {
       if (card.type_line.search("Basic") !== -1) {
         console.log("basic land");
         $.getJSON(
-          `https://api.scryfall.com/cards/search?order=set&q=${card.name}+set%3A${card.set}+game%3Apaper&unique=art`,
+          `https://api.scryfall.com/cards/search?order=set&q=${card.name}+type%3Abasic+set%3A${card.set}+game%3Apaper&unique=art`,
           function (listObj) {
             listObj.data.forEach((card) => cardGroupArray.push(card));
           }
@@ -96,13 +101,16 @@ $(function () {
 
     //// Displaying card image
 
-    ////// *** Starting to set up details text below card ***
+    $(`<h3 class="card-name">${card.name}</h3>`).prependTo('.stat-box')
 
-    // const $statLabelBox = $('<div class="statLabelBox"></div>');
-    // const $statValueBox = $('<div class="statValueBox"></div>');
+    const $manaValueRow = $('.mana-cost')
+    $(`<div class="statValue">${card.mana_cost}</div>`).appendTo($manaValueRow)
 
-    // const $manaCostLabel = $('<div class="statLabel"></div>').text("Mana Cost");
-    // const $manaCostValue = $('<div class="statValue"></div>').text(card.mana_cost);
+    const $cardTypeRow = $('.type-line')
+    $(`<div class="statValue">${card.type_line}</div>`).appendTo($cardTypeRow)
+
+    const $rulesTextRow = $('.oracle-text')
+    $(`<div class="statValue">${card.oracle_text}</div>`).appendTo($rulesTextRow)
 
     //// Creating buttons, and dynamically wiring
     //// "next" button depending on where we are
@@ -129,25 +137,25 @@ $(function () {
       });
     }
     $buttonDiv.append($prevPageBtn, $nextPageBtn);
-    $buttonDiv.appendTo($("footer"));
+    $buttonDiv.appendTo($("header"));
+    console.log($buttonDiv)
   }
 
   if (currentPage === "group") {
     if (card.type_line.search("Basic") !== -1) {
-      let pluralForm;
-      card.name === "Plains"
-        ? (pluralForm = "Plains")
-        : (pluralForm = card.name + "s");
+      const pluralForm = /s$/.test(card.name) ? card.name : card.name + "s";
+
       $("#cardName").text(pluralForm + " from " + card.set_name);
     } else {
       $("#cardName").text(card.name + " & related objects");
     }
+
     cardGroup.forEach((card) => {
       const $relatedCard = $("<img class='detailImg'></img>");
       $relatedCard.attr("src", card.image_uris.large);
       $imgBox.append($imgContainer).append($relatedCard);
     });
     $buttonDiv.append($prevPageBtn);
-    $buttonDiv.appendTo($("footer"));
+    $buttonDiv.appendTo($("header"));
   }
 });

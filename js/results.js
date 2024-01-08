@@ -306,7 +306,7 @@ $(function () {
       } else if (card.card_faces) {
         $spoilerEl.attr("src", card.card_faces[0].image_uris.normal);
       } else {
-        $spoilerEl.attr("alt", `${card.name}, IMzAGE NOT AVAILABLE`);
+        $spoilerEl.attr("alt", `${card.name}, IMAGE NOT AVAILABLE`);
       }
 
       $spoilerEl.off("click").on("click", getDetails);

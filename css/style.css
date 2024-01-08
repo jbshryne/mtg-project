@@ -15,6 +15,7 @@ footer,
 
 a {
   color: inherit;
+  text-decoration: none;
 }
 
 h1,
@@ -60,10 +61,6 @@ button {
   padding: 8px;
   background-color: rgb(199, 180, 133);
 }
-
-/* label {
-  font-weight: bold;
-} */
 
 input[type="text"] {
   min-width: 400px;
@@ -113,7 +110,6 @@ input[type="text"] {
   border-radius: 20px;
   margin: 0% auto;
 }
-
 
 .statBox {
   padding-top: 30px

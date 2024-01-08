@@ -1,8 +1,6 @@
 $(function () {
-  ////// Dynamically generate dropdown list of sets
-
+  //// Load or generate list of searchable sets
   let searchableSets = JSON.parse(localStorage.getItem("searchableSets"));
-
   if (!searchableSets) {
     $.getJSON("https://api.scryfall.com/sets", function (setsResponse) {
       const sets = setsResponse.data;
@@ -20,11 +18,11 @@ $(function () {
     });
   }
 
-  // Register input event listener for set input
   const $setInput = $("#setInput");
   const $setSuggestions = $("#setSuggestions");
   const $selectedSetList = $("#selectedSetList");
 
+  //// Register input event listener for set input
   $setInput.on("input", function () {
     const inputText = $setInput.val().toLowerCase();
     $setSuggestions.empty();
@@ -47,20 +45,11 @@ $(function () {
           });
 
           $setSuggestions.append($suggestion);
+          $setInput.val('');
         }
       });
     }
   });
-
-  //// WORKING WITH OTHER DOM ELEMENTS
-
-  $("#allCardsBtn").on("click", searchHandler);
-  $("#randomBtn").on("click", searchHandler);
-
-  const $errorMessage = $(".errorMessage");
-  window.onbeforeunload = function () {
-    $errorMessage.empty();
-  };
 
   function constructSetCodesQueryString() {
     const selectedSetElements = $(".selectedSet"); // Assuming you've used this class for selected <li> elements
@@ -76,13 +65,22 @@ $(function () {
       .map((code) => `s:${code}`)
       .join(" OR ");
 
-
     return setCodesQueryString;
   }
 
-  //// SEARCH LOGIC
+  ////// WORKING WITH OTHER DOM ELEMENTS
 
-  ////// Wrapper function to keep track of which button was clicked
+  $("#allCardsBtn").on("click", searchHandler);
+  $("#randomBtn").on("click", searchHandler);
+
+  const $errorMessage = $(".errorMessage");
+  window.onbeforeunload = function () {
+    $errorMessage.empty();
+  };
+
+  ////// SEARCH LOGIC
+
+  //// Wrapper function to keep track of which button was clicked
   function searchHandler(e) {
     e.preventDefault();
 
@@ -154,24 +152,27 @@ $(function () {
     }
 
     ////// set code
-    // const setCodeVal = $("#setDropdown").val();
-    // let setInputString;
-    // if (setCodeVal) {
-    //   setInputString = `s:${setCodeVal}`;
-    //   queryArray.push(setInputString);
-    // }
-
-    ////// set name
 
     const setCodesQueryString = constructSetCodesQueryString();
 
     if (setCodesQueryString) {
-      const stringWithParentheses = `(${setCodesQueryString})`
+      const stringWithParentheses = `(${setCodesQueryString})`;
       console.log(stringWithParentheses);
       queryArray.push(stringWithParentheses);
     }
 
-    ////// set input
+    ////// other options
+
+    const newCardsOnly = $("#newCardsCheckbox").prop("checked");
+    const includeExtras = $("#includeExtrasCheckbox").prop("checked");
+
+    if (newCardsOnly) {
+      queryArray.push("is:firstprint");
+    }
+
+    if (includeExtras) {
+      queryArray.push("include:extras");
+    }
 
     ////// sort order of search result list
 
@@ -229,10 +230,10 @@ $(function () {
               "cardDetails",
               JSON.stringify(resultsArray[0])
             );
-            debugger;
+            // debugger;
             window.location.href = "details.html";
           } else {
-            debugger;
+            // debugger;
             window.location.href = "results.html";
           }
         }
