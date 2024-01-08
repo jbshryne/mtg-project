@@ -14,10 +14,10 @@ $(function () {
   ////// *** Starting to set up details text below card ***
   const $cardFaceEl = $(".detailImg");
   const $imgBox = $(".imgBox");
-  const $statBox = $(".statBox");
+  // const $statBox = $(".statBox");
   const $linkBox = $(".linkBox");
 
-  console.log($statBox)
+  // console.log($statBox)
   const $imgContainer = $("<div class='imgContainer'></div>");
 
   //// Checking if we are on a card details inspection, randomizer call, or group page
@@ -33,6 +33,7 @@ $(function () {
     "click",
     () => history.back()
   );
+  console.log($prevPageBtn)
 
   if (currentPage === "details" || currentPage === "random") {
     $("#cardName").text(card.name);
@@ -101,16 +102,22 @@ $(function () {
 
     //// Displaying card image
 
+    const formattedOracleText = card.oracle_text.replace(`\n`, "<br/>")
+    // console.log(formattedOracleText)
+
     $(`<h4 class="card-name">${card.name}</h4>`).prependTo('.stat-box')
 
-    const $manaValueRow = $('.mana-cost')
-    $(`<td class="stat-value">${card.mana_cost}</td>`).appendTo($manaValueRow)
+    if (card.mana_cost !== "") {
+      const $manaValueRow = $('.mana-cost')
+      $(`<td class="stat-label">Mana Cost:</td>`).appendTo($manaValueRow)
+      $(`<td class="stat-value">${card.mana_cost}</td>`).appendTo($manaValueRow)
+    }
 
     const $cardTypeRow = $('.type-line')
     $(`<td class="stat-value">${card.type_line}</td>`).appendTo($cardTypeRow)
 
     const $rulesTextRow = $('.oracle-text')
-    $(`<td class="stat-value">${card.oracle_text}</td>`).appendTo($rulesTextRow)
+    $(`<td class="stat-value">${formattedOracleText}</td>`).appendTo($rulesTextRow)
 
     //// Creating buttons, and dynamically wiring
     //// "next" button depending on where we are
@@ -138,7 +145,6 @@ $(function () {
     }
     $buttonDiv.append($prevPageBtn, $nextPageBtn);
     $buttonDiv.appendTo($("header"));
-    console.log($buttonDiv)
   }
 
   if (currentPage === "group") {
