@@ -116,8 +116,17 @@ input[type="text"] {
 }
 
 td {
-  width: 40vw;
-  padding: 5px;
+  padding: 10px;
+}
+
+.stat-label {
+  width: 20vw;
+  text-align: right
+}
+
+.stat-value {
+  width: 60vw;
+  text-align: left;
 }
 
 .statLine {

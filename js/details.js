@@ -104,13 +104,13 @@ $(function () {
     $(`<h4 class="card-name">${card.name}</h4>`).prependTo('.stat-box')
 
     const $manaValueRow = $('.mana-cost')
-    $(`<div class="statValue">${card.mana_cost}</div>`).appendTo($manaValueRow)
+    $(`<td class="stat-value">${card.mana_cost}</td>`).appendTo($manaValueRow)
 
     const $cardTypeRow = $('.type-line')
-    $(`<div class="statValue">${card.type_line}</div>`).appendTo($cardTypeRow)
+    $(`<td class="stat-value">${card.type_line}</td>`).appendTo($cardTypeRow)
 
     const $rulesTextRow = $('.oracle-text')
-    $(`<div class="statValue">${card.oracle_text}</div>`).appendTo($rulesTextRow)
+    $(`<td class="stat-value">${card.oracle_text}</td>`).appendTo($rulesTextRow)
 
     //// Creating buttons, and dynamically wiring
     //// "next" button depending on where we are
