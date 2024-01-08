@@ -101,7 +101,7 @@ $(function () {
 
     //// Displaying card image
 
-    $(`<h3 class="card-name">${card.name}</h3>`).prependTo('.stat-box')
+    $(`<h4 class="card-name">${card.name}</h4>`).prependTo('.stat-box')
 
     const $manaValueRow = $('.mana-cost')
     $(`<div class="statValue">${card.mana_cost}</div>`).appendTo($manaValueRow)

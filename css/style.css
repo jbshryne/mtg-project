@@ -55,7 +55,7 @@ select {
 button {
   font-family: "Uncial Antiqua", cursive;
   margin: 30px 15px;
-  font-size: 110%;
+  font-size: 75%;
   font-weight: bolder;
   border-radius: 8px;
   padding: 8px;
@@ -111,13 +111,22 @@ input[type="text"] {
   margin: 0% auto;
 }
 
-.statBox {
-  padding-top: 30px
+.stat-table {
+  font-size: 18px;
+}
+
+td {
+  width: 40vw;
+  padding: 5px;
 }
 
 .statLine {
   display: grid;
   grid-template-columns: 1fr 1fr;
+}
+
+.linkBox {
+  font-size: 20px;
 }
 
 .copyright {
