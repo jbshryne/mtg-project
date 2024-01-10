@@ -15,7 +15,7 @@ footer,
 
 a {
   color: inherit;
-  text-decoration: none;
+  /* text-decoration: none; */
 }
 
 h1,
@@ -118,16 +118,16 @@ input[type="text"] {
 }
 
 td {
-  padding: 10px;
+  padding: 5px 10px;
 }
 
 .stat-label {
-  width: 20vw;
+  width: 15vw;
   text-align: right
 }
 
 .stat-value {
-  width: 60vw;
+  width: 75vw;
   text-align: left;
 }
 
@@ -143,6 +143,11 @@ td {
 .copyright {
   margin-top: auto;
   margin-left: auto;
+}
+
+.symbol-image {
+  width: 15px;
+  padding: 0px 1px;
 }
 
 button:hover, .cardSpoiler:hover {

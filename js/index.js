@@ -23,18 +23,24 @@ $(function () {
   const $selectedSetList = $("#selectedSetList");
 
   //// Register input event listener for set input
+
   $setInput.on("input", function () {
     const inputText = $setInput.val().toLowerCase();
     $setSuggestions.empty();
-
+  
     if (inputText.length >= 2) {
       Object.keys(searchableSets).forEach((setName) => {
-        if (setName.toLowerCase().includes(inputText)) {
-          const set = searchableSets[setName];
+        const set = searchableSets[setName];
+  
+        // Check if either set name or set code contains the input text
+        if (
+          setName.toLowerCase().includes(inputText) ||
+          set.code.toLowerCase().includes(inputText)
+        ) {
           const $suggestion = $(
             `<div class="setSuggestion">${set.code.toUpperCase()} - ${setName}</div>`
           );
-
+  
           $suggestion.on("click", function () {
             $selectedSetList.append(
               `<li data-setcode="${
@@ -42,14 +48,43 @@ $(function () {
               }" class="selectedSet">${setName} (${set.code.toUpperCase()})</li>`
             );
             $setSuggestions.empty();
+            $setInput.val('');
           });
-
+  
           $setSuggestions.append($suggestion);
-          $setInput.val('');
         }
       });
     }
   });
+  
+
+  // $setInput.on("input", function () {
+  //   const inputText = $setInput.val().toLowerCase();
+  //   $setSuggestions.empty();
+
+  //   if (inputText.length >= 2) {
+  //     Object.keys(searchableSets).forEach((setName) => {
+  //       if (setName.toLowerCase().includes(inputText)) {
+  //         const set = searchableSets[setName];
+  //         const $suggestion = $(
+  //           `<div class="setSuggestion">${set.code.toUpperCase()} - ${setName}</div>`
+  //         );
+
+  //         $suggestion.on("click", function () {
+  //           $selectedSetList.append(
+  //             `<li data-setcode="${
+  //               set.code
+  //             }" class="selectedSet">${setName} (${set.code.toUpperCase()})</li>`
+  //           );
+  //           $setSuggestions.empty();
+  //         });
+
+  //         $setSuggestions.append($suggestion);
+  //         // $setInput.val('');
+  //       }
+  //     });
+  //   }
+  // });
 
   function constructSetCodesQueryString() {
     const selectedSetElements = $(".selectedSet"); // Assuming you've used this class for selected <li> elements
