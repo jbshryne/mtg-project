@@ -1353,7 +1353,7 @@ $(function () {
         for (let i = 0; i < card.all_parts.length; i++) {
           setTimeout(function () {
             $.getJSON(card.all_parts[i].uri, function (cardObj) {
-              if (cardObj.id !== card.id) cardGroupArray.push(cardObj);
+              if (cardObj.name !== card.name) cardGroupArray.push(cardObj);
             });
           }, i * 50);
 
