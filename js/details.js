@@ -1346,10 +1346,14 @@ $(function () {
     ) {
       // let cardsAdded = 0;
       if (card.all_parts) {
+        console.log("all parts");
+        console.log(card.all_parts);
+        // debugger;
+        cardGroupArray.push(card);
         for (let i = 0; i < card.all_parts.length; i++) {
           setTimeout(function () {
             $.getJSON(card.all_parts[i].uri, function (cardObj) {
-              cardGroupArray.push(cardObj);
+              if (cardObj.id !== card.id) cardGroupArray.push(cardObj);
             });
           }, i * 50);
 
@@ -1381,10 +1385,11 @@ $(function () {
     const cardFace = card.card_faces ? card.card_faces[0] : card;
 
     const generateCardIndo = (cardFace, divId = "card-front") => {
+      console.log(cardFace.oracle_text);
       const formattedOracleText = cardFace.oracle_text
-        .replace(`\n`, "<br/>")
-        .replace("(", "<em>(")
-        .replace(")", ")</em>");
+        .replaceAll(`\n`, "<br/>")
+        .replaceAll("(", "<em>(")
+        .replaceAll(")", ")</em>");
       // console.log(formattedOracleText)
 
       function replaceSymbolsWithImages(oracleText) {
@@ -1403,7 +1408,11 @@ $(function () {
           }
         );
 
-        return replacedText;
+        const replacedTextArray = replacedText
+          .split("<br/>")
+          .join('</p><p class="rules-text">');
+
+        return '<p class="rules-text">' + replacedTextArray + "</p>";
       }
 
       const manaCostWithImages = replaceSymbolsWithImages(cardFace.mana_cost);
@@ -1443,7 +1452,6 @@ $(function () {
           `<td class="stat-value">${cardFace.power} / ${cardFace.toughness}</td>`
         ).appendTo($powerToughnessRow);
       }
-      // if (!card.card_faces) {
     };
 
     generateCardIndo(cardFace);
@@ -1467,9 +1475,6 @@ $(function () {
       generateCardIndo(card.card_faces[1], "card-back");
     }
 
-    // } else {
-    //   card.card_faces.forEach((card) => {});
-    // }
     //// Creating buttons, and dynamically wiring
     //// "next" button depending on where we are
 
@@ -1485,7 +1490,6 @@ $(function () {
       $nextPageBtn.text("Re-Randomize!").on("click", () => {
         $.getJSON(searchParams.apiCallUrl, function (dataObj) {
           console.log("response successful");
-          // debugger;
 
           localStorage.setItem("cardDetails", JSON.stringify(dataObj));
           location.reload();

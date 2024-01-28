@@ -20,9 +20,8 @@ a {
 
 h1,
 h2,
-h3, 
-h4
-label,
+h3,
+h4 label,
 legend,
 p {
   font-family: "IM Fell Double Pica", serif;
@@ -123,7 +122,7 @@ td {
 
 .stat-label {
   width: 15vw;
-  text-align: right
+  text-align: right;
 }
 
 .stat-value {
@@ -147,10 +146,18 @@ td {
 
 .symbol-image {
   width: 15px;
-  padding: 0px 1px;
+  /* padding: 0px 1px; */
+  margin: 1px 1px -1px 1px;
+  box-shadow: -1px 1px 0 rgba(0, 0, 0, 0.85);
+  border-radius: 500px;
 }
 
-button:hover, .cardSpoiler:hover {
+.rules-text {
+  margin-block: 0.5em;
+}
+
+button:hover,
+.cardSpoiler:hover {
   cursor: pointer;
 }
 
