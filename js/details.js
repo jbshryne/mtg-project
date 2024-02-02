@@ -1430,10 +1430,13 @@ $(function () {
         );
       }
 
-      const $cardTypeRow = $(`#${divId} .type-line`);
-      $(`<td class="stat-value">${cardFace.type_line}</td>`).appendTo(
-        $cardTypeRow
-      );
+      if (cardFace.type_line !== "") {
+        const $cardTypeRow = $(`#${divId} .type-line`);
+        $(`<td class="stat-label">Card Type:</td>`).appendTo($cardTypeRow);
+        $(`<td class="stat-value">${cardFace.type_line}</td>`).appendTo(
+          $cardTypeRow
+        );
+      }
 
       if (cardFace.oracle_text !== "") {
         const $rulesTextRow = $(`#${divId} .oracle-text`);

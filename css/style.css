@@ -23,7 +23,7 @@ h2,
 h3,
 h4 label,
 legend,
-p {
+.card-name {
   font-family: "IM Fell Double Pica", serif;
 }
 
