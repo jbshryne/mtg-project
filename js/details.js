@@ -1464,9 +1464,7 @@ $(function () {
         `<div class="displayBox stat-box">
           <table class="stat-table">
             <tr class="mana-cost"></tr>
-            <tr class="type-line">
-              <td class="stat-label"></td>
-            </tr>
+            <tr class="type-line"></tr>
             <tr class="oracle-text"></tr>
             <tr class="power-toughness"></tr>
           </table>
