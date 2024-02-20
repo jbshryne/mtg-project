@@ -1384,7 +1384,7 @@ $(function () {
 
     const cardFace = card.card_faces ? card.card_faces[0] : card;
 
-    const generateCardIndo = (cardFace, divId = "card-front") => {
+    const generateCardInfo = (cardFace, divId = "card-front") => {
       console.log(cardFace.oracle_text);
       const formattedOracleText = cardFace.oracle_text
         .replaceAll(`\n`, "<br/>")
@@ -1457,7 +1457,7 @@ $(function () {
       }
     };
 
-    generateCardIndo(cardFace);
+    generateCardInfo(cardFace);
 
     if (card.card_faces) {
       const $backFaceInfoStructure = $(
@@ -1465,7 +1465,7 @@ $(function () {
           <table class="stat-table">
             <tr class="mana-cost"></tr>
             <tr class="type-line">
-              <td class="stat-label">Card Type:</td>
+              <td class="stat-label"></td>
             </tr>
             <tr class="oracle-text"></tr>
             <tr class="power-toughness"></tr>
@@ -1475,7 +1475,7 @@ $(function () {
 
       $backFaceInfoStructure.appendTo($("#card-back"));
 
-      generateCardIndo(card.card_faces[1], "card-back");
+      generateCardInfo(card.card_faces[1], "card-back");
     }
 
     //// Creating buttons, and dynamically wiring
