@@ -27,11 +27,11 @@ $(function () {
   $setInput.on("input", function () {
     const inputText = $setInput.val().toLowerCase();
     $setSuggestions.empty();
-  
+
     if (inputText.length >= 2) {
       Object.keys(searchableSets).forEach((setName) => {
         const set = searchableSets[setName];
-  
+
         // Check if either set name or set code contains the input text
         if (
           setName.toLowerCase().includes(inputText) ||
@@ -40,7 +40,7 @@ $(function () {
           const $suggestion = $(
             `<div class="setSuggestion">${set.code.toUpperCase()} - ${setName}</div>`
           );
-  
+
           $suggestion.on("click", function () {
             $selectedSetList.append(
               `<li data-setcode="${
@@ -48,43 +48,14 @@ $(function () {
               }" class="selectedSet">${setName} (${set.code.toUpperCase()})</li>`
             );
             $setSuggestions.empty();
-            $setInput.val('');
+            $setInput.val("");
           });
-  
+
           $setSuggestions.append($suggestion);
         }
       });
     }
   });
-  
-
-  // $setInput.on("input", function () {
-  //   const inputText = $setInput.val().toLowerCase();
-  //   $setSuggestions.empty();
-
-  //   if (inputText.length >= 2) {
-  //     Object.keys(searchableSets).forEach((setName) => {
-  //       if (setName.toLowerCase().includes(inputText)) {
-  //         const set = searchableSets[setName];
-  //         const $suggestion = $(
-  //           `<div class="setSuggestion">${set.code.toUpperCase()} - ${setName}</div>`
-  //         );
-
-  //         $suggestion.on("click", function () {
-  //           $selectedSetList.append(
-  //             `<li data-setcode="${
-  //               set.code
-  //             }" class="selectedSet">${setName} (${set.code.toUpperCase()})</li>`
-  //           );
-  //           $setSuggestions.empty();
-  //         });
-
-  //         $setSuggestions.append($suggestion);
-  //         // $setInput.val('');
-  //       }
-  //     });
-  //   }
-  // });
 
   function constructSetCodesQueryString() {
     const selectedSetElements = $(".selectedSet"); // Assuming you've used this class for selected <li> elements

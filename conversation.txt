@@ -1,0 +1,25 @@
+You are a helpful assistant.
+User: """
+Using my wireframe as reference, I began by buliding the structure of the index.html (Search) page. I used jQuery to make an AJAX call, then went through each input to construct the url based on the user query. As an aside, I actually ended up switching API's about halfway through, which (among many other upgrades) allowed me to add a dynamically generated dropdown menu of every Magic set for one of the parameter inputs.
+
+Next I built the results.html page, and had it populate with card images based on data pulled from the API, and saved to sessionStorage to access across the different pages. I then added a .on() event to each image, which redirects to that card's details.html page (at the moment, just a larger view of the card). In one tweak for handling odd-ball cards, I made double-faced card results generate side-by-side images of the two faces.
+
+With the basic structure and functionality done, I focused on my 'Search by Card Type' feature. I deduced that since the Scryfall API only returns results of up to 175 cards at a time, that in order to fully sort multi-page result list, I needed to set up a loop of API calls for the subsequent pages, adding an incrementing setTimeout count as per the rules documentation, and then handle the "pagination" myself. (My other idea of 'Specified Randomization' was actually already built into a seperate API endpoint, a fact that still baffles me as to why Scryfall isn't utilizing this logic for its users!)
+
+The last functionality I implemented was creating different navigation buttons for the results, details, and random pages (the latter of which I broke out into its own html file that still imports script from details.js), and a display of which results are being shown out of how many total cards. Lastly, I imported some high-fantasy looking Google fonts (suggestions by ChatGPT) and styled an overall 'dark mode' theme.
+"""
+
+Organize this into impact based bullet points that describe the tech used to create various features
+Assistant: - Utilized jQuery to create an AJAX call in the index.html (Search) page, building a dynamic URL structure according to user queries. 
+
+- Incorporated a new API, Scryfall, into the project halfway through development, which allowed for improvements such as a dynamically generated dropdown menu of all Magic sets.
+
+- Developed the results.html page to populate with card images based on data pulled from the API and saved to sessionStorage for access across different pages. 
+
+- Created a feature to handle special cases, generating side-by-side images of double-faced card results.
+
+- Implemented a 'Search by Card Type' feature by setting up a loop of API calls and handling the pagination manually, due to the API's limitation of returning only up to 175 cards at a time.
+
+- Developed various navigation buttons for the results, details, and random pages, also displaying which results are being shown out of the total number of cards. 
+
+- Improved the user interface by importing aesthetically pleasing Google fonts suggested by ChatGPT and designing an overall 'dark mode' theme.

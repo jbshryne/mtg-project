@@ -1,137 +1,117 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>MTG Conclave</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=IM+Fell+Double+Pica&family=Poiret+One&family=Uncial+Antiqua&display=swap"
-      rel="stylesheet"
-    />
-    <link
-      rel="stylesheet"
-      href="//code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css"
-    />
-    <script
-      src="https://code.jquery.com/jquery-3.7.0.js"
-      integrity="sha256-JlqSTELeR4TLqP0OG9dxM7yDPqX1ox/HfgiSLBj8+kM="
-      crossorigin="anonymous"
-    ></script>
-    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
-    <link rel="stylesheet" href="css/style.css" />
-    <script src="js/index.js" defer ></script>
-  </head>
-  <body>
-    <header>
-      <h2>MTG CONCLAVE - Card Searcher</h2>
-    </header>
 
-    <form>
-      <label
-        >Card Name:
-        <input
-          type="text"
-          name="name"
-          id="nameInput"
-          placeholder="Words can be full or partial"
-      /></label>
-      <label
-        >Types:
-        <input
-          type="text"
-          name="type"
-          id="typeInput"
-          placeholder="Including super- and/or subtypes"
-      /></label>
-      <br /><br />
-      <fieldset id="colorIdField">
-        <legend>Color:</legend>
-        <label>
-          <input type="checkbox" class="color" value="w" />
-          White
-        </label>
-        <label>
-          <input type="checkbox" class="color" value="u" />
-          Blue
-        </label>
-        <label>
-          <input type="checkbox" class="color" value="b" />
-          Black
-        </label>
-        <label>
-          <input type="checkbox" class="color" value="r" />
-          Red
-        </label>
-        <label>
-          <input type="checkbox" class="color" value="g" />
-          Green
-        </label>
-      </fieldset>
-      <br />
-      <fieldset id="rarityField>">
-        <legend>Rarity:</legend>
-        <label>
-          <input type="checkbox" class="rarity" value="c" />
-          Common
-        </label>
-        <label>
-          <input type="checkbox" class="rarity" value="u" />
-          Uncommon
-        </label>
-        <label>
-          <input type="checkbox" class="rarity" value="r" />
-          Rare
-        </label>
-        <label>
-          <input type="checkbox" class="rarity" value="m" />
-          Mythic Rare
-        </label>
-      </fieldset>
-      <br />
-      <label id="setInputLabel"
-        >Sets: 
-        <input type="text" id="setInput" placeholder="Search for full name or set code">
-        <div id="setSuggestions"></div>
-        <ul id="selectedSetList"></ul>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MTG Conclave</title>
+  <link rel="icon" href="placeholder.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IM+Fell+Double+Pica&family=Poiret+One&family=Uncial+Antiqua&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css" />
+  <script src="https://code.jquery.com/jquery-3.7.0.js" integrity="sha256-JlqSTELeR4TLqP0OG9dxM7yDPqX1ox/HfgiSLBj8+kM=" crossorigin="anonymous"></script>
+  <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
+  <link rel="stylesheet" href="css/style.css" />
+  <script src="js/index.js" defer></script>
+</head>
+
+<body>
+  <header>
+    <h2>MTG CONCLAVE - Card Searcher</h2>
+  </header>
+
+  <form>
+    <label>Card Name:
+      <input type="text" name="name" id="nameInput" placeholder="Words can be full or partial" /></label>
+    <label>Types:
+      <input type="text" name="type" id="typeInput" placeholder="Including super- and/or subtypes" /></label>
+    <br /><br />
+    <fieldset id="colorIdField">
+      <legend>Color:</legend>
+      <label>
+        <input type="checkbox" class="color" value="w" />
+        White
       </label>
-      <label
-        >Sort results by:
-        <select id="sortDropdown">
-          <option value="name">Name</option>
-          <option value="set">Set & Collector #</option>
-          <option value="released">Release Date</option>
-          <option value="rarity">Rarity</option>
-          <option value="color">Color</option>
-          <option value="type">Type</option>
-          <option value="cmc">Mana Value</option>
-          <option value="power">Power</option>
-          <option value="toughness">Toughness</option>
-        </select>
+      <label>
+        <input type="checkbox" class="color" value="u" />
+        Blue
       </label>
-      <fieldset>
-        <legend>Options:</legend>
-        <label>
-          <input type="checkbox" name="newCards" id="newCardsCheckbox" />
-          New Cards Only
-        </label>
-        <label>
-          <input type="checkbox" name="includeExtras" id="includeExtrasCheckbox" />
-          Include Extras
-        </label>
-      </fieldset>
-      <div class="buttonDiv">
-        <button type="submit" id="allCardsBtn">All Cards</button>
-        <button id="randomBtn">Randomizer!</button>
-      </div>
-    </form>
-    <p class="errorMessage"></p>
-    <footer>
-      <p class="copyright">
-        &copy; 2024 Jon Brennan / Powered by
-        <a href="https://scryfall.com/">Scryfall</a>
-      </p>
-    </footer>
-  </body>
+      <label>
+        <input type="checkbox" class="color" value="b" />
+        Black
+      </label>
+      <label>
+        <input type="checkbox" class="color" value="r" />
+        Red
+      </label>
+      <label>
+        <input type="checkbox" class="color" value="g" />
+        Green
+      </label>
+    </fieldset>
+    <br />
+    <fieldset id="rarityField>">
+      <legend>Rarity:</legend>
+      <label>
+        <input type="checkbox" class="rarity" value="c" />
+        Common
+      </label>
+      <label>
+        <input type="checkbox" class="rarity" value="u" />
+        Uncommon
+      </label>
+      <label>
+        <input type="checkbox" class="rarity" value="r" />
+        Rare
+      </label>
+      <label>
+        <input type="checkbox" class="rarity" value="m" />
+        Mythic Rare
+      </label>
+    </fieldset>
+    <br />
+    <label id="setInputLabel">Sets:
+      <input type="text" id="setInput" placeholder="Search for full name or set code">
+      <div id="setSuggestions"></div>
+      <ul id="selectedSetList"></ul>
+    </label>
+    <label>Sort results by:
+      <select id="sortDropdown">
+        <option value="name">Name</option>
+        <option value="set">Set & Collector #</option>
+        <option value="released">Release Date</option>
+        <option value="rarity">Rarity</option>
+        <option value="color">Color</option>
+        <option value="type">Type</option>
+        <option value="cmc">Mana Value</option>
+        <option value="power">Power</option>
+        <option value="toughness">Toughness</option>
+      </select>
+    </label>
+    <fieldset>
+      <legend>Options:</legend>
+      <label>
+        <input type="checkbox" name="newCards" id="newCardsCheckbox" />
+        New Cards Only
+      </label>
+      <label>
+        <input type="checkbox" name="includeExtras" id="includeExtrasCheckbox" />
+        Include Extras
+      </label>
+    </fieldset>
+    <div class="buttonDiv">
+      <button type="submit" id="allCardsBtn">All Cards</button>
+      <button id="randomBtn">Randomizer!</button>
+    </div>
+  </form>
+  <p class="errorMessage"></p>
+  <footer>
+    <p class="copyright">
+      &copy; 2024 Jon Brennan / Powered by
+      <a href="https://scryfall.com/">Scryfall</a>
+    </p>
+  </footer>
+</body>
+
 </html>
