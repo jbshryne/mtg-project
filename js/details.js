@@ -1453,6 +1453,17 @@ $(function () {
           `<td class="stat-value">${cardFace.power} / ${cardFace.toughness}</td>`
         ).appendTo($powerToughnessRow);
       }
+
+      const setName = cardFace.set_name ? cardFace.set_name : card.set_name;
+      const setCode = cardFace.set ? cardFace.set : card.set;
+
+      if (cardFace.set_name !== "") {
+        const $setNameRow = $(`#${divId} .set-name`);
+        $(`<td class="stat-label">Set:</td>`).appendTo($setNameRow);
+        $(
+          `<td class="stat-value">${setName} (${setCode.toUpperCase()})</td>`
+        ).appendTo($setNameRow);
+      }
     };
 
     generateCardInfo(cardFace);
