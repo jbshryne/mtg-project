@@ -27,8 +27,15 @@
     <label>Types:
       <input type="text" name="type" id="typeInput" placeholder="Including super- and/or subtypes" /></label>
     <br /><br />
-    <fieldset id="colorIdField">
-      <legend>Color:</legend>
+    <fieldset id="colorsField">
+      <legend>Color:
+        <small>
+          <input type="radio" id="colorId" name="colorOps" value="id" checked>ID</input>
+          <input type="radio" id="colorAnd" name="colorOps" value="and">AND</input>
+          <input type="radio" id="colorOr" name="colorOps" value="or">OR</input>
+        </small>
+      </legend>
+      </legend>
       <label>
         <input type="checkbox" class="color" value="w" />
         White
@@ -92,8 +99,8 @@
     <fieldset>
       <legend>Options:</legend>
       <label>
-        <input type="checkbox" name="newCards" id="newCardsCheckbox" />
-        New Cards Only
+        <input type="checkbox" name="firstPrintings" id="firstPrintingsCheckbox" />
+        First Printings Only
       </label>
       <label>
         <input type="checkbox" name="includeExtras" id="includeExtrasCheckbox" />

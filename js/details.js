@@ -1345,21 +1345,22 @@ $(function () {
       (card.all_parts && card.type_line.search("Token") === -1)
     ) {
       // let cardsAdded = 0;
-      if (card.all_parts) {
-        console.log("all parts");
-        console.log(card.all_parts);
-        // debugger;
-        cardGroupArray.push(card);
-        for (let i = 0; i < card.all_parts.length; i++) {
-          setTimeout(function () {
-            $.getJSON(card.all_parts[i].uri, function (cardObj) {
-              if (cardObj.name !== card.name) cardGroupArray.push(cardObj);
-            });
-          }, i * 50);
 
-          // cardGroupArray.push(card.all_parts[i].name)
-        }
+      console.log("all parts");
+      console.log(card.all_parts);
+      // debugger;
+      cardGroupArray.push(card);
+      for (let i = 0; i < card.all_parts.length; i++) {
+        setTimeout(function () {
+          $.getJSON(card.all_parts[i].uri, function (cardObj) {
+            if (cardObj.oracle_id !== card.oracle_id)
+              cardGroupArray.push(cardObj);
+          });
+        }, i * 50);
+
+        // cardGroupArray.push(card.all_parts[i].name)
       }
+
       if (card.type_line.search("Basic") !== -1) {
         console.log("basic land");
         $.getJSON(
@@ -1380,12 +1381,9 @@ $(function () {
     }
 
     //// Displaying card image(s)
-    console.log(card);
-
     const cardFace = card.card_faces ? card.card_faces[0] : card;
 
     const generateCardInfo = (cardFace, divId = "card-front") => {
-      console.log(cardFace.oracle_text);
       const formattedOracleText = cardFace.oracle_text
         .replaceAll(`\n`, "<br/>")
         .replaceAll("(", "<em>(")

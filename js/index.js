@@ -1,6 +1,20 @@
-$(function () {
+$(document).ready(function () {
   //// Load or generate list of searchable sets
   let searchableSets = JSON.parse(localStorage.getItem("searchableSets"));
+
+  //// Check if searchableSets is null or outdated
+  const currentDate = new Date();
+
+  if (searchableSets && searchableSets._dateRetrieved) {
+    const dateRetrieved = new Date(searchableSets._dateRetrieved);
+    const timeDifference = currentDate - dateRetrieved;
+    const hoursDifference = timeDifference / (1000 * 60 * 60);
+
+    if (hoursDifference > 24) {
+      searchableSets = null;
+    }
+  }
+
   if (!searchableSets) {
     $.getJSON("https://api.scryfall.com/sets", function (setsResponse) {
       const sets = setsResponse.data;
@@ -12,8 +26,8 @@ $(function () {
           uri: set.uri,
         };
       });
+      searchableSets._dateRetrieved = new Date();
 
-      // Store searchableSets in localStorage
       localStorage.setItem("searchableSets", JSON.stringify(searchableSets));
     });
   }
@@ -94,7 +108,14 @@ $(function () {
     searchFnc(clickedBtnId);
   }
 
+  $('input[type="radio"]').change(function () {
+    const selectedValue = $('input[name="colorOps"]:checked').val();
+    console.log(selectedValue);
+  });
+
   function searchFnc(clickedBtn) {
+    $errorMessage.text("");
+
     localStorage.removeItem("searchParams");
     localStorage.removeItem("queryResponse");
     localStorage.removeItem("allPages");
@@ -108,6 +129,7 @@ $(function () {
     //// CONSTRUCTING THE API CALL
 
     ////// name
+
     const nameInputVal = $("#nameInput").val();
     let nameInputArray = [];
 
@@ -117,6 +139,7 @@ $(function () {
     }
 
     ////// types
+
     const typeInputVal = $("#typeInput").val();
     let typeInputArray = [];
     let typeInputString = "";
@@ -129,6 +152,8 @@ $(function () {
     }
 
     ////// colors
+
+    const colorOperator = $('input[name="colorOps"]:checked').val();
     const colorArray = [];
     const $checkedColors = $(".color:checked");
 
@@ -138,10 +163,19 @@ $(function () {
     });
 
     if (colorArray.length > 0) {
-      queryArray.push("c=" + colorArray.join(""));
+      if (colorOperator === "or") {
+        const formattedColorArray = colorArray.map((color) => `c:${color}`);
+        const colorString = `(${formattedColorArray.join(" or ")})`;
+        queryArray.push(colorString);
+      } else if (colorOperator === "and") {
+        queryArray.push("c:" + colorArray.join(""));
+      } else if (colorOperator === "id") {
+        queryArray.push("id:" + colorArray.join(""));
+      }
     }
 
     ////// rarities
+
     const rarityArray = [];
     const $checkedRarities = $(".rarity:checked");
     let rarityString = "";
@@ -169,10 +203,10 @@ $(function () {
 
     ////// other options
 
-    const newCardsOnly = $("#newCardsCheckbox").prop("checked");
+    const firstPrintings = $("#firstPrintingsCheckbox").prop("checked");
     const includeExtras = $("#includeExtrasCheckbox").prop("checked");
 
-    if (newCardsOnly) {
+    if (firstPrintings) {
       queryArray.push("is:firstprint");
     }
 
@@ -197,6 +231,7 @@ $(function () {
     }
 
     ////// Passing query info to localStorage
+
     const searchParams = {
       nameWords: nameInputArray,
       types: typeInputArray,
