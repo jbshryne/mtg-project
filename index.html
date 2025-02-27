@@ -30,31 +30,35 @@
     <fieldset id="colorsField">
       <legend>Color:
         <small>
-          <input type="radio" id="colorId" name="colorOps" value="id" checked>ID</input>
-          <input type="radio" id="colorAnd" name="colorOps" value="and">AND</input>
-          <input type="radio" id="colorOr" name="colorOps" value="or">OR</input>
+          <input type="radio" id="colorId" name="colorOps" value="id" checked>ID (EDH)</input>
+          <input type="radio" id="colorAnd" name="colorOps" value="and">Exactly</input>
+          <input type="radio" id="colorOr" name="colorOps" value="or">Includes</input>
         </small>
       </legend>
       </legend>
       <label>
-        <input type="checkbox" class="color" value="w" />
+        <input type="checkbox" class="color" id="boxW" value="w" />
         White
       </label>
       <label>
-        <input type="checkbox" class="color" value="u" />
+        <input type="checkbox" class="color" id="boxU" value="u" />
         Blue
       </label>
       <label>
-        <input type="checkbox" class="color" value="b" />
+        <input type="checkbox" class="color" id="boxB" value="b" />
         Black
       </label>
       <label>
-        <input type="checkbox" class="color" value="r" />
+        <input type="checkbox" class="color" id="boxR" value="r" />
         Red
       </label>
       <label>
-        <input type="checkbox" class="color" value="g" />
+        <input type="checkbox" class="color" id="boxG" value="g" />
         Green
+      </label>
+      <label>
+        <input type="checkbox" class="color" id="boxC" value="c" />
+        Colorless
       </label>
     </fieldset>
     <br />

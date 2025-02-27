@@ -74,7 +74,7 @@ $(document).ready(function () {
   function constructSetCodesQueryString() {
     const selectedSetElements = $(".selectedSet"); // Assuming you've used this class for selected <li> elements
     const setCodes = selectedSetElements
-      .map((index, element) => {
+      .map((_, element) => {
         console.log(element.dataset.setcode);
         return $(element).data("setcode").toLowerCase();
       })
@@ -87,6 +87,33 @@ $(document).ready(function () {
 
     return setCodesQueryString;
   }
+
+  /// SETTING UP THE COLOR CHECKBOXES
+
+  const $boxW = $("#boxW");
+  const $boxU = $("#boxU");
+  const $boxB = $("#boxB");
+  const $boxR = $("#boxR");
+  const $boxG = $("#boxG");
+  const $boxC = $("#boxC");
+
+  $boxC.change(function () {
+    if (this.checked) {
+      $boxW.prop("checked", false);
+      $boxU.prop("checked", false);
+      $boxB.prop("checked", false);
+      $boxR.prop("checked", false);
+      $boxG.prop("checked", false);
+    }
+  });
+
+  const $coloredBoxes = $boxW.add($boxU).add($boxB).add($boxR).add($boxG);
+
+  $coloredBoxes.change(function () {
+    if (this.checked) {
+      $boxC.prop("checked", false);
+    }
+  });
 
   ////// WORKING WITH OTHER DOM ELEMENTS
 
@@ -164,11 +191,12 @@ $(document).ready(function () {
 
     if (colorArray.length > 0) {
       if (colorOperator === "or") {
-        const formattedColorArray = colorArray.map((color) => `c:${color}`);
-        const colorString = `(${formattedColorArray.join(" or ")})`;
-        queryArray.push(colorString);
-      } else if (colorOperator === "and") {
+        // const formattedColorArray = colorArray.map((color) => `c:${color}`);
+        // const colorString = `(${formattedColorArray.join(" or ")})`;
+        // queryArray.push(colorString);
         queryArray.push("c:" + colorArray.join(""));
+      } else if (colorOperator === "and") {
+        queryArray.push("c=" + colorArray.join(""));
       } else if (colorOperator === "id") {
         queryArray.push("id:" + colorArray.join(""));
       }
