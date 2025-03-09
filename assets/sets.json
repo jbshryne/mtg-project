@@ -1,0 +1,23 @@
+{
+  "core": ["core"],
+  "expansion": ["expansion"],
+  "supplemental": [
+    "masters",
+    "masterpiece",
+    "from_the_vault",
+    "spellbook",
+    "premium_deck",
+    "duel_deck",
+    "box",
+    "promo",
+    "arsenal",
+    "draft_innovation",
+    "commander",
+    "planechase",
+    "archenemy",
+    "starter"
+  ],
+  "non-DCI legal": ["vanguard", "funny", "memorabilia"],
+  "digital": ["alchemy", "treasure_chest"],
+  "extras": ["token", "minigame"]
+}

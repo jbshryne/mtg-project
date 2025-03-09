@@ -9,6 +9,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=IM+Fell+Double+Pica&family=Poiret+One&family=Uncial+Antiqua&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css" />
   <script src="https://code.jquery.com/jquery-3.7.0.js" integrity="sha256-JlqSTELeR4TLqP0OG9dxM7yDPqX1ox/HfgiSLBj8+kM=" crossorigin="anonymous"></script>
   <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
@@ -21,48 +22,75 @@
     <h2>MTG CONCLAVE - Card Searcher</h2>
   </header>
 
-  <form>
-    <label>Card Name:
+  <form autocomplete="off" id="searchForm">
+    <label for="name">Card Name:
       <input type="text" name="name" id="nameInput" placeholder="Words can be full or partial" /></label>
-    <label>Types:
+
+    <label for="type">Types:
       <input type="text" name="type" id="typeInput" placeholder="Including super- and/or subtypes" /></label>
+    <button type="button" id="addRandomTypeBtn">+ <i class="fas fa-random"></i></button>
+    <select id="randomTypeDropdown">
+      <option value="supertypes">Supertype</option>
+      <option value="mainCardTypes">Main Card Type</option>
+      <option value="creatureTypes" selected>Creature Type</option>
+      <option value="artifactTypes">Artifact Type</option>
+      <option value="enchantmentTypes">Enchantment Type</option>
+      <option value="spellTypes">Spell Type</option>
+      <option value="planeswalkerTypes">Planeswalker Type</option>
+      <option value="battleTypes">Battle Type</option>
+      <option value="landTypes">Land Type</option>
+    </select>
     <br /><br />
+
     <fieldset id="colorsField">
       <legend>Color:
         <small>
-          <input type="radio" id="colorId" name="colorOps" value="id" checked>ID (EDH)</input>
-          <input type="radio" id="colorAnd" name="colorOps" value="and">Exactly</input>
-          <input type="radio" id="colorOr" name="colorOps" value="or">Includes</input>
+          <input type="radio" id="colorAnd" name="colorOps" value="and" checked>Exactly</input>
+          <input type="radio" id="colorOr" name="colorOps" value="or">Including</input>
+          <input type="radio" id="colorNot" name="colorOps" value="not">Excluding</input>
+          <input type="radio" id="colorId" name="colorOps" value="id">Identity (EDH)</input>
         </small>
       </legend>
-      </legend>
       <label>
-        <input type="checkbox" class="color" id="boxW" value="w" />
+        <input type="checkbox" class="color coloredBox" value="w" />
         White
       </label>
       <label>
-        <input type="checkbox" class="color" id="boxU" value="u" />
+        <input type="checkbox" class="color coloredBox" value="u" />
         Blue
       </label>
       <label>
-        <input type="checkbox" class="color" id="boxB" value="b" />
+        <input type="checkbox" class="color coloredBox" value="b" />
         Black
       </label>
       <label>
-        <input type="checkbox" class="color" id="boxR" value="r" />
+        <input type="checkbox" class="color coloredBox" value="r" />
         Red
       </label>
       <label>
-        <input type="checkbox" class="color" id="boxG" value="g" />
+        <input type="checkbox" class="color coloredBox" value="g" />
         Green
       </label>
       <label>
-        <input type="checkbox" class="color" id="boxC" value="c" />
+        <input type="checkbox" class="color" id="colorlessBox" value="c" />
         Colorless
       </label>
     </fieldset>
     <br />
-    <fieldset id="rarityField>">
+
+    <label>Rules Text:
+      <input type="text" name="rulesText" id="rulesTextInput" placeholder='Individual words and/or "phrases in quotes"' />
+      <button type="button" id="addRandomRulesBtn">+ <i class="fas fa-random"></i></button>
+      <select id="randomRulesDropdown">
+        <option value="keyword-abilities">Keyword Ability</option>
+        <option value="keyword-actions">Keyword Action</option>
+        <option value="ability-words">Ability Words</option>
+        <option value="flavor-words">Flavor Words</option>
+      </select>
+    </label>
+    <br /><br />
+
+    <fieldset id="rarityField">
       <legend>Rarity:</legend>
       <label>
         <input type="checkbox" class="rarity" value="c" />
@@ -82,11 +110,36 @@
       </label>
     </fieldset>
     <br />
+
     <label id="setInputLabel">Sets:
       <input type="text" id="setInput" placeholder="Search for full name or set code">
-      <div id="setSuggestions"></div>
-      <ul id="selectedSetList"></ul>
+      <button type="button" id="addRandomSetBtn"><i class="fas fa-random"></i></button>
+      <select id="randomSetDropdown">
+        <option value="core">Core Set</option>
+        <option value="expansion">Expansion</option>
+        <option value="supplemental">Supplemental</option>
+        <option value="nonDCI">Non-DCI Legal</option>
+        <option value="digital">Digital Only</option>
+        <option value="extras">Extras</option>
+      </select>
+      <div id="setSuggestions" class="suggestions"></div>
+
     </label>
+
+    <label>Watermark:
+      <input type="text" name="watermark" id="watermarkInput" />
+      <button type="button" id="addRandomWatermarkBtn"><i class="fas fa-random"></i></button>
+      <select id="randomWatermarkDropdown">
+        <option value="faction">Faction</option>
+        <option value="cardInfo">Card Info</option>
+        <option value="promo">Promo</option>
+        <option value="crossover">Crossover</option>
+      </select>
+    </label>
+    <div id="watermarkSuggestions" class="suggestions"></div>
+
+    <ul id="selectedSetList"></ul>
+
     <label>Sort results by:
       <select id="sortDropdown">
         <option value="name">Name</option>
@@ -100,6 +153,7 @@
         <option value="set">Set & Collector #</option>
       </select>
     </label>
+
     <fieldset>
       <legend>Options:</legend>
       <label>

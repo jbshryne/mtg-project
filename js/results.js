@@ -10,7 +10,7 @@ $(function () {
 
   const $displayBox = $(".displayBox");
   const $displayingResults = $("#displayingResults");
-  const $imgContainer = $("<div class='imgContainer'></div>")
+  const $imgContainer = $("<div class='imgContainer'></div>");
 
   let allResultsArray = [];
   const pageArray = [];
@@ -46,11 +46,11 @@ $(function () {
     brw: 23,
     rgu: 24,
     gwb: 25,
-    wubr: 26,
-    wubg: 27,
+    ubrg: 26,
+    wbrg: 27,
     wurg: 28,
-    wbrg: 29,
-    ubrg: 30,
+    wubg: 29,
+    wubr: 30,
     wubrg: 31,
   };
 
@@ -277,6 +277,7 @@ $(function () {
   } else {
     //// Creating buttons
     const $buttonDiv = $('<div class="buttonDiv"></div>');
+
     const $prevPageBtn = $(
       '<button class="navBtn prevPage">Previous Page</button>'
     );
@@ -284,6 +285,10 @@ $(function () {
       '<button class="navBtn nextPage">Next Page</button>'
     );
     //// Only rendering if applicable
+    // $("<button>Go Back</button>")
+    //   .on("click", () => history.back())
+    //   .appendTo($buttonDiv);
+
     if (allPages[`page${targetPage - 1}`]) {
       $buttonDiv.append($prevPageBtn);
     }
@@ -291,6 +296,13 @@ $(function () {
     if (allPages[`page${targetPage + 1}`]) {
       $buttonDiv.append($nextPageBtn);
     }
+
+    $("<button>New Search</button>")
+      .on("click", () => {
+        localStorage.clear();
+        window.location.href = "index.html";
+      })
+      .appendTo($buttonDiv);
 
     ////// Populating result box w/ card images
     pageArray.push(...allPages[`page${targetPage}`]);
@@ -328,28 +340,24 @@ $(function () {
     $buttonDiv.appendTo($("header"));
     $buttonDiv.clone().appendTo($("footer"));
 
-    $(".prevPage")
-      .off("click")
-      .on("click", () => {
-        localStorage.setItem("targetPage", targetPage - 1);
-        window.onbeforeunload = function () {
-          window.scrollTo(0, 0);
-        };
+    $prevPageBtn.off("click").on("click", () => {
+      localStorage.setItem("targetPage", targetPage - 1);
+      window.onbeforeunload = function () {
+        window.scrollTo(0, 0);
+      };
 
-        // history.back();
-        location.reload();
-      });
+      // history.back();
+      location.reload();
+    });
 
-    $(".nextPage")
-      .off("click")
-      .on("click", () => {
-        localStorage.setItem("targetPage", targetPage + 1);
-        window.onbeforeunload = function () {
-          window.scrollTo(0, 0);
-        };
+    $nextPageBtn.off("click").on("click", () => {
+      localStorage.setItem("targetPage", targetPage + 1);
+      window.onbeforeunload = function () {
+        window.scrollTo(0, 0);
+      };
 
-        location.reload();
-      });
+      location.reload();
+    });
   }
 });
 
