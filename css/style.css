@@ -36,6 +36,12 @@ label {
   margin: 2px 10px;
 }
 
+.searchField {
+  border: 4px ridge rgb(30, 29, 28);
+  border-radius: 5px;
+  padding: 30px 20px;
+}
+
 img,
 .errorMessage {
   /* font-family: "Poiret One", cursive; */

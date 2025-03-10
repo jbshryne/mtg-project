@@ -1,9 +1,167 @@
 $(document).ready(function () {
-  //// Load or generate list of searchable sets
-  let searchableSets = JSON.parse(localStorage.getItem("searchableSets"));
-  let watermarks = JSON.parse(localStorage.getItem("watermarks"));
-  let typeCatalog = JSON.parse(localStorage.getItem("typeCatalog"));
-  let oracleText = JSON.parse(localStorage.getItem("oracleText"));
+  //// Load or generate lists of card types, watermarks, and set codes
+  let searchCatalogs = JSON.parse(localStorage.getItem("searchCatalogs"));
+
+  ////// Check if searchCatalogs are outdated or null
+  const currentDate = Date.now();
+
+  if (searchCatalogs && searchCatalogs._dateRetrieved) {
+    const dateRetrieved = Date.parse(searchCatalogs._dateRetrieved);
+    const timeDifference = currentDate - dateRetrieved;
+    const hoursDifference = timeDifference / (1000 * 60 * 60);
+
+    if (hoursDifference > 24) {
+      setCatalog = null;
+    }
+  }
+
+  if (!searchCatalogs) {
+    searchCatalogs = {
+      typeCatalog: {
+        supertypes: [],
+        mainCardTypes: [],
+        creatureTypes: [],
+        planeswalkerTypes: [],
+        landTypes: [],
+        artifactTypes: [],
+        enchantmentTypes: [],
+        spellTypes: [],
+        battleTypes: [],
+      },
+      oracleText: {
+        "keyword-abilities": [],
+        "keyword-actions": [],
+        "ability-words": [],
+        "flavor-words": [],
+      },
+      setCatalog: [],
+      watermarks: {
+        faction: [
+          "Abzan",
+          "Agents of Sneak",
+          "Atarka",
+          "Azorius",
+          "Boros",
+          "Brokers",
+          "Cabaretti",
+          "Crossbreed Labs",
+          "Dimir",
+          "Dromoka",
+          "Goblin Explosioneers",
+          "Golgari",
+          "Gruul",
+          "Izzet",
+          "Jeskai",
+          "Kolaghan",
+          "League of Dastardly Doom",
+          "Lorehold",
+          "Maestros",
+          "Mardu",
+          "Mirran",
+          "Obscura",
+          "Ojutai",
+          "Order of the Widget",
+          "Orzhov",
+          "Phyrexian",
+          "Prismari",
+          "Quandrix",
+          "Rakdos",
+          "Riveteers",
+          "Selesnya",
+          "Silumgar",
+          "Silverquill",
+          "Simic",
+          "Sultai",
+          "Tarkir",
+          "Temur",
+          "Witherbloom",
+        ],
+        cardInfo: ["Conspiracy", "Desparked", "Foretell", "Set"],
+        promo: [
+          "Arena",
+          "Color Pie",
+          "CoroCoro",
+          "DCI",
+          "Dengeki Maoh",
+          "Flavor",
+          "FNM",
+          "Grand Prix",
+          "Hero's Path",
+          "Japan Junior",
+          "Judge Academy",
+          "Junior",
+          "Junior APAC",
+          "Junior Europe",
+          "MagicFest",
+          "MPS",
+          "MTG",
+          "MTG 10",
+          "MTG 15",
+          "Planeswalker",
+          "Pro Tour",
+          "Scholarship",
+          "Trump Katsumai",
+          "WOTC",
+          "WPN",
+        ],
+        crossover: ["Cutie Mark", "D&D", "Nerf", "Transformers"],
+      },
+      _dateRetrieved: new Date(),
+    };
+
+    const endpoints = {
+      supertypes: "catalog/supertypes",
+      mainCardTypes: "catalog/card-types",
+      creatureTypes: "catalog/creature-types",
+      planeswalkerTypes: "catalog/planeswalker-types",
+      landTypes: "catalog/land-types",
+      artifactTypes: "catalog/artifact-types",
+      enchantmentTypes: "catalog/enchantment-types",
+      spellTypes: "catalog/spell-types",
+      battleTypes: "catalog/battle-types",
+      "keyword-abilities": "catalog/keyword-abilities",
+      "keyword-actions": "catalog/keyword-actions",
+      "ability-words": "catalog/ability-words",
+      "flavor-words": "catalog/flavor-words",
+      sets: "sets",
+    };
+
+    const timedSearchFetch = (type, urlTag) => {
+      const category = urlTag.endsWith("types") ? "typeCatalog" : "oracleText";
+
+      return new Promise((resolve) => {
+        setTimeout(() => {
+          $.getJSON("https://api.scryfall.com/" + urlTag, function (response) {
+            urlTag == "sets"
+              ? (searchCatalogs.setCatalog = response.data.reduce(
+                  (acc, set) => {
+                    acc[set.name] = {
+                      code: set.code,
+                      setType: set.set_type,
+                      uri: set.uri,
+                    };
+                    return acc;
+                  },
+                  {}
+                ))
+              : (searchCatalogs[category][type] = response.data);
+            resolve();
+          });
+        }, 100);
+      });
+    };
+
+    const fetchSearchData = async () => {
+      for (const [type, urlTag] of Object.entries(endpoints)) {
+        await timedSearchFetch(type, urlTag);
+      }
+      localStorage.setItem("searchCatalogs", JSON.stringify(searchCatalogs));
+    };
+
+    fetchSearchData();
+  }
+
+  const { typeCatalog, oracleText, setCatalog, watermarks } = searchCatalogs;
 
   const setCategories = {
     core: ["core"],
@@ -29,36 +187,23 @@ $(document).ready(function () {
     extras: ["token", "minigame"],
   };
 
-  //// Check if searchableSets is null or outdated
-  const currentDate = new Date();
+  // // if (!setCatalog) {
+  // //   $.getJSON("https://api.scryfall.com/sets", function (setsResponse) {
 
-  if (searchableSets && searchableSets._dateRetrieved) {
-    const dateRetrieved = new Date(searchableSets._dateRetrieved);
-    const timeDifference = currentDate - dateRetrieved;
-    const hoursDifference = timeDifference / (1000 * 60 * 60);
+  // function fetchSets(searchCatalogs, response) {
+  //   response.data.forEach((set) => {
+  //     searchCatalogs.setCatalog[set.name] = {
+  //       code: set.code,
+  //       setType: set.set_type,
+  //       uri: set.uri,
+  //     };
+  //   });
 
-    if (hoursDifference > 24) {
-      searchableSets = null;
-    }
-  }
-
-  if (!searchableSets) {
-    $.getJSON("https://api.scryfall.com/sets", function (setsResponse) {
-      const sets = setsResponse.data;
-
-      searchableSets = {};
-      sets.forEach((set) => {
-        searchableSets[set.name] = {
-          code: set.code,
-          setType: set.set_type,
-          uri: set.uri,
-        };
-      });
-      searchableSets._dateRetrieved = new Date();
-
-      localStorage.setItem("searchableSets", JSON.stringify(searchableSets));
-    });
-  }
+  //   // setCatalog._dateRetrieved = new Date();
+  //   // localStorage.setItem("setCatalog", JSON.stringify(setCatalog));
+  // }
+  // //   });
+  // // }
 
   const $typeInput = $("#typeInput");
   const $addRandomTypeBtn = $("#addRandomTypeBtn");
@@ -79,7 +224,8 @@ $(document).ready(function () {
   const $setSuggestions = $("#setSuggestions");
   const $selectedSetList = $("#selectedSetList");
 
-  /// SETTING UP INPUTS, BUTTONS, AND DROPDOWNS
+  ////// SETTING UP INPUTS & BUTTONS
+  // function setupRandomButtons() {
 
   $addRandomTypeBtn.on("click", function () {
     const currentTypeInputVal = $typeInput.val().trim();
@@ -149,8 +295,8 @@ $(document).ready(function () {
     $setSuggestions.empty();
 
     if (inputText.length >= 2) {
-      Object.keys(searchableSets).forEach((setName, idx) => {
-        const set = searchableSets[setName];
+      Object.keys(setCatalog).forEach((setName, idx) => {
+        const set = setCatalog[setName];
 
         // Check if either set name or set code contains the input text
         if (
@@ -190,15 +336,15 @@ $(document).ready(function () {
     const selectedCategory = $randomSetDropdown.val();
     const categorySets = setCategories[selectedCategory];
 
-    const setsInCategory = Object.values(searchableSets).filter((set) =>
+    const setsInCategory = Object.values(setCatalog).filter((set) =>
       categorySets.includes(set.setType)
     );
 
     const randomSet =
       setsInCategory[Math.floor(Math.random() * setsInCategory.length)];
 
-    const setName = Object.keys(searchableSets).find(
-      (key) => searchableSets[key].code === randomSet.code
+    const setName = Object.keys(setCatalog).find(
+      (key) => setCatalog[key].code === randomSet.code
     );
 
     $selectedSetList.append(
@@ -216,6 +362,7 @@ $(document).ready(function () {
         $(this).parent().remove();
       });
   });
+  // }
 
   function constructSetCodesQueryString() {
     const selectedSetElements = $(".selectedSet"); // Assuming you've used this class for selected <li> elements
@@ -234,7 +381,7 @@ $(document).ready(function () {
     return setCodesQueryString;
   }
 
-  /// SETTING UP THE COLOR CHECKBOXES
+  ////// SETTING UP THE COLOR CHECKBOXES
 
   const $coloredBoxes = $(".coloredBox");
   const $colorlessBox = $("#colorlessBox");
