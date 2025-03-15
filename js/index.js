@@ -11,7 +11,7 @@ $(document).ready(function () {
     const hoursDifference = timeDifference / (1000 * 60 * 60);
 
     if (hoursDifference > 24) {
-      setCatalog = null;
+      searchCatalogs = null;
     }
   }
 
@@ -28,14 +28,14 @@ $(document).ready(function () {
         spellTypes: [],
         battleTypes: [],
       },
-      oracleText: {
+      rulesTextCatalog: {
         "keyword-abilities": [],
         "keyword-actions": [],
         "ability-words": [],
         "flavor-words": [],
       },
       setCatalog: [],
-      watermarks: {
+      watermarkCatalog: {
         faction: [
           "Abzan",
           "Agents of Sneak",
@@ -127,7 +127,9 @@ $(document).ready(function () {
     };
 
     const timedSearchFetch = (type, urlTag) => {
-      const category = urlTag.endsWith("types") ? "typeCatalog" : "oracleText";
+      const category = urlTag.endsWith("types")
+        ? "typeCatalog"
+        : "rulesTextCatalog";
 
       return new Promise((resolve) => {
         setTimeout(() => {
@@ -161,7 +163,8 @@ $(document).ready(function () {
     fetchSearchData();
   }
 
-  const { typeCatalog, oracleText, setCatalog, watermarks } = searchCatalogs;
+  const { typeCatalog, rulesTextCatalog, setCatalog, watermarkCatalog } =
+    searchCatalogs;
 
   const setCategories = {
     core: ["core"],
@@ -187,38 +190,29 @@ $(document).ready(function () {
     extras: ["token", "minigame"],
   };
 
-  // // if (!setCatalog) {
-  // //   $.getJSON("https://api.scryfall.com/sets", function (setsResponse) {
-
-  // function fetchSets(searchCatalogs, response) {
-  //   response.data.forEach((set) => {
-  //     searchCatalogs.setCatalog[set.name] = {
-  //       code: set.code,
-  //       setType: set.set_type,
-  //       uri: set.uri,
-  //     };
-  //   });
-
-  //   // setCatalog._dateRetrieved = new Date();
-  //   // localStorage.setItem("setCatalog", JSON.stringify(setCatalog));
-  // }
-  // //   });
-  // // }
+  const $nameInput = $("#nameInput");
+  const $addNameTextBtn = $("#addNameTextBtn");
+  const $selectedNameList = $("#selectedNameList");
 
   const $typeInput = $("#typeInput");
+  const $addTypeTextBtn = $("#addTypeTextBtn");
   const $addRandomTypeBtn = $("#addRandomTypeBtn");
   const $randomTypeDropdown = $("#randomTypeDropdown");
+  const $selectedTypeList = $("#selectedTypeList");
 
   const $rulesTextInput = $("#rulesTextInput");
+  const $addRulesTextBtn = $("#addRulesTextBtn");
   const $addRandomRulesBtn = $("#addRandomRulesBtn");
   const $randomRulesDropdown = $("#randomRulesDropdown");
+  const $selectedRulesList = $("#selectedRulesList");
 
   const $watermarkInput = $("#watermarkInput");
+  const $addWatermarkTextBtn = $("#addWatermarkTextBtn");
   const $addRandomWatermarkBtn = $("#addRandomWatermarkBtn");
-  const $randomWatermarkDropdown = $("#randomWatermarkDropdown");
-  const $watermarkSuggestions = $("#watermarkSuggestions");
+  const $selectedWatermarkList = $("#selectedWatermarkList");
 
   const $setInput = $("#setInput");
+  const $addSetTextBtn = $("#addSetTextBtn");
   const $addRandomSetBtn = $("#addRandomSetBtn");
   const $randomSetDropdown = $("#randomSetDropdown");
   const $setSuggestions = $("#setSuggestions");
@@ -226,6 +220,107 @@ $(document).ready(function () {
 
   ////// SETTING UP INPUTS & BUTTONS
   // function setupRandomButtons() {
+
+  function populateSuggestionList(thisInput, catalog, isAdditive = false) {
+    const $thisInput = $(thisInput);
+    const inputVal = $thisInput.val();
+
+    let inputText = "";
+    if (isAdditive) {
+      const inputWords = inputVal.split(" ");
+      inputText = inputWords[inputWords.length - 1].toLowerCase();
+    } else {
+      inputText = inputVal.toLowerCase();
+    }
+
+    console.log(inputText);
+
+    const $suggestions = $thisInput
+      .closest(".searchField")
+      .find(".suggestions");
+
+    const suggestionsList = Object.keys(catalog).reduce((acc, key) => {
+      acc.push(...catalog[key]);
+      return acc;
+    }, []);
+
+    $suggestions.empty();
+
+    if (inputText.length >= 1) {
+      suggestionsList.forEach((suggestion) => {
+        if (suggestion.toLowerCase().startsWith(inputText)) {
+          const suggestionText = suggestion;
+          const $suggestion = $(
+            `<div class="suggestion">${suggestionText}</div>`
+          );
+
+          $suggestion.on("click", function () {
+            if (isAdditive) {
+              const inputWords = $thisInput.val().trim().split(" ");
+              inputWords[inputWords.length - 1] = suggestionText;
+              $thisInput.val(inputWords.join(" ") + " ");
+            } else {
+              $thisInput.val(suggestionText);
+            }
+            $suggestions.empty();
+          });
+
+          $suggestions.append($suggestion);
+        }
+      });
+    }
+  }
+
+  function getRandomChoice(thisButton, catalog) {
+    const $textInput = $(thisButton).closest(".searchField").find("input");
+    const selectedGroup = $(thisButton)
+      .closest(".searchField")
+      .find("select")
+      .val();
+    const choiceList = catalog[selectedGroup];
+    const randomChoice =
+      choiceList[Math.floor(Math.random() * choiceList.length)];
+    $textInput.val(randomChoice);
+  }
+
+  function addTextToList(thisButton, listId) {
+    const $textInput = $(thisButton).closest(".searchField").find("input");
+    const $list = $(listId);
+    const inputVal = $textInput.val().trim();
+
+    if (inputVal) {
+      $list.css("display", "block");
+      $list.append(
+        `<li class="selectedItem"><button class="removeParamBtn smallButton">X</button> ${inputVal}</li>`
+      );
+      $textInput.val("");
+      setupRemoveButtons();
+    }
+  }
+
+  function setupRemoveButtons() {
+    $(".removeParamBtn")
+      .off()
+      .on("click", function () {
+        if ($(this).parent().siblings().length === 0) {
+          $(this).parent().parent().css("display", "none");
+        }
+        $(this).parent().remove();
+        console.log("clicked");
+      });
+  }
+
+  $addNameTextBtn.on("click", function () {
+    addTextToList(this, "#selectedNameList");
+  });
+
+  $typeInput.on("input", function () {
+    populateSuggestionList(this, typeCatalog, true);
+  });
+
+  $addTypeTextBtn.on("click", function () {
+    addTextToList(this, "#selectedTypeList");
+  });
 
   $addRandomTypeBtn.on("click", function () {
     const currentTypeInputVal = $typeInput.val().trim();
@@ -240,10 +335,14 @@ $(document).ready(function () {
     }
   });
 
+  $addRulesTextBtn.on("click", function () {
+    addTextToList(this, "#selectedRulesList");
+  });
+
   $addRandomRulesBtn.on("click", function () {
     const currentRulesInputVal = $rulesTextInput.val().trim();
     const selectedType = $randomRulesDropdown.val();
-    const rulesList = oracleText[selectedType];
+    const rulesList = rulesTextCatalog[selectedType];
     let randomRule = rulesList[Math.floor(Math.random() * rulesList.length)];
 
     randomRule = randomRule.includes(" ") ? '"' + randomRule + '"' : randomRule;
@@ -256,38 +355,15 @@ $(document).ready(function () {
   });
 
   $watermarkInput.on("input", function () {
-    const inputText = $watermarkInput.val().toLowerCase();
-    const watermarkList = Object.keys(watermarks).reduce((acc, key) => {
-      acc.push(...watermarks[key]);
-      return acc;
-    }, []);
+    populateSuggestionList(this, watermarkCatalog);
+  });
 
-    $watermarkSuggestions.empty();
-
-    if (inputText.length >= 1) {
-      watermarkList.forEach((watermark) => {
-        if (watermark.toLowerCase().startsWith(inputText)) {
-          const $suggestion = $(
-            `<div class="watermarkSuggestion">${watermark}</div>`
-          );
-
-          $suggestion.on("click", function () {
-            $watermarkInput.val(watermark);
-            $watermarkSuggestions.empty();
-          });
-
-          $watermarkSuggestions.append($suggestion);
-        }
-      });
-    }
+  $addWatermarkTextBtn.on("click", function () {
+    addTextToList(this, "#selectedWatermarkList");
   });
 
   $addRandomWatermarkBtn.on("click", function () {
-    const selectedType = $randomWatermarkDropdown.val();
-    const watermarkList = watermarks[selectedType];
-    const randomWatermark =
-      watermarkList[Math.floor(Math.random() * watermarkList.length)];
-    $watermarkInput.val(randomWatermark);
+    getRandomChoice(this, watermarkCatalog);
   });
 
   $setInput.on("input", function () {
@@ -303,32 +379,53 @@ $(document).ready(function () {
           setName.toLowerCase().includes(inputText) ||
           (set.code && set.code.toLowerCase().includes(inputText))
         ) {
+          const newSuggestionText = `${setName} (${
+            set.code && set.code.toUpperCase()
+          })`;
+
           const $suggestion = $(
-            `<div class="setSuggestion">${
-              set.code && set.code.toUpperCase()
-            } - ${setName}</div>`
+            `<div class="suggestion">${newSuggestionText}</div>`
           );
 
           $suggestion.on("click", function () {
-            $selectedSetList.append(
-              `<li data-setcode="${
-                set.code
-              }" class="selectedSet"><button class="removeSetBtn">X</button>
-              ${setName} (${set.code.toUpperCase()})</li>`
-            );
             $setSuggestions.empty();
-            $setInput.val("");
+            $setInput.val(`${setName} [${set.code.toUpperCase()}]`);
           });
-
-          $(".removeSetBtn")
-            .off()
-            .on("click", function () {
-              $(this).parent().remove();
-            });
 
           $setSuggestions.append($suggestion);
         }
       });
+    }
+  });
+
+  $addSetTextBtn.on("click", function () {
+    const setCode = $setInput
+      .val()
+      .match(/\[(.*?)\]/)[1]
+      .toUpperCase();
+    const setName = $setInput
+      .val()
+      .replace(/\s*\[.*?\]/, "")
+      .trim();
+
+    console.log(setCode, setName);
+
+    if (
+      setCode &&
+      setName &&
+      (Object.keys(setCatalog).includes(setName) ||
+        Object.values(setCatalog).some(
+          (set) => set.code.toUpperCase() === setCode
+        ))
+    ) {
+      $selectedSetList.append(
+        `<li data-setcode="${setCode}" class="selectedSet"><button class="removeParamBtn smallButton">X</button>
+          ${setName} [${setCode}]</li>`
+      );
+      $selectedSetList.css("display", "block");
+      $setSuggestions.empty();
+      $setInput.val("");
+      setupRemoveButtons();
     }
   });
 
@@ -347,39 +444,11 @@ $(document).ready(function () {
       (key) => setCatalog[key].code === randomSet.code
     );
 
-    $selectedSetList.append(
-      `<li data-setcode="${
-        randomSet.code
-      }" class="selectedSet"><button class="removeSetBtn">X</button>
-          ${setName} (${randomSet.code.toUpperCase()})</li>`
-    );
     $setSuggestions.empty();
-    $setInput.val("");
-
-    $(".removeSetBtn")
-      .off()
-      .on("click", function () {
-        $(this).parent().remove();
-      });
+    $setInput.val(`${setName} [${randomSet.code.toUpperCase()}]`);
+    setupRemoveButtons();
   });
   // }
-
-  function constructSetCodesQueryString() {
-    const selectedSetElements = $(".selectedSet"); // Assuming you've used this class for selected <li> elements
-    const setCodes = selectedSetElements
-      .map((_, element) => {
-        console.log(element.dataset.setcode);
-        return $(element).data("setcode").toLowerCase();
-      })
-      .get();
-
-    // Constructing the set codes query string
-    const setCodesQueryString = setCodes
-      .map((code) => `s:${code}`)
-      .join(" OR ");
-
-    return setCodesQueryString;
-  }
 
   ////// SETTING UP THE COLOR CHECKBOXES
 
@@ -400,8 +469,8 @@ $(document).ready(function () {
 
   ////// WORKING WITH OTHER DOM ELEMENTS
 
-  $("#allCardsBtn").on("click", searchHandler);
-  $("#randomBtn").on("click", searchHandler);
+  $("#allCardsBtn").on("click", searchButtonHandler);
+  $("#randomBtn").on("click", searchButtonHandler);
 
   const $errorMessage = $(".errorMessage");
   window.onbeforeunload = function () {
@@ -411,7 +480,7 @@ $(document).ready(function () {
   ////// SEARCH LOGIC
 
   //// Wrapper function to keep track of which button was clicked
-  function searchHandler(e) {
+  function searchButtonHandler(e) {
     e.preventDefault();
 
     const clickedBtnId = $(e.target).attr("id");
@@ -434,31 +503,64 @@ $(document).ready(function () {
     let apiCallUrl = "";
     let queryArray = [];
 
+    function formatFieldParams($inputVal, $selectedList, fieldSymbol) {
+      let inputVal = $inputVal.val();
+      let inputArray = [];
+      let inputString = "";
+
+      if (inputVal) {
+        if (fieldSymbol === "wm") {
+          inputVal = inputVal.toLowerCase().replace(/[\s']/g, "");
+        }
+        inputArray.push(inputVal.trim());
+      }
+
+      if ($selectedList.children().length > 0) {
+        $selectedList.children().each(function () {
+          let text = $(this).text().trim().substring(2);
+          if (fieldSymbol === "wm") {
+            text = text.toLowerCase().replace(/[\s']/g, "");
+          }
+          inputArray.push(text);
+        });
+      }
+
+      if (inputArray.length > 0) {
+        const formattedArray = inputArray.map((param) => {
+          const params = param.match(/"[^"]+"|\S+/g); // Match phrases in quotes or single params
+          const formattedParams = params.map((p) => {
+            if (fieldSymbol === "s") {
+              p = param.match(/\[(.*?)\]/)?.[1]?.toLowerCase() || param;
+            }
+            return `${fieldSymbol}:${p}`;
+          });
+          return `(${formattedParams.join(" ")})`;
+        });
+        inputString = `(${formattedArray.join(" or ")})`;
+        queryArray.push(inputString);
+      }
+
+      return inputArray;
+    }
+
     console.log("Searching Database...");
 
     //// CONSTRUCTING THE API CALL
 
     ////// name
 
-    const nameInputVal = $("#nameInput").val();
     let nameInputArray = [];
 
-    if (nameInputVal) {
-      nameInputArray = nameInputVal.split(" ");
-      queryArray.push(...nameInputArray);
+    if ($selectedNameList.children().length > 0 || $nameInput.val()) {
+      nameInputArray = formatFieldParams($nameInput, $selectedNameList, "name");
     }
 
     ////// types
 
-    const typeInputVal = $typeInput.val();
     let typeInputArray = [];
-    let typeInputString = "";
 
-    if (typeInputVal) {
-      typeInputArray = typeInputVal.split(" ");
-      const formattedTypeArray = typeInputArray.map((type) => `t:${type}`);
-      typeInputString = `(${formattedTypeArray.join(" ")})`;
-      queryArray.push(typeInputString);
+    if ($selectedTypeList.children().length > 0 || $typeInput.val()) {
+      typeInputArray = formatFieldParams($typeInput, $selectedTypeList, "t");
     }
 
     ////// colors
@@ -488,37 +590,26 @@ $(document).ready(function () {
 
     ////// rules text
 
-    const rulesInputVal = $rulesTextInput.val();
-    let rulesInputArray = [];
-    let rulesInputString = "";
+    let rulesTextInputArray = [];
 
-    if (rulesInputVal) {
-      /// Detecting uses of '""' in the input
-      const quotedStrings = rulesInputVal.match(/"([^"]*)"/g);
-      if (quotedStrings) {
-        rulesInputArray = rulesInputVal.split(/"([^"]*)"/g);
-        rulesInputArray = rulesInputArray.filter((el) => el !== "");
-      } else {
-        rulesInputArray = rulesInputVal.split(" ");
-      }
-
-      const formattedRulesArray = rulesInputArray.map((rule) => `o:"${rule}"`);
-      rulesInputString = `(${formattedRulesArray.join(" ")})`;
-      queryArray.push(rulesInputString);
-
-      console.log(rulesInputArray);
+    if ($selectedRulesList.children().length > 0 || $rulesTextInput.val()) {
+      rulesTextInputArray = formatFieldParams(
+        $rulesTextInput,
+        $selectedRulesList,
+        "o"
+      );
     }
 
     ////// watermark
 
-    let watermarkInputVal = $watermarkInput
-      .val()
-      .toLowerCase()
-      .replace(/[\s']/g, "");
+    let watermarkInputArray = [];
 
-    if (watermarkInputVal) {
-      const formattedWatermark = `wm:${watermarkInputVal}`;
-      queryArray.push(formattedWatermark);
+    if ($selectedWatermarkList.children().length > 0 || $watermarkInput.val()) {
+      watermarkInputArray = formatFieldParams(
+        $watermarkInput,
+        $selectedWatermarkList,
+        "wm"
+      );
     }
 
     ////// rarities
@@ -538,14 +629,20 @@ $(document).ready(function () {
       queryArray.push(rarityString);
     }
 
-    ////// set code
+    ////// sets
 
-    const setCodesQueryString = constructSetCodesQueryString();
+    // const setCodesQueryString = constructSetCodesQueryString();
 
-    if (setCodesQueryString) {
-      const stringWithParentheses = `(${setCodesQueryString})`;
-      console.log(stringWithParentheses);
-      queryArray.push(stringWithParentheses);
+    // if (setCodesQueryString) {
+    //   const stringWithParentheses = `(${setCodesQueryString})`;
+    //   console.log(stringWithParentheses);
+    //   queryArray.push(stringWithParentheses);
+    // }
+
+    let setInputArray = [];
+
+    if ($selectedSetList.children().length > 0 || $setInput.val()) {
+      setInputArray = formatFieldParams($setInput, $selectedSetList, "s");
     }
 
     ////// other options
@@ -582,15 +679,19 @@ $(document).ready(function () {
     const searchParams = {
       nameWords: nameInputArray,
       types: typeInputArray,
+      rulesText: rulesTextInputArray,
       colors: colorArray,
       rarities: rarityArray,
-      setName: $setInput.val(),
-      watermark: watermarkInputVal,
+      sets: setInputArray,
+      watermarks: watermarkInputArray,
       sortOrder,
       apiCallUrl,
     };
 
     localStorage.setItem("searchParams", JSON.stringify(searchParams));
+
+    console.log(queryString);
+    // debugger;
 
     //// MAKING THE CALL
 

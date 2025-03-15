@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>MTG Conclave</title>
+  <title>MTG Conclave - Card Searcher</title>
   <link rel="icon" href="WandIcon.jpg">
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -19,32 +19,44 @@
 
 <body>
   <header>
-    <h2>MTG CONCLAVE - Card Searcher</h2>
+    <h2>MTG CONCLAVE</h2>
   </header>
 
   <form autocomplete="off" id="searchForm">
 
-    <label for="name" class="searchField">Card Name:
-      <input type="text" name="name" id="nameInput" placeholder="Words can be full or partial" />
-    </label>
+    <section class="row">
+      <!-- name -->
+      <div class="searchField">
+        <label for="nameInput">Card Name:</label>
+        <input type="text" name="name" id="nameInput" placeholder="Words can be full or partial" />
+        <button type="button" id="addNameTextBtn" class="smallButton"><i class="fas fa-arrow-right"></i> <i class="fas fa-list"></i></button>
+        <ul id="selectedNameList" class="selectedParamList"></ul>
+      </div>
 
+      <!-- type -->
+      <div class="searchField">
+        <label for="typeInput">Card Types:</label>
+        <input type="text" name="type" id="typeInput" placeholder="Including super- and/or subtypes" />
+        <button type="button" id="addTypeTextBtn" class="smallButton"><i class="fas fa-arrow-right"></i> <i class="fas fa-list"></i></button>
+        <span class="randomControls">
+          <select id="randomTypeDropdown">
+            <option value="supertypes">Supertype</option>
+            <option value="mainCardTypes">Main Card Type</option>
+            <option value="creatureTypes" selected>Creature Type</option>
+            <option value="artifactTypes">Artifact Type</option>
+            <option value="enchantmentTypes">Enchantment Type</option>
+            <option value="spellTypes">Spell Type</option>
+            <option value="planeswalkerTypes">Planeswalker Type</option>
+            <option value="battleTypes">Battle Type</option>
+            <option value="landTypes">Land Type</option>
+          </select>
+          <button type="button" id="addRandomTypeBtn" class="smallButton"><i class="fas fa-add"></i> <i class="fas fa-random"></i></button>
+        </span>
+        <div id="typeSuggestions" class="suggestions"></div>
+        <ul id="selectedTypeList" class="selectedParamList"></ul>
+      </div>
 
-    <label for="type" class="searchField">Types:
-      <input type="text" name="type" id="typeInput" placeholder="Including super- and/or subtypes" />
-      <button type="button" id="addRandomTypeBtn">+ <i class="fas fa-random"></i></button>
-      <select id="randomTypeDropdown">
-        <option value="supertypes">Supertype</option>
-        <option value="mainCardTypes">Main Card Type</option>
-        <option value="creatureTypes" selected>Creature Type</option>
-        <option value="artifactTypes">Artifact Type</option>
-        <option value="enchantmentTypes">Enchantment Type</option>
-        <option value="spellTypes">Spell Type</option>
-        <option value="planeswalkerTypes">Planeswalker Type</option>
-        <option value="battleTypes">Battle Type</option>
-        <option value="landTypes">Land Type</option>
-      </select>
-    </label>
-    <br /><br />
+    </section>
 
     <fieldset id="colorsField">
       <legend>Color:
@@ -80,19 +92,28 @@
         Colorless
       </label>
     </fieldset>
-    <br />
 
-    <label class="searchField">Rules Text:
-      <input type="text" name="rulesText" id="rulesTextInput" placeholder='Individual words and/or "phrases in quotes"' />
-      <button type="button" id="addRandomRulesBtn">+ <i class="fas fa-random"></i></button>
-      <select id="randomRulesDropdown">
-        <option value="keyword-abilities">Keyword Ability</option>
-        <option value="keyword-actions">Keyword Action</option>
-        <option value="ability-words">Ability Words</option>
-        <option value="flavor-words">Flavor Words</option>
-      </select>
-    </label>
-    <br /><br />
+
+    <section class="row">
+
+      <!-- rules text -->
+      <div class="searchField">
+        <label for="rulesTextInput">Rules Text:</label>
+        <input type="text" name="rulesText" id="rulesTextInput" placeholder='Words can be full or partial' />
+        <button type="button" id="addRulesTextBtn" class="smallButton"><i class="fas fa-arrow-right"></i> <i class="fas fa-list"></i></button>
+        <span class="randomControls">
+          <select id="randomRulesDropdown">
+            <option value="keyword-abilities">Keyword Ability</option>
+            <option value="keyword-actions">Keyword Action</option>
+            <option value="ability-words">Ability Words</option>
+            <option value="flavor-words">Flavor Words</option>
+          </select>
+          <button type="button" id="addRandomRulesBtn" class="smallButton"><i class="fas fa-add"></i> <i class="fas fa-random"></i></button>
+        </span>
+        <ul id="selectedRulesList" class="selectedParamList"></ul>
+      </div>
+
+    </section>
 
     <fieldset id="rarityField">
       <legend>Rarity:</legend>
@@ -113,37 +134,50 @@
         Mythic Rare
       </label>
     </fieldset>
-    <br />
 
-    <label id="setInputLabel" class="searchField">Sets:
-      <input type="text" id="setInput" placeholder="Search for full name or set code">
-      <button type="button" id="addRandomSetBtn"><i class="fas fa-random"></i></button>
-      <select id="randomSetDropdown">
-        <option value="core">Core Set</option>
-        <option value="expansion">Expansion</option>
-        <option value="supplemental">Supplemental</option>
-        <option value="nonDCI">Non-DCI Legal</option>
-        <option value="digital">Digital Only</option>
-        <option value="extras">Extras</option>
-      </select>
-      <div id="setSuggestions" class="suggestions"></div>
+    <section class="row">
 
-    </label>
+      <!-- set -->
+      <div class="searchField">
+        <label for="setInput">Set:</label>
+        <input type="text" name="set" id="setInput" placeholder="Search for full name or set code" />
+        <button type="button" id="addSetTextBtn" class="smallButton"><i class="fas fa-arrow-right"></i> <i class="fas fa-list"></i></button>
+        <span class="randomControls">
+          <select id="randomSetDropdown">
+            <option value="core">Core Set</option>
+            <option value="expansion">Expansion</option>
+            <option value="supplemental">Supplemental</option>
+            <option value="nonDCI">Non-DCI Legal</option>
+            <option value="digital">Digital Only</option>
+            <option value="extras">Extras</option>
+          </select>
+          <button type="button" id="addRandomSetBtn" class="smallButton"><i class="fas fa-random"></i></button>
+        </span>
+        <div id="setSuggestions" class="suggestions"></div>
+        <ul id="selectedSetList" class="selectedParamList"></ul>
+      </div>
 
-    <label class="searchField">Watermark:
-      <input type=" text" name="watermark" id="watermarkInput" />
-      <button type="button" id="addRandomWatermarkBtn"><i class="fas fa-random"></i></button>
-      <select id="randomWatermarkDropdown">
-        <option value="faction">Faction</option>
-        <option value="cardInfo">Card Info</option>
-        <option value="promo">Promo</option>
-        <option value="crossover">Crossover</option>
-      </select>
-    </label>
-    <div id="watermarkSuggestions" class="suggestions"></div>
+      <!-- watermark -->
+      <div class="searchField">
+        <label for="watermarkInput">Watermark:</label>
+        <input type="text" name="watermark" id="watermarkInput" />
+        <button type="button" id="addWatermarkTextBtn" class="smallButton"><i class="fas fa-arrow-right"></i> <i class="fas fa-list"></i></button>
+        <span class="randomControls">
+          <select id="randomWatermarkDropdown">
+            <option value="faction">Faction</option>
+            <option value="cardInfo">Card Info</option>
+            <option value="promo">Promo</option>
+            <option value="crossover">Crossover</option>
+          </select>
+          <button type="button" id="addRandomWatermarkBtn" class="smallButton"><i class="fas fa-random"></i></button>
+        </span>
+        <div id="watermarkSuggestions" class="suggestions"></div>
+        <ul id="selectedWatermarkList" class="selectedParamList"></ul>
+      </div>
 
-    <ul id="selectedSetList"></ul>
+    </section>
 
+    <!-- options -->
     <fieldset>
       <legend>Options:</legend>
       <label>
@@ -155,21 +189,25 @@
         Include Extras
       </label>
     </fieldset>
-    <br /><br />
 
-    <label class="searchField">Sort results by:
-      <select id="sortDropdown">
-        <option value="name">Name</option>
-        <option value="type">Type</option>
-        <option value="color">Color</option>
-        <option value="cmc">Mana Value</option>
-        <option value="power">Power</option>
-        <option value="toughness">Toughness</option>
-        <option value="rarity">Rarity</option>
-        <option value="released">Release Date</option>
-        <option value="set">Set & Collector #</option>
-      </select>
-    </label>
+    <section class="row">
+
+      <div class="searchField">
+        <label for="sortDropdown">Sort results by:</label>
+        <select id="sortDropdown">
+          <option value="name">Name</option>
+          <option value="type">Type</option>
+          <option value="color">Color</option>
+          <option value="cmc">Mana Value</option>
+          <option value="power">Power</option>
+          <option value="toughness">Toughness</option>
+          <option value="rarity">Rarity</option>
+          <option value="released">Release Date</option>
+          <option value="set">Set & Collector #</option>
+        </select>
+      </div>
+
+    </section>
 
     <div class="buttonDiv">
       <button type="submit" id="allCardsBtn">All Cards</button>
