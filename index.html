@@ -29,7 +29,7 @@
       <div class="searchField">
         <label for="nameInput">Card Name:</label>
         <input type="text" name="name" id="nameInput" placeholder="Words can be full or partial" />
-        <button type="button" id="addNameTextBtn" class="smallButton"><i class="fas fa-arrow-right"></i> <i class="fas fa-list"></i></button>
+        <button type="button" id="addNameTextBtn" class="smallButton addToList"><i class="fas fa-arrow-right"></i> <i class="fas fa-list"></i></button>
         <ul id="selectedNameList" class="selectedParamList"></ul>
       </div>
 
@@ -37,7 +37,7 @@
       <div class="searchField">
         <label for="typeInput">Card Types:</label>
         <input type="text" name="type" id="typeInput" placeholder="Including super- and/or subtypes" />
-        <button type="button" id="addTypeTextBtn" class="smallButton"><i class="fas fa-arrow-right"></i> <i class="fas fa-list"></i></button>
+        <button type="button" id="addTypeTextBtn" class="smallButton addToList"><i class="fas fa-arrow-right"></i> <i class="fas fa-list"></i></button>
         <span class="randomControls">
           <select id="randomTypeDropdown">
             <option value="supertypes">Supertype</option>
@@ -99,8 +99,8 @@
       <!-- rules text -->
       <div class="searchField">
         <label for="rulesTextInput">Rules Text:</label>
-        <input type="text" name="rulesText" id="rulesTextInput" placeholder='Words can be full or partial' />
-        <button type="button" id="addRulesTextBtn" class="smallButton"><i class="fas fa-arrow-right"></i> <i class="fas fa-list"></i></button>
+        <input type="text" name="rulesText" id="rulesTextInput" placeholder='Individual words or "phrases in quotes"' />
+        <button type="button" id="addRulesTextBtn" class="smallButton addToList"><i class="fas fa-arrow-right"></i> <i class="fas fa-list"></i></button>
         <span class="randomControls">
           <select id="randomRulesDropdown">
             <option value="keyword-abilities">Keyword Ability</option>
@@ -141,7 +141,7 @@
       <div class="searchField">
         <label for="setInput">Set:</label>
         <input type="text" name="set" id="setInput" placeholder="Search for full name or set code" />
-        <button type="button" id="addSetTextBtn" class="smallButton"><i class="fas fa-arrow-right"></i> <i class="fas fa-list"></i></button>
+        <button type="button" id="addSetTextBtn" class="smallButton addToList"><i class="fas fa-arrow-right"></i> <i class="fas fa-list"></i></button>
         <span class="randomControls">
           <select id="randomSetDropdown">
             <option value="core">Core Set</option>
@@ -161,7 +161,7 @@
       <div class="searchField">
         <label for="watermarkInput">Watermark:</label>
         <input type="text" name="watermark" id="watermarkInput" />
-        <button type="button" id="addWatermarkTextBtn" class="smallButton"><i class="fas fa-arrow-right"></i> <i class="fas fa-list"></i></button>
+        <button type="button" id="addWatermarkTextBtn" class="smallButton addToList"><i class="fas fa-arrow-right"></i> <i class="fas fa-list"></i></button>
         <span class="randomControls">
           <select id="randomWatermarkDropdown">
             <option value="faction">Faction</option>
