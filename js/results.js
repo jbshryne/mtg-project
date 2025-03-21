@@ -361,12 +361,12 @@ $(function () {
   }
 });
 
-//  TO TWEAK:
+//  TO ADD:
 
-//    Make "all parts" page (include basic lands in same set, different art in same set?)
-
-//    Convert Set List to Predictive Type Input (same w/ Card Types?)
-//    Modify inputs to add additional fields for "Or" queries
+//    Maintain search params on index page
+//    Let sort order be ascending/descending, changeable on results page
+//    Add keyboard functionality to dropdowns
+//    Search by mana value
 
 //  Nitpicky search stuff:
 

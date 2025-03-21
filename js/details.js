@@ -1332,13 +1332,26 @@ $(function () {
       `<a href="${card.scryfall_uri}">View this card on Scryfall</a><br>`
     );
 
+    const pluralForm = /s$/.test(card.name) ? card.name : card.name + "s";
+    const $detailImg = $(".detailImg");
+
     if (
-      (card.type_line.search("Basic") !== -1 &&
-        card.type_line.search("Land") !== -1) ||
-      (card.all_parts && card.type_line.search("Token") === -1)
+      // (card.type_line.search("Basic") !== -1 &&
+      //   card.type_line.search("Land") !== -1) ||
+      card.all_parts &&
+      card.type_line.search("Token") === -1
     ) {
       console.log("all parts");
       console.log(card.all_parts);
+      $detailImg.hover(
+        function () {
+          console.log("hover");
+          $(this).attr("title", "View all related cards and tokens");
+        },
+        function () {
+          $(this).attr("title", "");
+        }
+      );
       cardGroupArray.push(card);
       for (let i = 0; i < card.all_parts.length; i++) {
         setTimeout(function () {
@@ -1348,26 +1361,41 @@ $(function () {
           });
         }, i * 50);
       }
-
-      if (card.type_line.search("Basic") !== -1) {
-        console.log("basic land");
-        $.getJSON(
-          `https://api.scryfall.com/cards/search?order=set&q=${card.name}+type%3Abasic+set%3A${card.set}+game%3Apaper&unique=art`,
-          function (listObj) {
-            listObj.data.forEach((card) => cardGroupArray.push(card));
-          }
-        );
-      }
-
-      $(".detailImg")
-        .off("click")
-        .on("click", function () {
-          localStorage.setItem("cardGroup", JSON.stringify(cardGroupArray));
-          window.location.href = "group.html";
-        })
-        .css("cursor", "pointer");
     }
 
+    if (card.type_line.search("Basic") !== -1) {
+      console.log("basic land");
+      $detailImg.hover(
+        function () {
+          console.log("hover");
+          $(this).attr(
+            "title",
+            "View all " + pluralForm + " from the same set"
+          );
+        },
+        function () {
+          $(this).attr("title", "");
+        }
+      );
+      $.getJSON(
+        `https://api.scryfall.com/cards/search?order=set&q=${card.name}+type%3Abasic+set%3A${card.set}+game%3Apaper&unique=art`,
+        function (listObj) {
+          listObj.data.forEach((card) => cardGroupArray.push(card));
+        }
+      );
+    }
+
+    // $detailImg.hover(function () {
+    //   $(this).css("title", "View all " + pluralForm + " from the same set");
+    // });
+
+    $detailImg
+      .off("click")
+      .on("click", function () {
+        localStorage.setItem("cardGroup", JSON.stringify(cardGroupArray));
+        window.location.href = "group.html";
+      })
+      .css("cursor", "pointer");
     //// Displaying card image(s)
 
     const cardFace = card.card_faces ? card.card_faces[0] : card;

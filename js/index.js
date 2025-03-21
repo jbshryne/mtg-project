@@ -1,6 +1,7 @@
 $(document).ready(function () {
   //// Load or generate lists of card types, watermarks, and set codes
   let searchCatalogs = JSON.parse(localStorage.getItem("searchCatalogs"));
+  let searchParams = JSON.parse(localStorage.getItem("searchParams"));
 
   ////// Check if searchCatalogs are outdated or null
   const currentDate = Date.now();
@@ -166,6 +167,29 @@ $(document).ready(function () {
   const { typeCatalog, rulesTextCatalog, setCatalog, watermarkCatalog } =
     searchCatalogs;
 
+  // if (searchParams) {
+  //   console.log(searchParams);
+
+  //   const prefillList = (listName) => {
+  //     const list = searchParams.selectedParams[listName];
+  //     const $list = $("#" + listName);
+  //     if (list.length > 0) {
+  //       list.forEach((item) => {
+  //         $list.append(
+  //           `<li class="selectedItem"><button class="removeParamBtn smallButton">X</button> ${item}</li>`
+  //         );
+  //       });
+  //       $list.css("display", "block");
+  //     }
+  //   };
+
+  //   prefillList("selectedNameList");
+  //   prefillList("selectedTypeList");
+  //   prefillList("selectedRulesList");
+  //   prefillList("selectedWatermarkList");
+  //   prefillList("selectedSetList");
+  // }
+
   const setCategories = {
     core: ["core"],
     expansion: ["expansion"],
@@ -248,28 +272,45 @@ $(document).ready(function () {
     $suggestions.empty();
 
     if (inputText.length >= 1) {
-      suggestionsList.forEach((suggestion) => {
-        if (suggestion.toLowerCase().startsWith(inputText)) {
-          const suggestionText = suggestion;
-          const $suggestion = $(
-            `<div class="suggestion">${suggestionText}</div>`
-          );
-
-          $suggestion.on("click", function () {
-            if (isAdditive) {
-              const inputWords = $thisInput.val().trim().split(" ");
-              inputWords[inputWords.length - 1] = suggestionText;
-              $thisInput.val(inputWords.join(" ") + " ");
-            } else {
-              $thisInput.val(suggestionText);
-            }
-            $suggestions.empty();
-          });
-
-          $suggestions.append($suggestion);
+      $(document).on("click", function (event) {
+        if (
+          !$(event.target).closest($thisInput).length &&
+          !$(event.target).closest($suggestions).length
+        ) {
+          console.log("Clicked outside");
+          $suggestions.empty();
+          setTimeout(() => {
+            $(document).off("click");
+          }, 100);
         }
       });
     }
+    if (inputText.length < 1) {
+      $suggestions.empty();
+      $(document).off("click");
+      return;
+    }
+    suggestionsList.forEach((suggestion) => {
+      if (suggestion.toLowerCase().startsWith(inputText)) {
+        const suggestionText = suggestion;
+        const $suggestion = $(
+          `<div class="suggestion">${suggestionText}</div>`
+        );
+
+        $suggestion.on("click", function () {
+          if (isAdditive) {
+            const inputWords = $thisInput.val().trim().split(" ");
+            inputWords[inputWords.length - 1] = suggestionText;
+            $thisInput.val(inputWords.join(" ") + " ");
+          } else {
+            $thisInput.val(suggestionText);
+          }
+          $suggestions.empty();
+        });
+
+        $suggestions.append($suggestion);
+      }
+    });
   }
 
   function getRandomChoice(
@@ -309,7 +350,7 @@ $(document).ready(function () {
 
   function addTextToList(thisButton, listId) {
     const $textInput = $(thisButton).closest(".searchField").find("input");
-    const $list = $(listId);
+    const $list = $("#" + listId);
     const inputVal = $textInput.val().trim();
 
     if (inputVal) {
@@ -318,24 +359,47 @@ $(document).ready(function () {
         `<li class="selectedItem"><button class="removeParamBtn smallButton">X</button> ${inputVal}</li>`
       );
       $textInput.val("");
-      setupRemoveButtons();
+      setupRemoveButtons(listId);
     }
   }
 
-  function setupRemoveButtons() {
+  function setupRemoveButtons(listId) {
     $(".removeParamBtn")
       .off()
       .on("click", function () {
         if ($(this).parent().siblings().length === 0) {
           $(this).parent().parent().css("display", "none");
         }
+
+        const updatedList = searchParams.selectedParams[listId].filter(
+          (item) => {
+            console.log($(this).parent().text().trim().substring(2));
+            return item !== $(this).parent().text().trim().substring(2);
+          }
+        );
+
+        // const updatedSearchParams = {
+        //   ...searchParams,
+        // };
+
+        // updatedSearchParams.selectedParams[listId] = updatedList;
+
+        // // localStorage.removeItem("searchParams");
+
+        // localStorage.setItem(
+        //   "searchParams",
+        //   JSON.stringify(updatedSearchParams)
+        // );
+
+        // debugger;
         $(this).parent().remove();
-        console.log("clicked");
+
+        // console.log("clicked");
       });
   }
 
   $addNameTextBtn.on("click", function () {
-    addTextToList(this, "#selectedNameList");
+    addTextToList(this, "selectedNameList");
   });
 
   $typeInput.on("input", function () {
@@ -343,7 +407,7 @@ $(document).ready(function () {
   });
 
   $addTypeTextBtn.on("click", function () {
-    addTextToList(this, "#selectedTypeList");
+    addTextToList(this, "selectedTypeList");
   });
 
   $addRandomTypeBtn
@@ -355,7 +419,7 @@ $(document).ready(function () {
     });
 
   $addRulesTextBtn.on("click", function () {
-    addTextToList(this, "#selectedRulesList");
+    addTextToList(this, "selectedRulesList");
   });
 
   $addRandomRulesBtn
@@ -371,7 +435,7 @@ $(document).ready(function () {
   });
 
   $addWatermarkTextBtn.on("click", function () {
-    addTextToList(this, "#selectedWatermarkList");
+    addTextToList(this, "selectedWatermarkList");
   });
 
   $addRandomWatermarkBtn
@@ -441,7 +505,7 @@ $(document).ready(function () {
       $selectedSetList.css("display", "block");
       $setSuggestions.empty();
       $setInput.val("");
-      setupRemoveButtons();
+      setupRemoveButtons("selectedSetList");
     }
   });
 
@@ -692,13 +756,15 @@ $(document).ready(function () {
     ////// Passing query info to localStorage
 
     const searchParams = {
-      nameWords: nameInputArray,
-      types: typeInputArray,
-      rulesText: rulesTextInputArray,
-      colors: colorArray,
-      rarities: rarityArray,
-      sets: setInputArray,
-      watermarks: watermarkInputArray,
+      selectedParams: {
+        selectedNameList: nameInputArray,
+        selectedTypeList: typeInputArray,
+        selectedRulesList: rulesTextInputArray,
+        colors: colorArray,
+        rarities: rarityArray,
+        selectedSetList: setInputArray,
+        selectedWatermarkList: watermarkInputArray,
+      },
       sortOrder,
       apiCallUrl,
     };
