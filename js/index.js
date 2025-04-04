@@ -167,29 +167,6 @@ $(document).ready(function () {
   const { typeCatalog, rulesTextCatalog, setCatalog, watermarkCatalog } =
     searchCatalogs;
 
-  // if (searchParams) {
-  //   console.log(searchParams);
-
-  //   const prefillList = (listName) => {
-  //     const list = searchParams.selectedParams[listName];
-  //     const $list = $("#" + listName);
-  //     if (list.length > 0) {
-  //       list.forEach((item) => {
-  //         $list.append(
-  //           `<li class="selectedItem"><button class="removeParamBtn smallButton">X</button> ${item}</li>`
-  //         );
-  //       });
-  //       $list.css("display", "block");
-  //     }
-  //   };
-
-  //   prefillList("selectedNameList");
-  //   prefillList("selectedTypeList");
-  //   prefillList("selectedRulesList");
-  //   prefillList("selectedWatermarkList");
-  //   prefillList("selectedSetList");
-  // }
-
   const setCategories = {
     core: ["core"],
     expansion: ["expansion"],
@@ -228,17 +205,25 @@ $(document).ready(function () {
   const $addRandomRulesBtn = $("#addRandomRulesBtn");
   const $selectedRulesList = $("#selectedRulesList");
 
-  const $watermarkInput = $("#watermarkInput");
-  const $addWatermarkTextBtn = $("#addWatermarkTextBtn");
-  const $addRandomWatermarkBtn = $("#addRandomWatermarkBtn");
-  const $selectedWatermarkList = $("#selectedWatermarkList");
-
   const $setInput = $("#setInput");
   const $addSetTextBtn = $("#addSetTextBtn");
   const $addRandomSetBtn = $("#addRandomSetBtn");
   const $randomSetDropdown = $("#randomSetDropdown");
   const $setSuggestions = $("#setSuggestions");
   const $selectedSetList = $("#selectedSetList");
+
+  const $watermarkInput = $("#watermarkInput");
+  const $addWatermarkTextBtn = $("#addWatermarkTextBtn");
+  const $addRandomWatermarkBtn = $("#addRandomWatermarkBtn");
+  const $selectedWatermarkList = $("#selectedWatermarkList");
+
+  const $artInput = $("#artInput");
+  const $addArtTextBtn = $("#addArtTextBtn");
+  const $selectedArtList = $("#selectedArtList");
+
+  const $functionInput = $("#functionInput");
+  const $addFunctionTextBtn = $("#addFunctionTextBtn");
+  const $selectedFunctionList = $("#selectedFunctionList");
 
   $(".addToList").hover(function () {
     $(this).attr("title", 'Add to "OR" list');
@@ -533,6 +518,14 @@ $(document).ready(function () {
       $(this).attr("title", "Get random set from selected category");
     });
 
+  $addArtTextBtn.on("click", function () {
+    addTextToList(this, "selectedArtList");
+  });
+
+  $addFunctionTextBtn.on("click", function () {
+    addTextToList(this, "selectedFunctionList");
+  });
+
   ////// SETTING UP THE COLOR CHECKBOXES
 
   const $coloredBoxes = $(".coloredBox");
@@ -737,6 +730,23 @@ $(document).ready(function () {
       queryArray.push("include:extras");
     }
 
+    ////// art
+
+    let artInputArray = [];
+    if ($selectedArtList.children().length > 0 || $artInput.val()) {
+      artInputArray = formatFieldParams($artInput, $selectedArtList, "atag");
+    }
+
+    ////// functions
+    let functionInputArray = [];
+    if ($selectedFunctionList.children().length > 0 || $functionInput.val()) {
+      functionInputArray = formatFieldParams(
+        $functionInput,
+        $selectedFunctionList,
+        "otag"
+      );
+    }
+
     ////// sort order of search result list
 
     const sortOrder = $("#sortDropdown").val();
@@ -764,6 +774,8 @@ $(document).ready(function () {
         rarities: rarityArray,
         selectedSetList: setInputArray,
         selectedWatermarkList: watermarkInputArray,
+        selectedArtList: artInputArray,
+        selectedFunctionList: functionInputArray,
       },
       sortOrder,
       apiCallUrl,
