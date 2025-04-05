@@ -564,7 +564,7 @@ $(document).ready(function () {
   $addRandomFunctionBtn
     .on("click", function () {
       const thisInput = this;
-      $.getJSON("../assets/tagCatalog.json", function (data) {
+      $.getJSON("/assets/tagCatalog.json", function (data) {
         getRandomChoice(thisInput, data, true, "otag");
       });
     })

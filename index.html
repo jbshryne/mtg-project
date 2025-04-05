@@ -22,8 +22,6 @@
     <h2>CARD CONCLAVE</h2>
   </header>
 
-  <button id="testBtn">Test</button>
-
   <form autocomplete="off" id="searchForm">
 
     <section class="row">
@@ -183,10 +181,10 @@
       <!-- art -->
       <div class="searchField">
         <label for="artInput">Art / Card Concept:</label>
-        <input type="text" name="art" id="artInput" placeholder="Artist or card concept" />
+        <input type="text" name="art" id="artInput" placeholder="Ex: innistrad, bident, pink-clouds" />
         <button type="button" id="addArtTextBtn" class="smallButton addToList"><i class="fas fa-arrow-right"></i> <i class="fas fa-list"></i></button>
         <span class="randomControls">
-          <button type="button" id="addRandomArtBtn" class="smallButton"><i class="fas fa-random"></i></button>
+          <button type="button" id="addRandomArtBtn" class="smallButton"><i class="fas fa-add"></i> <i class="fas fa-random"></i></button>
         </span>
         <div id="artSuggestions" class="suggestions"></div>
         <ul id="selectedArtList" class="selectedParamList"></ul>
@@ -195,10 +193,10 @@
       <!-- function -->
       <div class="searchField">
         <label for="functionInput">Function / Card Cycle:</label>
-        <input type="text" name="function" id="functionInput" placeholder="Card function or role" />
+        <input type="text" name="function" id="functionInput" placeholder="Ex: lifegain-matters, cycle-blb-hybrid" />
         <button type="button" id="addFunctionTextBtn" class="smallButton addToList"><i class="fas fa-arrow-right"></i> <i class="fas fa-list"></i></button>
         <span class="randomControls">
-          <button type="button" id="addRandomFunctionBtn" class="smallButton"><i class="fas fa-random"></i></button>
+          <button type="button" id="addRandomFunctionBtn" class="smallButton"><i class="fas fa-add"></i> <i class="fas fa-random"></i></button>
         </span>
         <div id="functionSuggestions" class="suggestions"></div>
         <ul id="selectedFunctionList" class="selectedParamList"></ul>
