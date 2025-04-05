@@ -542,7 +542,7 @@ $(document).ready(function () {
   $addRandomArtBtn
     .on("click", function () {
       const thisInput = this;
-      $.getJSON("../assets/tagCatalog.json", function (data) {
+      $.getJSON("./assets/tagCatalog.json", function (data) {
         getRandomChoice(thisInput, data, true, "atag");
       });
     })
@@ -552,7 +552,7 @@ $(document).ready(function () {
 
   $artInput.on("input", function () {
     const thisInput = this;
-    $.getJSON("../assets/tagCatalog.json", function (data) {
+    $.getJSON("./assets/tagCatalog.json", function (data) {
       populateSuggestionList(thisInput, data, true, "atag");
     });
   });
@@ -564,7 +564,7 @@ $(document).ready(function () {
   $addRandomFunctionBtn
     .on("click", function () {
       const thisInput = this;
-      $.getJSON("/assets/tagCatalog.json", function (data) {
+      $.getJSON("./assets/tagCatalog.json", function (data) {
         getRandomChoice(thisInput, data, true, "otag");
       });
     })
@@ -574,7 +574,7 @@ $(document).ready(function () {
 
   $functionInput.on("input", function () {
     const thisInput = this;
-    $.getJSON("../assets/tagCatalog.json", function (data) {
+    $.getJSON("./assets/tagCatalog.json", function (data) {
       populateSuggestionList(thisInput, data, true, "otag");
     });
   });
