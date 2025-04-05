@@ -219,10 +219,12 @@ $(document).ready(function () {
 
   const $artInput = $("#artInput");
   const $addArtTextBtn = $("#addArtTextBtn");
+  const $addRandomArtBtn = $("#addRandomArtBtn");
   const $selectedArtList = $("#selectedArtList");
 
   const $functionInput = $("#functionInput");
   const $addFunctionTextBtn = $("#addFunctionTextBtn");
+  const $addRandomFunctionBtn = $("#addRandomFunctionBtn");
   const $selectedFunctionList = $("#selectedFunctionList");
 
   $(".addToList").hover(function () {
@@ -231,7 +233,12 @@ $(document).ready(function () {
 
   ////// SETTING UP INPUTS & BUTTONS
 
-  function populateSuggestionList(thisInput, catalog, isAdditive = false) {
+  function populateSuggestionList(
+    thisInput,
+    catalog,
+    isAdditive = false,
+    type
+  ) {
     const $thisInput = $(thisInput);
     const inputVal = $thisInput.val();
 
@@ -243,16 +250,24 @@ $(document).ready(function () {
       inputText = inputVal.toLowerCase();
     }
 
-    console.log(inputText);
+    // console.log(inputText);
 
     const $suggestions = $thisInput
       .closest(".searchField")
       .find(".suggestions");
 
-    const suggestionsList = Object.keys(catalog).reduce((acc, key) => {
-      acc.push(...catalog[key]);
-      return acc;
-    }, []);
+    let suggestionsList;
+
+    if (type === "atag") {
+      suggestionsList = catalog.atag;
+    } else if (type === "otag") {
+      suggestionsList = catalog.otag;
+    } else {
+      suggestionsList = Object.keys(catalog).reduce((acc, key) => {
+        acc.push(...catalog[key]);
+        return acc;
+      }, []);
+    }
 
     $suggestions.empty();
 
@@ -298,22 +313,24 @@ $(document).ready(function () {
     });
   }
 
-  function getRandomChoice(
-    thisButton,
-    catalog,
-    isAdditive = false,
-    isRules = false
-  ) {
+  function getRandomChoice(thisButton, catalog, isAdditive = false, type) {
     const $input = $(thisButton).closest(".searchField").find("input");
-    const selectedGroup = $(thisButton)
-      .closest(".searchField")
-      .find("select")
-      .val();
+    let selectedGroup;
+
+    if (type == "atag" || type == "otag") {
+      selectedGroup = type;
+    } else {
+      selectedGroup = $(thisButton)
+        .closest(".searchField")
+        .find("select")
+        .val();
+    }
+
     const choiceList = catalog[selectedGroup];
     let randomChoice =
       choiceList[Math.floor(Math.random() * choiceList.length)];
 
-    if (isRules) {
+    if (type == "rulesText") {
       console.log(randomChoice);
       randomChoice = randomChoice.includes(" ")
         ? '"' + randomChoice + '"'
@@ -519,11 +536,47 @@ $(document).ready(function () {
     });
 
   $addArtTextBtn.on("click", function () {
-    addTextToList(this, "selectedArtList");
+    addTextToList(this, "selectedArtList", true);
+  });
+
+  $addRandomArtBtn
+    .on("click", function () {
+      const thisInput = this;
+      $.getJSON("../assets/tagCatalog.json", function (data) {
+        getRandomChoice(thisInput, data, true, "atag");
+      });
+    })
+    .hover(function () {
+      $(this).attr("title", 'Get random "art tag"');
+    });
+
+  $artInput.on("input", function () {
+    const thisInput = this;
+    $.getJSON("../assets/tagCatalog.json", function (data) {
+      populateSuggestionList(thisInput, data, true, "atag");
+    });
   });
 
   $addFunctionTextBtn.on("click", function () {
     addTextToList(this, "selectedFunctionList");
+  });
+
+  $addRandomFunctionBtn
+    .on("click", function () {
+      const thisInput = this;
+      $.getJSON("../assets/tagCatalog.json", function (data) {
+        getRandomChoice(thisInput, data, true, "otag");
+      });
+    })
+    .hover(function () {
+      $(this).attr("title", 'Get random "oracle tag"');
+    });
+
+  $functionInput.on("input", function () {
+    const thisInput = this;
+    $.getJSON("../assets/tagCatalog.json", function (data) {
+      populateSuggestionList(thisInput, data, true, "otag");
+    });
   });
 
   ////// SETTING UP THE COLOR CHECKBOXES
