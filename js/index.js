@@ -326,7 +326,17 @@ $(document).ready(function () {
         .val();
     }
 
-    const choiceList = catalog[selectedGroup];
+    let choiceList;
+
+    if (selectedGroup === "any") {
+      const allChoices = Object.values(catalog).reduce((acc, group) => {
+        return acc.concat(group);
+      }, []);
+      choiceList = allChoices;
+    } else {
+      choiceList = catalog[selectedGroup];
+    }
+
     let randomChoice =
       choiceList[Math.floor(Math.random() * choiceList.length)];
 
@@ -421,12 +431,12 @@ $(document).ready(function () {
     });
 
   $addRulesTextBtn.on("click", function () {
-    addTextToList(this, "selectedRulesList");
+    addTextToList(this, "selectedRulesList", true, "rulesText");
   });
 
   $addRandomRulesBtn
     .on("click", function () {
-      getRandomChoice(this, rulesTextCatalog, true, true);
+      getRandomChoice(this, rulesTextCatalog, true, "rulesText");
     })
     .hover(function () {
       $(this).attr("title", "Get random word or phrase from selected category");

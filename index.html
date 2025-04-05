@@ -49,6 +49,7 @@
             <option value="planeswalkerTypes">Planeswalker Type</option>
             <option value="battleTypes">Battle Type</option>
             <option value="landTypes">Land Type</option>
+            <option value="any">Any Type</option>
           </select>
           <button type="button" id="addRandomTypeBtn" class="smallButton"><i class="fas fa-add"></i> <i class="fas fa-random"></i></button>
         </span>
@@ -107,6 +108,7 @@
             <option value="keyword-actions">Keyword Action</option>
             <option value="ability-words">Ability Words</option>
             <option value="flavor-words">Flavor Words</option>
+            <option value="any">Any Rules Text</option>
           </select>
           <button type="button" id="addRandomRulesBtn" class="smallButton"><i class="fas fa-add"></i> <i class="fas fa-random"></i></button>
         </span>
@@ -150,6 +152,7 @@
             <option value="nonDCI">Non-DCI Legal</option>
             <option value="digital">Digital Only</option>
             <option value="extras">Extras</option>
+            <option value="any">Any Set</option>
           </select>
           <button type="button" id="addRandomSetBtn" class="smallButton"><i class="fas fa-random"></i></button>
         </span>
@@ -168,6 +171,7 @@
             <option value="cardInfo">Card Info</option>
             <option value="promo">Promo</option>
             <option value="crossover">Crossover</option>
+            <option value="any">Any Watermark</option>
           </select>
           <button type="button" id="addRandomWatermarkBtn" class="smallButton"><i class="fas fa-random"></i></button>
         </span>
@@ -180,8 +184,8 @@
     <section class="row">
       <!-- art -->
       <div class="searchField">
-        <label for="artInput">Art / Card Concept:</label>
-        <input type="text" name="art" id="artInput" placeholder="Ex: innistrad, bident, pink-clouds" />
+        <label for="artInput">Art / Concept:</label>
+        <input type="text" name="art" id="artInput" placeholder="Ex: innistrad, ugin, pink-clouds" />
         <button type="button" id="addArtTextBtn" class="smallButton addToList"><i class="fas fa-arrow-right"></i> <i class="fas fa-list"></i></button>
         <span class="randomControls">
           <button type="button" id="addRandomArtBtn" class="smallButton"><i class="fas fa-add"></i> <i class="fas fa-random"></i></button>
@@ -192,8 +196,8 @@
 
       <!-- function -->
       <div class="searchField">
-        <label for="functionInput">Function / Card Cycle:</label>
-        <input type="text" name="function" id="functionInput" placeholder="Ex: lifegain-matters, cycle-blb-hybrid" />
+        <label for="functionInput">Function / Context:</label>
+        <input type="text" name="function" id="functionInput" placeholder="Ex: lifegain-matters, cycle-m15-sliver" />
         <button type="button" id="addFunctionTextBtn" class="smallButton addToList"><i class="fas fa-arrow-right"></i> <i class="fas fa-list"></i></button>
         <span class="randomControls">
           <button type="button" id="addRandomFunctionBtn" class="smallButton"><i class="fas fa-add"></i> <i class="fas fa-random"></i></button>
@@ -222,7 +226,7 @@
         <label for="sortDropdown">Sort results by:</label>
         <select id="sortDropdown">
           <option value="name">Name</option>
-          <option value="type">Type</option>
+          <option value="type" selected>Type</option>
           <option value="color">Color</option>
           <option value="cmc">Mana Value</option>
           <option value="power">Power</option>
