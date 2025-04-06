@@ -431,7 +431,7 @@ $(document).ready(function () {
     });
 
   $addRulesTextBtn.on("click", function () {
-    addTextToList(this, "selectedRulesList", true, "rulesText");
+    addTextToList(this, "selectedRulesList", true);
   });
 
   $addRandomRulesBtn
@@ -667,6 +667,7 @@ $(document).ready(function () {
       if (inputArray.length > 0) {
         const formattedArray = inputArray.map((param) => {
           const params = param.match(/"[^"]+"|\S+/g); // Match phrases in quotes or single params
+          // const notMod = param.startsWith("-") ? "-" : "";
           const formattedParams = params.map((p) => {
             if (fieldSymbol === "s") {
               p = param.match(/\[(.*?)\]/)?.[1]?.toLowerCase() || param;
@@ -675,6 +676,7 @@ $(document).ready(function () {
               p = param.replace(/"/g, "").replace(" ", "\\s");
               p = "/\\b" + p + "\\b/";
             }
+            // return `${notMod}${fieldSymbol}:${p}`;
             return `${fieldSymbol}:${p}`;
           });
           return `(${formattedParams.join(" ")})`;
