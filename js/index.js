@@ -243,11 +243,18 @@ $(document).ready(function () {
     const inputVal = $thisInput.val();
 
     let inputText = "";
+    let isNegative = false;
+
     if (isAdditive) {
       const inputWords = inputVal.split(" ");
       inputText = inputWords[inputWords.length - 1].toLowerCase();
     } else {
       inputText = inputVal.toLowerCase();
+    }
+
+    if (inputText.startsWith("-")) {
+      isNegative = true;
+      inputText = inputText.substring(1);
     }
 
     // console.log(inputText);
@@ -256,7 +263,7 @@ $(document).ready(function () {
       .closest(".searchField")
       .find(".suggestions");
 
-    let suggestionsList;
+    let suggestionsList = [""];
 
     if (type === "atag") {
       suggestionsList = catalog.atag;
@@ -285,11 +292,13 @@ $(document).ready(function () {
         }
       });
     }
+
     if (inputText.length < 1) {
       $suggestions.empty();
       $(document).off("click");
       return;
     }
+
     suggestionsList.forEach((suggestion) => {
       if (suggestion.toLowerCase().startsWith(inputText)) {
         const suggestionText = suggestion;
@@ -300,10 +309,13 @@ $(document).ready(function () {
         $suggestion.on("click", function () {
           if (isAdditive) {
             const inputWords = $thisInput.val().trim().split(" ");
-            inputWords[inputWords.length - 1] = suggestionText;
+            inputWords[inputWords.length - 1] = `${
+              isNegative ? "-" : ""
+            }${suggestionText}`;
+            console.log(isNegative && "-");
             $thisInput.val(inputWords.join(" ") + " ");
           } else {
-            $thisInput.val(suggestionText);
+            $thisInput.val(`${isNegative ? "-" : ""}${suggestionText}`);
           }
           $suggestions.empty();
         });
@@ -459,7 +471,14 @@ $(document).ready(function () {
     });
 
   $setInput.on("input", function () {
-    const inputText = $setInput.val().toLowerCase();
+    let inputText = $setInput.val().toLowerCase();
+    let isNegative = false;
+
+    if (inputText.startsWith("-")) {
+      isNegative = true;
+      inputText = inputText.substring(1);
+    }
+
     $setSuggestions.empty();
 
     if (inputText.length >= 2) {
@@ -481,7 +500,9 @@ $(document).ready(function () {
 
           $suggestion.on("click", function () {
             $setSuggestions.empty();
-            $setInput.val(`${setName} [${set.code.toUpperCase()}]`);
+            $setInput.val(
+              `${isNegative ? "-" : ""}${setName} [${set.code.toUpperCase()}]`
+            );
           });
 
           $setSuggestions.append($suggestion);
@@ -491,6 +512,8 @@ $(document).ready(function () {
   });
 
   $addSetTextBtn.on("click", function () {
+    // const isNegative = $setInput.val().startsWith("-");
+
     const setCode = $setInput
       .val()
       .match(/\[(.*?)\]/)[1]
@@ -512,8 +535,9 @@ $(document).ready(function () {
     ) {
       $selectedSetList.append(
         `<li data-setcode="${setCode}" class="selectedSet"><button class="removeParamBtn smallButton">X</button>
-          ${setName} [${setCode}]</li>`
+        ${setName} [${setCode}]</li>`
       );
+
       $selectedSetList.css("display", "block");
       $setSuggestions.empty();
       $setInput.val("");
@@ -665,19 +689,42 @@ $(document).ready(function () {
       }
 
       if (inputArray.length > 0) {
+        if (fieldSymbol === "s") {
+          inputArray = inputArray.map((param) => {
+            const isNegative = param.startsWith("-");
+
+            param = param.match(/\[(.*?)\]/)?.[1]?.toLowerCase();
+
+            return `${isNegative ? "-" : ""}${param}`;
+          });
+        }
+
         const formattedArray = inputArray.map((param) => {
-          const params = param.match(/"[^"]+"|\S+/g); // Match phrases in quotes or single params
-          // const notMod = param.startsWith("-") ? "-" : "";
+          const params = param.match(/-"[^"]+"|"[^"]+"|\S+/g); // Match phrases in quotes or single params
+
           const formattedParams = params.map((p) => {
-            if (fieldSymbol === "s") {
-              p = param.match(/\[(.*?)\]/)?.[1]?.toLowerCase() || param;
+            const isNegative = p.startsWith("-");
+
+            if (isNegative) {
+              p = p.replace(/^-/g, "");
             }
+
+            // if (fieldSymbol === "s") {
+            //   console.log("set");
+            //   console.log(p);
+            //   p = param.match(/\[(.*?)\]/)?.[1]?.toLowerCase() || param;
+            // }
+
             if (fieldSymbol === "o") {
               p = param.replace(/"/g, "").replace(" ", "\\s");
               p = "/\\b" + p + "\\b/";
             }
-            // return `${notMod}${fieldSymbol}:${p}`;
-            return `${fieldSymbol}:${p}`;
+
+            const formattedP = `${isNegative ? "-" : ""}${fieldSymbol}:${p}`;
+            console.log(formattedP);
+            // debugger;
+            return formattedP;
+            // return `${fieldSymbol}:${p}`;
           });
           return `(${formattedParams.join(" ")})`;
         });
@@ -786,6 +833,7 @@ $(document).ready(function () {
 
     const firstPrintings = $("#firstPrintingsCheckbox").prop("checked");
     const includeExtras = $("#includeExtrasCheckbox").prop("checked");
+    const isFunny = $("#isFunnyCheckbox").prop("checked");
 
     if (firstPrintings) {
       queryArray.push("is:firstprint");
@@ -793,6 +841,10 @@ $(document).ready(function () {
 
     if (includeExtras) {
       queryArray.push("include:extras");
+    }
+
+    if (isFunny) {
+      queryArray.push("is:funny");
     }
 
     ////// art
