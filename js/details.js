@@ -1329,8 +1329,8 @@ $(function () {
     }
 
     $linkBox.append(
-      `<p><a href="${card.scryfall_uri}">View this card on Scryfall</a></p>`,
-      `<p><a href="http://tagger.scryfall.com/card/${card.set}/${card.collector_number}">View this card on Scryfall Tagger</a>`
+      `<section><a href="${card.scryfall_uri}">View this card on Scryfall</a></section>`,
+      `<section><a href="http://tagger.scryfall.com/card/${card.set}/${card.collector_number}">View this card on Scryfall Tagger</a></section>`
     );
 
     const pluralForm = /s$/.test(card.name) ? card.name : card.name + "s";
@@ -1390,13 +1390,16 @@ $(function () {
     //   $(this).css("title", "View all " + pluralForm + " from the same set");
     // });
 
-    $detailImg
-      .off("click")
-      .on("click", function () {
-        localStorage.setItem("cardGroup", JSON.stringify(cardGroupArray));
-        window.location.href = "group.html";
-      })
-      .css("cursor", "pointer");
+    if (cardGroupArray.length > 0) {
+      $detailImg
+        .off("click")
+        .on("click", function () {
+          localStorage.setItem("cardGroup", JSON.stringify(cardGroupArray));
+          window.location.href = "group.html";
+        })
+        .css("cursor", "pointer");
+    }
+
     //// Displaying card image(s)
 
     const cardFace = card.card_faces ? card.card_faces[0] : card;
