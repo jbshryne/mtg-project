@@ -1329,8 +1329,8 @@ $(function () {
     }
 
     $linkBox.append(
-      `<section><a href="${card.scryfall_uri}">View this card on Scryfall</a></section>`,
-      `<section><a href="http://tagger.scryfall.com/card/${card.set}/${card.collector_number}">View this card on Scryfall Tagger</a></section>`
+      `<p><a href="${card.scryfall_uri}">View this card on Scryfall</a></p>`,
+      `<p><a href="http://tagger.scryfall.com/card/${card.set}/${card.collector_number}">View this card on Scryfall Tagger</a></p>`
     );
 
     const pluralForm = /s$/.test(card.name) ? card.name : card.name + "s";
