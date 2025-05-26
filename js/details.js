@@ -1287,7 +1287,7 @@ $(function () {
   const cardGroup = JSON.parse(localStorage.getItem("cardGroup"));
   const cardGroupArray = [];
 
-  console.log(card);
+  // console.log(card);
 
   ////// *** Starting to set up details text below card ***
   const $cardFaceEl = $(".detailImg");
@@ -1475,6 +1475,16 @@ $(function () {
         ).appendTo($powerToughnessRow);
       }
 
+      const $rarityRow = $(`#${divId} .rarity`);
+      console.log(cardFace.rarity);
+      $(`<td class="stat-label">Rarity:</td>`).appendTo($rarityRow);
+      $(
+        `<td class="stat-value">${cardFace.rarity
+          .charAt(0)
+          .toUpperCase()}${cardFace.rarity.slice(1)}</td>`
+      ).appendTo($rarityRow);
+
+      console.log($rarityRow);
       const setName = cardFace.set_name ? cardFace.set_name : card.set_name;
       const setCode = cardFace.set ? cardFace.set : card.set;
 
