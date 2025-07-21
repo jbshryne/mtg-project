@@ -505,7 +505,8 @@ $(document).ready(function () {
             );
           });
 
-          $setSuggestions.append($suggestion);
+          if (set.code.length === 3) $setSuggestions.prepend($suggestion);
+          else $setSuggestions.append($suggestion);
         }
       });
     }
