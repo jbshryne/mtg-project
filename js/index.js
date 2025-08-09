@@ -1,7 +1,6 @@
 $(document).ready(function () {
   //// Load or generate lists of card types, watermarks, and set codes
   let searchCatalogs = JSON.parse(localStorage.getItem("searchCatalogs"));
-  let searchParams = JSON.parse(localStorage.getItem("searchParams"));
 
   ////// Check if searchCatalogs are outdated or null
   const currentDate = Date.now();
@@ -163,6 +162,9 @@ $(document).ready(function () {
 
     fetchSearchData();
   }
+
+  // const searchCatalogs = window.searchCatalogs;
+  let searchParams = JSON.parse(localStorage.getItem("searchParams"));
 
   const { typeCatalog, rulesTextCatalog, setCatalog, watermarkCatalog } =
     searchCatalogs;
