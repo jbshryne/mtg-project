@@ -15,8 +15,8 @@ $(function () {
   let allResultsArray = [];
   const pageArray = [];
   const sortOrder = searchParams.sortOrder;
-  const numberOfPages = Math.ceil(response.total_cards / 175);
   const cardsPerPage = 175;
+  const numberOfPages = Math.ceil(response.total_cards / cardsPerPage);
 
   // value objects
   const colorValues = {
@@ -278,31 +278,23 @@ $(function () {
     //// Creating buttons
     const $buttonDiv = $('<div class="buttonDiv"></div>');
 
-    const $prevPageBtn = $(
-      '<button class="navBtn prevPage">Previous Page</button>'
+    $('<button class="navBtn newSearch">New Search</button>').appendTo(
+      $buttonDiv
     );
-    const $nextPageBtn = $(
-      '<button class="navBtn nextPage">Next Page</button>'
-    );
+
     //// Only rendering if applicable
-    // $("<button>Go Back</button>")
-    //   .on("click", () => history.back())
-    //   .appendTo($buttonDiv);
 
     if (allPages[`page${targetPage - 1}`]) {
-      $buttonDiv.append($prevPageBtn);
+      $('<button class="navBtn prevPage">Previous Page</button>').prependTo(
+        $buttonDiv
+      );
     }
 
     if (allPages[`page${targetPage + 1}`]) {
-      $buttonDiv.append($nextPageBtn);
+      $('<button class="navBtn nextPage">Next Page</button>').appendTo(
+        $buttonDiv
+      );
     }
-
-    $("<button>New Search</button>")
-      .on("click", () => {
-        localStorage.clear();
-        window.location.href = "index.html";
-      })
-      .appendTo($buttonDiv);
 
     ////// Populating result box w/ card images
     pageArray.push(...allPages[`page${targetPage}`]);
@@ -340,24 +332,39 @@ $(function () {
     $buttonDiv.appendTo($("header"));
     $buttonDiv.clone().appendTo($("footer"));
 
-    $prevPageBtn.off("click").on("click", () => {
-      localStorage.setItem("targetPage", targetPage - 1);
-      window.onbeforeunload = function () {
-        window.scrollTo(0, 0);
-      };
+    $(".newSearch")
+      .off("click")
+      .on("click", () => {
+        localStorage.removeItem("queryResponse");
+        localStorage.removeItem("searchParams");
+        localStorage.removeItem("allPages");
+        localStorage.removeItem("targetPage");
+        localStorage.removeItem("cardDetails");
+        window.location.href = "index.html";
+      });
 
-      // history.back();
-      location.reload();
-    });
+    $(".prevPage")
+      .off("click")
+      .on("click", () => {
+        localStorage.setItem("targetPage", targetPage - 1);
+        window.onbeforeunload = function () {
+          window.scrollTo(0, 0);
+        };
 
-    $nextPageBtn.off("click").on("click", () => {
-      localStorage.setItem("targetPage", targetPage + 1);
-      window.onbeforeunload = function () {
-        window.scrollTo(0, 0);
-      };
+        // history.back();
+        location.reload();
+      });
 
-      location.reload();
-    });
+    $(".nextPage")
+      .off("click")
+      .on("click", () => {
+        localStorage.setItem("targetPage", targetPage + 1);
+        window.onbeforeunload = function () {
+          window.scrollTo(0, 0);
+        };
+
+        location.reload();
+      });
   }
 });
 

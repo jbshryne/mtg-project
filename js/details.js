@@ -45,7 +45,7 @@ $(function () {
     } else if (card.card_faces) {
       console.log("doublefaced");
       $cardFaceEl.attr("src", card.card_faces[0].image_uris.large);
-      $backFaceEl = $("<img class='detailImg'></img>");
+      const $backFaceEl = $("<img class='detailImg'></img>");
       $backFaceEl.attr("src", card.card_faces[1].image_uris.large);
       $("#card-back .displayBox").append($imgContainer).append($backFaceEl);
     } else {
@@ -70,7 +70,6 @@ $(function () {
       console.log(card.all_parts);
       $detailImg.hover(
         function () {
-          console.log("hover");
           $(this).attr("title", "View all related cards and tokens");
         },
         function () {
@@ -200,12 +199,13 @@ $(function () {
       }
 
       const $rarityRow = $(`#${divId} .rarity`);
-      console.log(cardFace.rarity);
+      let rarity;
+      cardFace.rarity ? (rarity = cardFace.rarity) : (rarity = card.rarity);
       $(`<td class="stat-label">Rarity:</td>`).appendTo($rarityRow);
       $(
-        `<td class="stat-value">${cardFace.rarity
-          .charAt(0)
-          .toUpperCase()}${cardFace.rarity.slice(1)}</td>`
+        `<td class="stat-value">${rarity.charAt(0).toUpperCase()}${rarity.slice(
+          1
+        )}</td>`
       ).appendTo($rarityRow);
 
       console.log($rarityRow);

@@ -1,8 +1,6 @@
 $(document).ready(function () {
-  //// Load or generate lists of card types, watermarks, and set codes
   let searchCatalogs = JSON.parse(localStorage.getItem("searchCatalogs"));
 
-  ////// Check if searchCatalogs are outdated or null
   const currentDate = Date.now();
 
   if (searchCatalogs && searchCatalogs._dateRetrieved) {
@@ -417,7 +415,6 @@ $(document).ready(function () {
         //   JSON.stringify(updatedSearchParams)
         // );
 
-        // debugger;
         $(this).parent().remove();
 
         // console.log("clicked");
@@ -669,70 +666,144 @@ $(document).ready(function () {
     let apiCallUrl = "";
     let queryArray = [];
 
+    ////// ORIGINAL FUNCTION:
+    // function formatFieldParams($inputVal, $selectedList, fieldSymbol) {
+    //   let inputVal = $inputVal.val();
+    //   let inputArray = [];
+    //   let inputString = "";
+
+    //   console.log(inputVal);
+
+    //   if (inputVal) {
+    //     if (fieldSymbol === "wm") {
+    //       inputVal = inputVal.toLowerCase().replace(/[\s']/g, "");
+    //     }
+    //     inputArray.push(inputVal.trim());
+    //   }
+
+    //   if ($selectedList.children().length > 0) {
+    //     $selectedList.children().each(function () {
+    //       let text = $(this).text().trim().substring(2);
+    //       if (fieldSymbol === "wm") {
+    //         text = text.toLowerCase().replace(/[\s']/g, "");
+    //       }
+    //       inputArray.push(text);
+    //     });
+    //   }
+
+    //   if (inputArray.length > 0) {
+    //     if (fieldSymbol === "s") {
+    //       inputArray = inputArray.map((param) => {
+    //         const isNegative = param.startsWith("-");
+
+    //         param = param.match(/\[(.*?)\]/)?.[1]?.toLowerCase();
+
+    //         return `${isNegative ? "-" : ""}${param}`;
+    //       });
+    //     }
+
+    //     const formattedArray = inputArray.map((param) => {
+    //       const params = param.match(/-"[^"]+"|"[^"]+"|\S+/g); // Match phrases in quotes or single params
+
+    //       const formattedParams = params.map((p) => {
+    //         const isNegative = p.startsWith("-");
+
+    //         if (isNegative) {
+    //           p = p.replace(/^-/g, "");
+    //         }
+
+    //         // if (fieldSymbol === "s") {
+    //         //   console.log("set");
+    //         //   console.log(p);
+    //         //   p = param.match(/\[(.*?)\]/)?.[1]?.toLowerCase() || param;
+    //         // }
+
+    //         // if (fieldSymbol === "o") {
+    //         //   p = param.replace(/"/g, "").replace(" ", "\\s");
+    //         //   p = "/\\b" + p + "\\b/";
+    //         // }
+
+    //         const formattedP = `${isNegative ? "-" : ""}${fieldSymbol}:${p}`;
+    //         console.log(formattedP);
+    //         return formattedP;
+    //         // return `${fieldSymbol}:${p}`;
+    //       });
+    //       return `(${formattedParams.join(" ")})`;
+    //     });
+    //     inputString = `(${formattedArray.join(" or ")})`;
+    //     console.log("input string for", fieldSymbol, inputString);
+    //     queryArray.push(inputString);
+    //   }
+
+    //   return inputArray;
+    // }
+
+    ////// GPT FUNCTION:
     function formatFieldParams($inputVal, $selectedList, fieldSymbol) {
-      let inputVal = $inputVal.val();
       let inputArray = [];
       let inputString = "";
 
-      if (inputVal) {
+      // 1. Collect main input
+      let mainVal = $inputVal.val();
+      if (mainVal) {
         if (fieldSymbol === "wm") {
-          inputVal = inputVal.toLowerCase().replace(/[\s']/g, "");
+          mainVal = mainVal.toLowerCase().replace(/[\s']/g, "");
         }
-        inputArray.push(inputVal.trim());
+        inputArray.push(mainVal.trim());
       }
 
-      if ($selectedList.children().length > 0) {
-        $selectedList.children().each(function () {
-          let text = $(this).text().trim().substring(2);
-          if (fieldSymbol === "wm") {
-            text = text.toLowerCase().replace(/[\s']/g, "");
-          }
-          inputArray.push(text);
+      // 2. Collect selected list items
+      $selectedList.children().each(function () {
+        let text = $(this).text().trim().substring(2);
+        if (fieldSymbol === "wm") {
+          text = text.toLowerCase().replace(/[\s']/g, "");
+        }
+        inputArray.push(text);
+      });
+
+      // 3. Special handling for set codes (s:)
+      if (inputArray.length && fieldSymbol === "s") {
+        inputArray = inputArray.map((param) => {
+          const isNegative = param.startsWith("-");
+          let cleaned = param.match(/\[(.*?)\]/)?.[1]?.toLowerCase() || param;
+          return `${isNegative ? "-" : ""}${cleaned}`;
         });
       }
 
-      if (inputArray.length > 0) {
-        if (fieldSymbol === "s") {
-          inputArray = inputArray.map((param) => {
-            const isNegative = param.startsWith("-");
-
-            param = param.match(/\[(.*?)\]/)?.[1]?.toLowerCase();
-
-            return `${isNegative ? "-" : ""}${param}`;
-          });
-        }
-
+      // 4. Format each parameter into Scryfall syntax
+      if (inputArray.length) {
         const formattedArray = inputArray.map((param) => {
-          const params = param.match(/-"[^"]+"|"[^"]+"|\S+/g); // Match phrases in quotes or single params
+          // Split into quoted phrases or single tokens
+          const tokens = param.match(/-"[^"]+"|"[^"]+"|\S+/g) || [];
 
-          const formattedParams = params.map((p) => {
-            const isNegative = p.startsWith("-");
+          const formattedTokens = tokens.map((token) => {
+            const isNegative = token.startsWith("-");
+            let term = isNegative ? token.slice(1) : token;
 
-            if (isNegative) {
-              p = p.replace(/^-/g, "");
+            const isQuoted = /^".+"$/.test(term);
+
+            if (isQuoted) {
+              // Leave quoted phrases as exact matches
+              term = term; // keep quotes
+            } else if (["o", "t"].includes(fieldSymbol)) {
+              // Wrap unquoted words in whole-word regex
+              term = term
+                .replace(/\//g, "\\/") // Escape forward slashes
+                .replace(/\s+/g, "\\s"); // Space → \s for regex matching
+              term = `/\\b${term}\\b/`;
             }
 
-            // if (fieldSymbol === "s") {
-            //   console.log("set");
-            //   console.log(p);
-            //   p = param.match(/\[(.*?)\]/)?.[1]?.toLowerCase() || param;
-            // }
-
-            if (fieldSymbol === "o") {
-              p = param.replace(/"/g, "").replace(" ", "\\s");
-              p = "/\\b" + p + "\\b/";
-            }
-
-            const formattedP = `${isNegative ? "-" : ""}${fieldSymbol}:${p}`;
-            console.log(formattedP);
-            // debugger;
-            return formattedP;
-            // return `${fieldSymbol}:${p}`;
+            return `${isNegative ? "-" : ""}${fieldSymbol}:${term}`;
           });
-          return `(${formattedParams.join(" ")})`;
+
+          return `(${formattedTokens.join(" ")})`;
         });
+
+        // 5. Join groups with OR
         inputString = `(${formattedArray.join(" or ")})`;
         queryArray.push(inputString);
+
+        console.log("input string for", fieldSymbol, inputString);
       }
 
       return inputArray;
@@ -883,6 +954,9 @@ $(document).ready(function () {
       apiCallUrl = `https://api.scryfall.com/cards/random?q=${queryString}`;
     }
 
+    console.log(queryString);
+    // debugger;
+
     ////// Passing query info to localStorage
 
     const searchParams = {
@@ -902,12 +976,12 @@ $(document).ready(function () {
     };
 
     localStorage.setItem("searchParams", JSON.stringify(searchParams));
+    // debugger;
 
     //// MAKING THE CALL
 
     $.getJSON(apiCallUrl, function (dataObj, textStatus, jqxhr) {
       console.log("response successful");
-      // debugger;
 
       ////// Capping search at 1000 results
       if (dataObj.total_cards > 1000) {
@@ -930,10 +1004,8 @@ $(document).ready(function () {
               "cardDetails",
               JSON.stringify(resultsArray[0])
             );
-            // debugger;
             window.location.href = "details.html";
           } else {
-            // debugger;
             window.location.href = "results.html";
           }
         }
