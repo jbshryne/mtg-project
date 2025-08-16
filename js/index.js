@@ -1,4 +1,23 @@
 $(document).ready(function () {
+  const $loadingMessage = $("header .loading-message");
+
+  function setUIEnabled(enabled) {
+    const $form = $("#searchForm");
+    // Disable/enable all inputs (text, buttons, selects, checkboxes, etc.)
+    $form.find(":input").prop("disabled", !enabled);
+
+    // Optional: visually indicate loading
+    $form.toggleClass("is-disabled", !enabled);
+    $loadingMessage.text(
+      enabled ? "" : "Gathering latest serach data, one moment..."
+    );
+    $loadingMessage.toggle(!enabled);
+
+    // Optional: accessibility and cursor
+    $form.attr("aria-busy", enabled ? "false" : "true");
+    $("body").css("cursor", enabled ? "" : "progress");
+  }
+
   let searchCatalogs = JSON.parse(localStorage.getItem("searchCatalogs"));
 
   const currentDate = Date.now();
@@ -14,6 +33,8 @@ $(document).ready(function () {
   }
 
   if (!searchCatalogs) {
+    setUIEnabled(false);
+
     searchCatalogs = {
       typeCatalog: {
         supertypes: [],
@@ -32,7 +53,7 @@ $(document).ready(function () {
         "ability-words": [],
         "flavor-words": [],
       },
-      setCatalog: [],
+      setCatalog: {},
       watermarkCatalog: {
         faction: [
           "Abzan",
@@ -132,19 +153,32 @@ $(document).ready(function () {
       return new Promise((resolve) => {
         setTimeout(() => {
           $.getJSON("https://api.scryfall.com/" + urlTag, function (response) {
-            urlTag == "sets"
-              ? (searchCatalogs.setCatalog = response.data.reduce(
-                  (acc, set) => {
-                    acc[set.name] = {
-                      code: set.code,
-                      setType: set.set_type,
-                      uri: set.uri,
-                    };
-                    return acc;
-                  },
-                  {}
-                ))
-              : (searchCatalogs[category][type] = response.data);
+            if (urlTag === "sets") {
+              const mapped = response.data.reduce((acc, set) => {
+                acc[set.name] = {
+                  code: set.code,
+                  setType: set.set_type,
+                  uri: set.uri,
+                };
+                return acc;
+              }, {});
+              Object.assign(searchCatalogs.setCatalog, mapped);
+            } else {
+              searchCatalogs[category][type] = response.data;
+            }
+            // urlTag == "sets"
+            //   ? (searchCatalogs.setCatalog = response.data.reduce(
+            //       (acc, set) => {
+            //         acc[set.name] = {
+            //           code: set.code,
+            //           setType: set.set_type,
+            //           uri: set.uri,
+            //         };
+            //         return acc;
+            //       },
+            //       {}
+            //     ))
+            //   : (searchCatalogs[category][type] = response.data);
             resolve();
           });
         }, 100);
@@ -158,14 +192,19 @@ $(document).ready(function () {
       localStorage.setItem("searchCatalogs", JSON.stringify(searchCatalogs));
     };
 
-    fetchSearchData();
+    fetchSearchData()
+      .catch((err) => {
+        console.error("Failed to load catalogs", err);
+      })
+      .finally(() => {
+        setUIEnabled(true);
+      });
   }
 
   // const searchCatalogs = window.searchCatalogs;
   let searchParams = JSON.parse(localStorage.getItem("searchParams"));
 
-  const { typeCatalog, rulesTextCatalog, setCatalog, watermarkCatalog } =
-    searchCatalogs;
+  const { typeCatalog, rulesTextCatalog, watermarkCatalog } = searchCatalogs;
 
   const setCategories = {
     core: ["core"],
@@ -481,8 +520,8 @@ $(document).ready(function () {
     $setSuggestions.empty();
 
     if (inputText.length >= 2) {
-      Object.keys(setCatalog).forEach((setName, idx) => {
-        const set = setCatalog[setName];
+      Object.keys(searchCatalogs.setCatalog).forEach((setName, idx) => {
+        const set = searchCatalogs.setCatalog[setName];
 
         // Check if either set name or set code contains the input text
         if (
@@ -528,8 +567,8 @@ $(document).ready(function () {
     if (
       setCode &&
       setName &&
-      (Object.keys(setCatalog).includes(setName) ||
-        Object.values(setCatalog).some(
+      (Object.keys(searchCatalogs.setCatalog).includes(setName) ||
+        Object.values(searchCatalogs.setCatalog).some(
           (set) => set.code.toUpperCase() === setCode
         ))
     ) {
@@ -550,15 +589,15 @@ $(document).ready(function () {
       const selectedCategory = $randomSetDropdown.val();
       const categorySets = setCategories[selectedCategory];
 
-      const setsInCategory = Object.values(setCatalog).filter((set) =>
-        categorySets.includes(set.setType)
+      const setsInCategory = Object.values(searchCatalogs.setCatalog).filter(
+        (set) => categorySets.includes(set.setType)
       );
 
       const randomSet =
         setsInCategory[Math.floor(Math.random() * setsInCategory.length)];
 
-      const setName = Object.keys(setCatalog).find(
-        (key) => setCatalog[key].code === randomSet.code
+      const setName = Object.keys(searchCatalogs.setCatalog).find(
+        (key) => searchCatalogs.setCatalog[key].code === randomSet.code
       );
 
       $setSuggestions.empty();

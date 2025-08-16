@@ -29,14 +29,14 @@ $(function () {
   $("title").text(card.name + " - MTG Conclave");
 
   const $buttonDiv = $('<div class="buttonDiv"></div>');
-  const $prevPageBtn = $('<button class="navBtn prevPage">Go Back</button>').on(
+  const $backBtn = $('<button class="navBtn">Go Back</button>').on(
     "click",
     () => history.back()
   );
 
   if (currentPage === "details" || currentPage === "random") {
     $("#cardName").text(card.name);
-    const $nextPageBtn = $('<button class="navBtn nextPage"></button>');
+    const $otherNavBtn = $('<button class="navBtn"></button>');
 
     if (card.image_uris) {
       $cardFaceEl.attr("src", card.image_uris.large);
@@ -245,14 +245,21 @@ $(function () {
 
     //// if on "details", get a button to return to search page
     if (currentPage === "details") {
-      $nextPageBtn
-        .text("New Search")
-        .on("click", () => (window.location.href = "index.html"));
+      $otherNavBtn.text("New Search").on("click", () => {
+        localStorage.removeItem("queryResponse");
+        localStorage.removeItem("searchParams");
+        localStorage.removeItem("allPages");
+        localStorage.removeItem("targetPage");
+        localStorage.removeItem("cardDetails");
+
+        window.location.href = "index.html";
+      });
     }
+
     //// if on "random", get a button to get another
     //// random pull using the user's entered parameters
     if (currentPage === "random") {
-      $nextPageBtn.text("Re-Randomize!").on("click", () => {
+      $otherNavBtn.text("Re-Randomize!").on("click", () => {
         $.getJSON(searchParams.apiCallUrl, function (dataObj) {
           console.log("response successful");
 
@@ -263,7 +270,7 @@ $(function () {
         });
       });
     }
-    $buttonDiv.append($prevPageBtn, $nextPageBtn);
+    $buttonDiv.append($backBtn, $otherNavBtn);
     $buttonDiv.appendTo($("header"));
   }
 
@@ -281,7 +288,7 @@ $(function () {
       $relatedCard.attr("src", card.image_uris.large);
       $imgBox.append($imgContainer).append($relatedCard);
     });
-    $buttonDiv.append($prevPageBtn);
+    $buttonDiv.append($backBtn);
     $buttonDiv.appendTo($("header"));
   }
 });

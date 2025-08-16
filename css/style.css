@@ -75,6 +75,26 @@ select {
   justify-content: center;
 }
 
+@keyframes flash {
+  0% {
+    opacity: 0;
+  }
+  40% {
+    opacity: 1;
+  }
+  60% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+.loading-message {
+  color: rgb(199, 180, 133);
+  animation: flash 2s infinite;
+}
+
 .searchField {
   margin: 40px 10px 15px;
   padding: 15px;

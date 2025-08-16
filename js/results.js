@@ -226,6 +226,8 @@ $(function () {
     const downloadedPages = {};
     let completedRequests = 0;
 
+    $(".loading-message").show().text("Fetching search results...");
+
     for (let i = 1; i <= numberOfPages; i++) {
       //// Spacing requests out, as per rules of Scryfall API
       setTimeout(function () {
