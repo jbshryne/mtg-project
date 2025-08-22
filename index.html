@@ -14,7 +14,7 @@
   <script src="https://code.jquery.com/jquery-3.7.0.js" integrity="sha256-JlqSTELeR4TLqP0OG9dxM7yDPqX1ox/HfgiSLBj8+kM=" crossorigin="anonymous"></script>
   <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
   <link rel="stylesheet" href="css/style.css" />
-  <!-- <script src="js/initCatalogs.js"></script> -->
+  <script src="assets/animation.js"></script>
   <script src="js/index.js" defer></script>
 </head>
 
@@ -38,23 +38,28 @@
 
       <!-- type -->
       <div class="searchField">
-        <label for="typeInput">Card Types:</label>
-        <input type="text" name="type" id="typeInput" placeholder="Including super- and/or subtypes" />
-        <button type="button" id="addTypeTextBtn" class="smallButton addToList"><i class="fas fa-arrow-right"></i> <i class="fas fa-list"></i></button>
-        <span class="randomControls">
-          <select id="randomTypeDropdown">
-            <option value="supertypes">Supertype</option>
-            <option value="mainCardTypes">Main Card Type</option>
-            <option value="creatureTypes" selected>Creature Type</option>
-            <option value="artifactTypes">Artifact Type</option>
-            <option value="enchantmentTypes">Enchantment Type</option>
-            <option value="spellTypes">Spell Type</option>
-            <option value="planeswalkerTypes">Planeswalker Type</option>
-            <option value="battleTypes">Battle Type</option>
-            <option value="landTypes">Land Type</option>
-            <option value="any">Any Type</option>
-          </select>
-          <button type="button" id="addRandomTypeBtn" class="smallButton"><i class="fas fa-add"></i> <i class="fas fa-random"></i></button>
+        <span class="textInputSection">
+          <label for="typeInput">Card Types:</label>
+          <input type="text" name="type" id="typeInput" placeholder="Including super- and/or subtypes" />
+          <button type="button" id="addTypeTextBtn" class="smallButton addToList"><i class="fas fa-arrow-right"></i> <i class="fas fa-list"></i></button>
+        </span>
+        <span class="randomControls" tabindex="0" aria-expanded="false">
+          <div class="rc-label">Random</div>
+          <div class="rc-content">
+            <select id="randomTypeDropdown">
+              <option value="supertypes">Supertype</option>
+              <option value="mainCardTypes">Main Card Type</option>
+              <option value="creatureTypes" selected>Creature Type</option>
+              <option value="artifactTypes">Artifact Type</option>
+              <option value="enchantmentTypes">Enchantment Type</option>
+              <option value="spellTypes">Spell Type</option>
+              <option value="planeswalkerTypes">Planeswalker Type</option>
+              <option value="battleTypes">Battle Type</option>
+              <option value="landTypes">Land Type</option>
+              <option value="any">Any Type</option>
+            </select>
+            <button type="button" id="addRandomTypeBtn" class="smallButton"><i class="fas fa-add"></i> <i class="fas fa-random"></i></button>
+          </div>
         </span>
         <div id="typeSuggestions" class="suggestions"></div>
         <ul id="selectedTypeList" class="selectedParamList"></ul>
@@ -102,18 +107,23 @@
 
       <!-- rules text -->
       <div class="searchField">
-        <label for="rulesTextInput">Rules Text:</label>
-        <input type="text" name="rulesText" id="rulesTextInput" placeholder='Individual words or "phrases in quotes"' />
-        <button type="button" id="addRulesTextBtn" class="smallButton addToList"><i class="fas fa-arrow-right"></i> <i class="fas fa-list"></i></button>
-        <span class="randomControls">
-          <select id="randomRulesDropdown">
-            <option value="keyword-abilities">Keyword Ability</option>
-            <option value="keyword-actions">Keyword Action</option>
-            <option value="ability-words">Ability Words</option>
-            <option value="flavor-words">Flavor Words</option>
-            <option value="any">Any Rules Text</option>
-          </select>
-          <button type="button" id="addRandomRulesBtn" class="smallButton"><i class="fas fa-add"></i> <i class="fas fa-random"></i></button>
+        <span class="textInputSection">
+          <label for="rulesTextInput">Rules Text:</label>
+          <input type="text" name="rulesText" id="rulesTextInput" placeholder='Individual words or "phrases in quotes"' />
+          <button type="button" id="addRulesTextBtn" class="smallButton addToList"><i class="fas fa-arrow-right"></i> <i class="fas fa-list"></i></button>
+        </span>
+        <span class="randomControls" tabindex="0" aria-expanded="false">
+          <div class="rc-label">Random</div>
+          <div class="rc-content">
+            <select id="randomRulesDropdown">
+              <option value="keyword-abilities">Keyword Ability</option>
+              <option value="keyword-actions">Keyword Action</option>
+              <option value="ability-words">Ability Words</option>
+              <option value="flavor-words">Flavor Words</option>
+              <option value="any">Any Rules Text</option>
+            </select>
+            <button type="button" id="addRandomRulesBtn" class="smallButton"><i class="fas fa-add"></i> <i class="fas fa-random"></i></button>
+          </div>
         </span>
         <ul id="selectedRulesList" class="selectedParamList"></ul>
       </div>
@@ -147,17 +157,20 @@
         <label for="setInput">Set:</label>
         <input type="text" name="set" id="setInput" placeholder="Search for full name or set code" />
         <button type="button" id="addSetTextBtn" class="smallButton addToList"><i class="fas fa-arrow-right"></i> <i class="fas fa-list"></i></button>
-        <span class="randomControls">
-          <select id="randomSetDropdown">
-            <option value="core">Core Set</option>
-            <option value="expansion">Expansion</option>
-            <option value="supplemental">Supplemental</option>
-            <option value="nonDCI">Non-DCI Legal</option>
-            <option value="digital">Digital Only</option>
-            <option value="extras">Extras</option>
-            <option value="any">Any Set</option>
-          </select>
-          <button type="button" id="addRandomSetBtn" class="smallButton"><i class="fas fa-random"></i></button>
+        <span class="randomControls" tabindex="0" aria-expanded="false">
+          <div class="rc-label">Random</div>
+          <div class="rc-content">
+            <select id="randomSetDropdown">
+              <option value="core">Core Set</option>
+              <option value="expansion">Expansion</option>
+              <option value="supplemental">Supplemental</option>
+              <option value="nonDCI">Non-DCI Legal</option>
+              <option value="digital">Digital Only</option>
+              <option value="extras">Extras</option>
+              <option value="any">Any Set</option>
+            </select>
+            <button type="button" id="addRandomSetBtn" class="smallButton"><i class="fas fa-random"></i></button>
+          </div>
         </span>
         <div id="setSuggestions" class="suggestions"></div>
         <ul id="selectedSetList" class="selectedParamList"></ul>
@@ -165,18 +178,23 @@
 
       <!-- watermark -->
       <div class="searchField">
-        <label for="watermarkInput">Watermark:</label>
-        <input type="text" name="watermark" id="watermarkInput" />
-        <button type="button" id="addWatermarkTextBtn" class="smallButton addToList"><i class="fas fa-arrow-right"></i> <i class="fas fa-list"></i></button>
-        <span class="randomControls">
-          <select id="randomWatermarkDropdown">
-            <option value="faction">Faction</option>
-            <option value="cardInfo">Card Info</option>
-            <option value="promo">Promo</option>
-            <option value="crossover">Crossover</option>
-            <option value="any">Any Watermark</option>
-          </select>
-          <button type="button" id="addRandomWatermarkBtn" class="smallButton"><i class="fas fa-random"></i></button>
+        <span class="textInputSection">
+          <label for="watermarkInput">Watermark:</label>
+          <input type="text" name="watermark" id="watermarkInput" placeholder="Ex. Abzan, Desparked" />
+          <button type="button" id="addWatermarkTextBtn" class="smallButton addToList"><i class="fas fa-arrow-right"></i> <i class="fas fa-list"></i></button>
+        </span>
+        <span class="randomControls" tabindex="0" aria-expanded="false">
+          <div class="rc-label">Random</div>
+          <div class="rc-content">
+            <select id="randomWatermarkDropdown">
+              <option value="faction">Faction</option>
+              <option value="cardInfo">Card Info</option>
+              <option value="promo">Promo</option>
+              <option value="crossover">Crossover</option>
+              <option value="any">Any Watermark</option>
+            </select>
+            <button type="button" id="addRandomWatermarkBtn" class="smallButton"><i class="fas fa-random"></i></button>
+          </div>
         </span>
         <div id="watermarkSuggestions" class="suggestions"></div>
         <ul id="selectedWatermarkList" class="selectedParamList"></ul>
@@ -187,11 +205,16 @@
     <section class="row">
       <!-- art -->
       <div class="searchField">
-        <label for="artInput">Art / Concept:</label>
-        <input type="text" name="art" id="artInput" placeholder="Ex: calamity-beast, squirrel-horde" />
-        <button type="button" id="addArtTextBtn" class="smallButton addToList"><i class="fas fa-arrow-right"></i> <i class="fas fa-list"></i></button>
-        <span class="randomControls">
-          <button type="button" id="addRandomArtBtn" class="smallButton"><i class="fas fa-add"></i> <i class="fas fa-random"></i></button>
+        <span class="textInputSection">
+          <label for="artInput">Art / Concept:</label>
+          <input type="text" name="art" id="artInput" placeholder="Ex: calamity-beast, squirrel-horde" />
+          <button type="button" id="addArtTextBtn" class="smallButton addToList"><i class="fas fa-arrow-right"></i> <i class="fas fa-list"></i></button>
+        </span>
+        <span class="randomControls" tabindex="0" aria-expanded="false">
+          <div class="rc-label">Random</div>
+          <div class="rc-content">
+            <button type="button" id="addRandomArtBtn" class="smallButton"><i class="fas fa-add"></i> <i class="fas fa-random"></i></button>
+          </div>
         </span>
         <div id="artSuggestions" class="suggestions"></div>
         <ul id="selectedArtList" class="selectedParamList"></ul>
@@ -199,11 +222,16 @@
 
       <!-- function -->
       <div class="searchField">
-        <label for="functionInput">Function / Cycle:</label>
-        <input type="text" name="function" id="functionInput" placeholder="Ex: lifegain-matters, cycle-m15-sliver" />
-        <button type="button" id="addFunctionTextBtn" class="smallButton addToList"><i class="fas fa-arrow-right"></i> <i class="fas fa-list"></i></button>
-        <span class="randomControls">
-          <button type="button" id="addRandomFunctionBtn" class="smallButton"><i class="fas fa-add"></i> <i class="fas fa-random"></i></button>
+        <span class="textInputSection">
+          <label for="functionInput">Function / Cycle:</label>
+          <input type="text" name="function" id="functionInput" placeholder="Ex: lifegain-matters, cycle-m15-sliver" />
+          <button type="button" id="addFunctionTextBtn" class="smallButton addToList"><i class="fas fa-arrow-right"></i> <i class="fas fa-list"></i></button>
+        </span>
+        <span class="randomControls" tabindex="0" aria-expanded="false">
+          <div class="rc-label">Random</div>
+          <div class="rc-content">
+            <button type="button" id="addRandomFunctionBtn" class="smallButton"><i class="fas fa-add"></i> <i class="fas fa-random"></i></button>
+          </div>
         </span>
         <div id="functionSuggestions" class="suggestions"></div>
         <ul id="selectedFunctionList" class="selectedParamList"></ul>
@@ -248,7 +276,7 @@
 
     <div class="buttonDiv">
       <button type="submit" id="allCardsBtn">All Cards</button>
-      <button id="randomBtn">Randomizer!</button>
+      <button id="randomBtn">Randomr!</button>
     </div>
   </form>
   <p class="errorMessage"></p>

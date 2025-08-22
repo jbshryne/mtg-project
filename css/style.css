@@ -96,6 +96,8 @@ select {
 }
 
 .searchField {
+  display: flow-root;
+  align-items: center;
   margin: 40px 10px 15px;
   padding: 15px;
   border: 5px ridge rgb(40, 38, 37);
@@ -103,12 +105,66 @@ select {
   background-color: rgba(55, 42, 18, 0.8);
 }
 
+.textInputSection {
+  display: inline-flex;
+  flex-wrap: nowrap;
+  align-items: center;
+}
+
 .randomControls {
+  /* display: inline-flex;
+  flex-wrap: nowrap;
+  align-items: center; */
+  box-sizing: border-box;
   border: 2px outset rgb(30, 29, 28);
   background-color: rgba(129, 98, 42, 0.2);
   border-radius: 10px;
   padding: 10px 15px;
   margin-left: 10px;
+
+  /* animation & layout */
+  position: relative;
+  display: inline-block; /* so width animation is visible */
+  overflow: hidden; /* hide content when collapsed */
+  white-space: nowrap;
+  cursor: pointer; /* looks tappable when collapsed */
+  vertical-align: middle;
+}
+/* "Randomize" label overlays content */
+.randomControls .rc-label {
+  position: absolute;
+  left: 15px; /* aligns with container padding-left */
+  top: 50%;
+  transform: translateY(-50%);
+  color: rgb(191, 185, 178);
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  font-style: italic;
+  opacity: 1;
+  transition: opacity 160ms ease;
+  pointer-events: none; /* clicks handled by the container */
+}
+
+/* Real controls */
+.randomControls .rc-content {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  opacity: 0; /* crossfade in after width expands */
+  transition: opacity 160ms ease 80ms;
+  pointer-events: none;
+}
+
+/* State when expanded (set by JS) */
+.randomControls.expanded {
+  cursor: default;
+}
+.randomControls.expanded .rc-label {
+  opacity: 0;
+}
+.randomControls.expanded .rc-content {
+  opacity: 1;
+  pointer-events: auto;
 }
 
 .selectedParamList {

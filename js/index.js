@@ -166,19 +166,6 @@ $(document).ready(function () {
             } else {
               searchCatalogs[category][type] = response.data;
             }
-            // urlTag == "sets"
-            //   ? (searchCatalogs.setCatalog = response.data.reduce(
-            //       (acc, set) => {
-            //         acc[set.name] = {
-            //           code: set.code,
-            //           setType: set.set_type,
-            //           uri: set.uri,
-            //         };
-            //         return acc;
-            //       },
-            //       {}
-            //     ))
-            //   : (searchCatalogs[category][type] = response.data);
             resolve();
           });
         }, 100);
@@ -266,10 +253,9 @@ $(document).ready(function () {
   const $addRandomFunctionBtn = $("#addRandomFunctionBtn");
   const $selectedFunctionList = $("#selectedFunctionList");
 
-  $(".addToList").hover(function () {
-    $(this).attr("title", 'Add to "OR" list');
-  });
-
+  if (searchParams.selectedParams.selectedTypeList.length > 0) {
+    searchParams.selectedParams.selectedTypeList.forEach((t) => console.log(t));
+  }
   ////// SETTING UP INPUTS & BUTTONS
 
   function populateSuggestionList(
@@ -296,8 +282,6 @@ $(document).ready(function () {
       inputText = inputText.substring(1);
     }
 
-    // console.log(inputText);
-
     const $suggestions = $thisInput
       .closest(".searchField")
       .find(".suggestions");
@@ -323,7 +307,6 @@ $(document).ready(function () {
           !$(event.target).closest($thisInput).length &&
           !$(event.target).closest($suggestions).length
         ) {
-          console.log("Clicked outside");
           $suggestions.empty();
           setTimeout(() => {
             $(document).off("click");
@@ -351,7 +334,7 @@ $(document).ready(function () {
             inputWords[inputWords.length - 1] = `${
               isNegative ? "-" : ""
             }${suggestionText}`;
-            console.log(isNegative && "-");
+            // console.log(isNegative && "-");
             $thisInput.val(inputWords.join(" ") + " ");
           } else {
             $thisInput.val(`${isNegative ? "-" : ""}${suggestionText}`);
@@ -392,7 +375,6 @@ $(document).ready(function () {
       choiceList[Math.floor(Math.random() * choiceList.length)];
 
     if (type == "rulesText") {
-      console.log(randomChoice);
       randomChoice = randomChoice.includes(" ")
         ? '"' + randomChoice + '"'
         : randomChoice;
@@ -406,7 +388,6 @@ $(document).ready(function () {
         $input.val(randomChoice);
       }
     } else {
-      console.log("else");
       $input.val(randomChoice);
     }
   }
@@ -426,6 +407,10 @@ $(document).ready(function () {
     }
   }
 
+  $(".addToList").hover(function () {
+    $(this).attr("title", 'Add to "OR" list');
+  });
+
   function setupRemoveButtons(listId) {
     $(".removeParamBtn")
       .off()
@@ -436,7 +421,7 @@ $(document).ready(function () {
 
         const updatedList = searchParams.selectedParams[listId].filter(
           (item) => {
-            console.log($(this).parent().text().trim().substring(2));
+            // console.log($(this).parent().text().trim().substring(2));
             return item !== $(this).parent().text().trim().substring(2);
           }
         );
@@ -562,7 +547,7 @@ $(document).ready(function () {
       .replace(/\s*\[.*?\]/, "")
       .trim();
 
-    console.log(setCode, setName);
+    // console.log(setCode, setName);
 
     if (
       setCode &&
@@ -679,6 +664,82 @@ $(document).ready(function () {
     $errorMessage.empty();
   };
 
+  ////// WIRING ANIMATIONS
+
+  $(function () {
+    const { computeSizes, expand, collapse } = Window.AnimationHelpers;
+    // Initialize all randomControls
+    const $all = $(".randomControls");
+    $all.each(function () {
+      computeSizes($(this));
+    });
+
+    // Recompute on load (fonts/icons), and on resize
+    $(window).on("load resize", function () {
+      $all.each(function () {
+        computeSizes($(this));
+      });
+    });
+
+    // Interaction: hover/focus expand; leave/blur collapse (with a tiny delay to avoid flicker)
+    let collapseTimer = null;
+
+    $all.on("mouseenter focusin", function () {
+      clearTimeout(collapseTimer);
+      expand($(this));
+    });
+
+    $all.on("mouseleave", function () {
+      const $rc = $(this);
+      clearTimeout(collapseTimer);
+      collapseTimer = setTimeout(() => {
+        // Only collapse if it doesn't still contain focus
+        if (!$rc.is(":focus-within")) collapse($rc);
+      }, 120);
+    });
+
+    $all.on("focusout", function () {
+      const $rc = $(this);
+      setTimeout(() => {
+        if (!$rc.is(":focus-within")) collapse($rc);
+      }, 0);
+    });
+
+    // Tap/click toggles for touch
+    $all.on("click", function (e) {
+      const $rc = $(this);
+      if ($rc.hasClass("expanded")) {
+        // If user clicked inside interactive elements, don't collapse immediately
+        if ($(e.target).closest(".rc-content").length) return;
+        collapse($rc);
+      } else {
+        expand($rc);
+      }
+    });
+
+    // Click/touch outside collapses any open control
+    $(document).on("mousedown touchstart", function (e) {
+      if (!$(e.target).closest(".randomControls").length) {
+        $all.each(function () {
+          collapse($(this));
+        });
+      }
+    });
+
+    // Keyboard: Enter/Space toggles; Escape collapses
+    $all.on("keydown", function (e) {
+      const $rc = $(this);
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        if ($rc.hasClass("expanded")) collapse($rc);
+        else expand($rc);
+      } else if (e.key === "Escape") {
+        collapse($rc);
+        $rc.blur();
+      }
+    });
+  });
+
   ////// SEARCH LOGIC
 
   //// Wrapper function to keep track of which button was clicked
@@ -691,7 +752,6 @@ $(document).ready(function () {
 
   $('input[type="radio"]').change(function () {
     const selectedValue = $('input[name="colorOps"]:checked').val();
-    console.log(selectedValue);
   });
 
   function submitSearch(clickedBtn) {
@@ -710,8 +770,6 @@ $(document).ready(function () {
     //   let inputVal = $inputVal.val();
     //   let inputArray = [];
     //   let inputString = "";
-
-    //   console.log(inputVal);
 
     //   if (inputVal) {
     //     if (fieldSymbol === "wm") {
@@ -752,8 +810,6 @@ $(document).ready(function () {
     //         }
 
     //         // if (fieldSymbol === "s") {
-    //         //   console.log("set");
-    //         //   console.log(p);
     //         //   p = param.match(/\[(.*?)\]/)?.[1]?.toLowerCase() || param;
     //         // }
 
@@ -763,14 +819,12 @@ $(document).ready(function () {
     //         // }
 
     //         const formattedP = `${isNegative ? "-" : ""}${fieldSymbol}:${p}`;
-    //         console.log(formattedP);
     //         return formattedP;
     //         // return `${fieldSymbol}:${p}`;
     //       });
     //       return `(${formattedParams.join(" ")})`;
     //     });
     //     inputString = `(${formattedArray.join(" or ")})`;
-    //     console.log("input string for", fieldSymbol, inputString);
     //     queryArray.push(inputString);
     //   }
 
@@ -842,7 +896,7 @@ $(document).ready(function () {
         inputString = `(${formattedArray.join(" or ")})`;
         queryArray.push(inputString);
 
-        console.log("input string for", fieldSymbol, inputString);
+        // console.log("input string for", fieldSymbol, inputString);
       }
 
       return inputArray;
@@ -872,9 +926,9 @@ $(document).ready(function () {
 
     const colorOperator = $('input[name="colorOps"]:checked').val();
     const colorArray = [];
-    const $checkedColors = $(".color:checked");
+    const $selectedColors = $(".color:checked");
 
-    $checkedColors.each(function () {
+    $selectedColors.each(function () {
       const value = $(this).val();
       colorArray.push(value);
     });
@@ -920,10 +974,10 @@ $(document).ready(function () {
     ////// rarities
 
     const rarityArray = [];
-    const $checkedRarities = $(".rarity:checked");
+    const $selectedRarities = $(".rarity:checked");
     let rarityString = "";
 
-    $checkedRarities.each(function () {
+    $selectedRarities.each(function () {
       const value = $(this).val();
       rarityArray.push(value);
     });
@@ -993,7 +1047,7 @@ $(document).ready(function () {
       apiCallUrl = `https://api.scryfall.com/cards/random?q=${queryString}`;
     }
 
-    console.log(queryString);
+    // console.log(queryString);
     // debugger;
 
     ////// Passing query info to localStorage
@@ -1033,7 +1087,7 @@ $(document).ready(function () {
 
         ////// Passing results to localStorage
         const resultsArray = dataObj.data;
-        console.log(dataObj);
+        // console.log(dataObj);
 
         ////// Redirecting to proper page based on
         ////// button clicked and number of results
@@ -1053,7 +1107,7 @@ $(document).ready(function () {
           window.location.href = "random.html";
         }
       }
-    }).fail(function (jqxhr, textStatus, error) {
+    }).fail(function (jqxhr, _, __) {
       console.error("Error:", jqxhr);
       if (JSON.parse(jqxhr.responseText).code === "not_found")
         $errorMessage.text(
