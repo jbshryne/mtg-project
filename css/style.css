@@ -95,6 +95,16 @@ select {
   animation: flash 2s infinite;
 }
 
+/* #mainContent {
+  overflow: hidden;
+  transition: height 0.3s cubic-bezier(0.4, 0.2, 0.2, 1);
+  will-change: height;
+}
+#mainContent.content-hidden {
+  pointer-events: none;
+  opacity: 0.8;
+} */
+
 .searchField {
   display: flow-root;
   align-items: center;

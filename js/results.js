@@ -205,7 +205,7 @@ $(function () {
       const cardGroupArray = [];
       console.log("basic land");
       $.getJSON(
-        `https://api.scryfall.com/cards/search?order=set&q=${card.name}+set%3A${card.set}+game%3Apaper&unique=art`,
+        `https://api.scryfall.com/cards/search?order=set&q=${card.name}+set%3A${card.set}+type%3Abasic+type%3Aland+game%3Apaper&unique=art`,
         function (listObj) {
           listObj.data.forEach((card) => cardGroupArray.push(card));
         }
