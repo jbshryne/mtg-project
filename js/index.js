@@ -253,7 +253,7 @@ $(document).ready(function () {
   const $addRandomFunctionBtn = $("#addRandomFunctionBtn");
   const $selectedFunctionList = $("#selectedFunctionList");
 
-  if (searchParams.selectedParams.selectedTypeList.length > 0) {
+  if (searchParams && searchParams.selectedParams.selectedTypeList.length > 0) {
     searchParams.selectedParams.selectedTypeList.forEach((t) => console.log(t));
   }
   ////// SETTING UP INPUTS & BUTTONS

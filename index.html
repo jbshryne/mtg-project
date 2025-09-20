@@ -27,16 +27,18 @@
   <div id="mainContent">
     <form autocomplete="off" id="searchForm">
 
+      <!-- Card Name -->
       <section class="row">
-        <!-- name -->
         <div class="searchField">
           <label for="nameInput">Card Name:</label>
           <input type="text" name="name" id="nameInput" placeholder="Words can be full or partial" />
           <button type="button" id="addNameTextBtn" class="smallButton addToList"><i class="fas fa-arrow-right"></i> <i class="fas fa-list"></i></button>
           <ul id="selectedNameList" class="selectedParamList"></ul>
         </div>
+      </section>
 
-        <!-- type -->
+      <!-- Type -->
+      <section class="row">
         <div class="searchField">
           <span class="textInputSection">
             <label for="typeInput">Card Types:</label>
@@ -64,9 +66,10 @@
           <div id="typeSuggestions" class="suggestions"></div>
           <ul id="selectedTypeList" class="selectedParamList"></ul>
         </div>
-
       </section>
 
+      <!-- Colors -->
+      <!-- <section class="row"> -->
       <fieldset id="colorsField">
         <legend>Color:
           <small>
@@ -76,36 +79,17 @@
             <input type="radio" id="colorId" name="colorOps" value="id">Identity (EDH)</input>
           </small>
         </legend>
-        <label>
-          <input type="checkbox" class="color coloredBox" value="w" />
-          White
-        </label>
-        <label>
-          <input type="checkbox" class="color coloredBox" value="u" />
-          Blue
-        </label>
-        <label>
-          <input type="checkbox" class="color coloredBox" value="b" />
-          Black
-        </label>
-        <label>
-          <input type="checkbox" class="color coloredBox" value="r" />
-          Red
-        </label>
-        <label>
-          <input type="checkbox" class="color coloredBox" value="g" />
-          Green
-        </label>
-        <label>
-          <input type="checkbox" class="color" id="colorlessBox" value="c" />
-          Colorless
-        </label>
+        <label><input type="checkbox" class="color coloredBox" value="w" /> White</label>
+        <label><input type="checkbox" class="color coloredBox" value="u" /> Blue</label>
+        <label><input type="checkbox" class="color coloredBox" value="b" /> Black</label>
+        <label><input type="checkbox" class="color coloredBox" value="r" /> Red</label>
+        <label><input type="checkbox" class="color coloredBox" value="g" /> Green</label>
+        <label><input type="checkbox" class="color" id="colorlessBox" value="c" /> Colorless</label>
       </fieldset>
+      <!-- </section> -->
 
-
+      <!-- Rules Text -->
       <section class="row">
-
-        <!-- rules text -->
         <div class="searchField">
           <span class="textInputSection">
             <label for="rulesTextInput">Rules Text:</label>
@@ -127,32 +111,21 @@
           </span>
           <ul id="selectedRulesList" class="selectedParamList"></ul>
         </div>
-
       </section>
 
+      <!-- Rarity -->
+      <!-- <section class="row"> -->
       <fieldset id="rarityField">
         <legend>Rarity:</legend>
-        <label>
-          <input type="checkbox" class="rarity" value="c" />
-          Common
-        </label>
-        <label>
-          <input type="checkbox" class="rarity" value="u" />
-          Uncommon
-        </label>
-        <label>
-          <input type="checkbox" class="rarity" value="r" />
-          Rare
-        </label>
-        <label>
-          <input type="checkbox" class="rarity" value="m" />
-          Mythic Rare
-        </label>
+        <label><input type="checkbox" class="rarity" value="c" /> Common</label>
+        <label><input type="checkbox" class="rarity" value="u" /> Uncommon</label>
+        <label><input type="checkbox" class="rarity" value="r" /> Rare</label>
+        <label><input type="checkbox" class="rarity" value="m" /> Mythic Rare</label>
       </fieldset>
+      <!-- </section> -->
 
+      <!-- Set -->
       <section class="row">
-
-        <!-- set -->
         <div class="searchField">
           <label for="setInput">Set:</label>
           <input type="text" name="set" id="setInput" placeholder="Search for full name or set code" />
@@ -175,8 +148,10 @@
           <div id="setSuggestions" class="suggestions"></div>
           <ul id="selectedSetList" class="selectedParamList"></ul>
         </div>
+      </section>
 
-        <!-- watermark -->
+      <!-- Watermark -->
+      <section class="row">
         <div class="searchField">
           <span class="textInputSection">
             <label for="watermarkInput">Watermark:</label>
@@ -199,11 +174,10 @@
           <div id="watermarkSuggestions" class="suggestions"></div>
           <ul id="selectedWatermarkList" class="selectedParamList"></ul>
         </div>
-
       </section>
 
+      <!-- Art -->
       <section class="row">
-        <!-- art -->
         <div class="searchField">
           <span class="textInputSection">
             <label for="artInput">Art / Concept:</label>
@@ -219,8 +193,10 @@
           <div id="artSuggestions" class="suggestions"></div>
           <ul id="selectedArtList" class="selectedParamList"></ul>
         </div>
+      </section>
 
-        <!-- function -->
+      <!-- Function -->
+      <section class="row">
         <div class="searchField">
           <span class="textInputSection">
             <label for="functionInput">Function / Cycle:</label>
@@ -238,25 +214,18 @@
         </div>
       </section>
 
-      <!-- options -->
+      <!-- Options -->
+      <!-- <section class="row"> -->
       <fieldset>
         <legend>Options:</legend>
-        <label>
-          <input type="checkbox" name="firstPrintings" id="firstPrintingsCheckbox" />
-          First Printings Only
-        </label>
-        <label>
-          <input type="checkbox" name="includeExtras" id="includeExtrasCheckbox" />
-          Include Extras
-        </label>
-        <label>
-          <input type="checkbox" name="isFunny" id="isFunnyCheckbox" />
-          Only "Funny" Cards
-        </label>
+        <label><input type="checkbox" name="firstPrintings" id="firstPrintingsCheckbox" /> First Printings Only</label>
+        <label><input type="checkbox" name="includeExtras" id="includeExtrasCheckbox" /> Include Extras</label>
+        <label><input type="checkbox" name="isFunny" id="isFunnyCheckbox" /> Only "Funny" Cards</label>
       </fieldset>
+      <!-- </section> -->
 
+      <!-- Sort -->
       <section class="row">
-
         <div class="searchField">
           <label for="sortDropdown">Sort results by:</label>
           <select id="sortDropdown">
@@ -271,7 +240,6 @@
             <option value="set">Set & Collector #</option>
           </select>
         </div>
-
       </section>
 
       <div class="buttonDiv">

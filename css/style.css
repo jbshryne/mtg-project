@@ -108,7 +108,7 @@ select {
 .searchField {
   display: flow-root;
   align-items: center;
-  margin: 40px 10px 15px;
+  margin: 10px 10px 15px;
   padding: 15px;
   border: 5px ridge rgb(40, 38, 37);
   border-radius: 10px;
@@ -129,7 +129,7 @@ select {
   border: 2px outset rgb(30, 29, 28);
   background-color: rgba(129, 98, 42, 0.2);
   border-radius: 10px;
-  padding: 10px 15px;
+  padding: 5px 15px;
   margin-left: 10px;
 
   /* animation & layout */
